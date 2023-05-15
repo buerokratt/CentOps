@@ -64,7 +64,7 @@ services:
       - 3005:3005
     networks:
       - bykstack
-  gui_dev:
+  gui:
     container_name: gui_dev
     environment:
       - NODE_ENV=development
