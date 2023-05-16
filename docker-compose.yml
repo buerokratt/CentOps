@@ -53,18 +53,15 @@ services:
     image: datamapper-node
     environment:
       - PORT=3005
-      - CONTENT_FOLDER=/data
     volumes:
-      - ./DSL:/data
       - ./DSL/DMapper/hbs:/workspace/app/views/centops
       - ./DSL/DMapper/js:/workspace/app/js/centops
       - ./DSL/DMapper/lib:/workspace/app/lib
-      - ./secrets:/data/secrets
     ports:
       - 3005:3005
     networks:
       - bykstack
-  gui:
+  gui_dev:
     container_name: gui_dev
     environment:
       - NODE_ENV=development

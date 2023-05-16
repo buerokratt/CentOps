@@ -1,0 +1,10 @@
+[
+  {{#each entries}}
+    {
+      "id": "hidden by data mapper",
+      "status": "{{status}}",
+      "hello": "{{sayHello}}"
+    }
+    {{#unless @last}},{{/unless}}
+  {{/each}}
+]

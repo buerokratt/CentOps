@@ -134,9 +134,9 @@ const MainNavigation: FC = () => {
       ],
     },
     {
-      id: "services",
-      label: "Services",
-      path: "/services",
+      id: "centops",
+      label: "Centops",
+      path: ROUTES.OVERVIEW_ROUTE,
       children: [
         { path: ROUTES.OVERVIEW_ROUTE, label: t('menu.overview') },
       ],
