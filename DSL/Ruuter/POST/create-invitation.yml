@@ -1,0 +1,12 @@
+create_invitation:
+  call: http.post
+  args:
+    url: http://resql:8087/create-invitation
+    body: 
+      user_email: ${user_email}
+  result: result.response.body
+
+return_value:
+  wrapper: false
+  status: 200
+  return: 'ok'
