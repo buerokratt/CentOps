@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { Button, Track } from "../components";
-import { dummyApi, toggleDummyApi } from "../resources/api-constants";
+import { createInvitation, dummyApi, toggleDummyApi } from "../resources/api-constants";
 
 const OverviewPage: React.FC = () => {
   const { t } = useTranslation();
   const [result, setResult] = useState('')
+  const [invitationResult, setInvResult] = useState('')
 
   useEffect(() => {
     fetchDummy()
@@ -32,6 +33,19 @@ const OverviewPage: React.FC = () => {
     }
   }
 
+  const handleCreateInv = async () => {
+    try {
+      setInvResult('loading . . . .');
+      const res = await axios.post(createInvitation(), {
+        user_email: 'user@user.user',
+      });
+      console.log(res);
+      setResult(JSON.stringify(res.data));
+    } catch (err: any) {
+      setResult('failed to send user e-mail: ' + err.toString());
+    }
+  }
+
   return (
     <>
       <Track justify="between">
@@ -43,6 +57,7 @@ const OverviewPage: React.FC = () => {
           {result}
         </span>
         <Button onClick={handleToggleClick}>toggle</Button>
+        <Button onClick={handleCreateInv}>createInvitation</Button>
       </Track>
     </>
   );

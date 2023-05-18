@@ -1,12 +1,38 @@
+check_for_email:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.user_email == null}
+      next: return_incorrect_request
+
+set_email:
+  assign:
+    email: ${incoming.body.user_email}
+  next: create_invitation
+
 create_invitation:
   call: http.post
   args:
     url: http://resql:8087/create-invitation
     body: 
-      user_email: ${user_email}
-  result: result.response.body
+      user_email: ${email}
+  result: result_thing
+  next: get_invitation_code
 
-return_value:
+get_invitation_code:
+  call: http.post
+  args:
+    url: http://resql:8087/get-invitation-code
+    body:
+      user_email: ${email}
+  result: invitationCodes
+  next: return_ok
+
+return_ok:
   wrapper: false
   status: 200
-  return: 'ok'
+  return: ${invitationCodes.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "User email is required"
+  next: end
