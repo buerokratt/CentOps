@@ -1,5 +1,5 @@
 -- liquibase formatted sql
--- changeset Karl Jõgi:1684332656
+-- changeset Karl Jõgi:1684496276
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -9,6 +9,3 @@ CREATE TABLE invitation (
   user_email TEXT NOT NULL,
   valid BOOLEAN NOT NULL DEFAULT TRUE
 );
-
-INSERT INTO invitation(user_email) 
-VALUES('test@test.test');
