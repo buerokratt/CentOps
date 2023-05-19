@@ -1,13 +1,14 @@
-import React, { FC, MouseEvent, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { NavLink, useLocation } from 'react-router-dom'
-import { MdClose, MdKeyboardArrowDown } from 'react-icons/md'
-import clsx from 'clsx'
-import { Icon } from '..'
-import type { MenuItem } from '../../types/mainNavigation'
-import { menuIcons } from '../../constants/menuIcons'
-import { ROUTES } from '../../resources/routes-constants'
-import './MainNavigation.scss'
+import clsx from "clsx";
+import { FC, MouseEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { NavLink, useLocation } from "react-router-dom";
+import { MdClose, MdKeyboardArrowDown } from "react-icons/md";
+
+import "./MainNavigation.scss";
+import { Icon } from "..";
+import { menuIcons } from "../../constants/menuIcons";
+import { ROUTES } from "../../resources/routes-constants";
+import type { MenuItem } from "../../types/mainNavigation";
 
 const MainNavigation: FC = () => {
   const { t } = useTranslation();
@@ -138,7 +139,9 @@ const MainNavigation: FC = () => {
       label: "Centops",
       path: ROUTES.OVERVIEW_ROUTE,
       children: [
-        { path: ROUTES.OVERVIEW_ROUTE, label: t('menu.overview') },
+        { path: ROUTES.OVERVIEW_ROUTE, label: t("menu.overview") },
+        { path: ROUTES.INVITATION_ROUTE, label: t("menu.invitation") },
+        { path: ROUTES.APPLICATION_ROUTE, label: t("menu.application") },
       ],
     },
     {
