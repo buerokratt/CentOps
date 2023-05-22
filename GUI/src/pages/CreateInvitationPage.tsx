@@ -22,6 +22,7 @@ const CreateInvitationPage: React.FC = () => {
     try {
       setInvResult('');
       setInvResultLink('');
+      setInvError('');
       const res = await axios.post(createInvitation(), {
         user_email: email,
       });
