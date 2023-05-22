@@ -1,0 +1,15 @@
+/data
+/tim-db
+/docker
+.DS_Store
+.vscode
+.env
+
+**/node_modules
+**/dist
+**/.pnp
+**/.pnp.js
+**/coverage
+**/build
+**/.eslintcache
+**/npm-debug.log*
