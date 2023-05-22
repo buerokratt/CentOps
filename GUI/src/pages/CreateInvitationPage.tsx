@@ -31,7 +31,7 @@ const CreateInvitationPage: React.FC = () => {
       setInvResult(invitationRes);
       setInvResultLink(getInvitationLink(invitationRes));
     } catch (err: any) {
-      setInvError('failed to send user e-mail: ' + err.toString());
+      setInvError(`${t('invitation.error')} ` + err.toString());
     }
   };
 
@@ -51,7 +51,7 @@ const CreateInvitationPage: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
         ></FormInput>
         <Button disabled={email.length < 1} onClick={handleCreateInv}>
-          Create invitation
+          {t('invitation.create')}
         </Button>
       </Track>
       {invitationResult && (

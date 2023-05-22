@@ -7,7 +7,9 @@
     "title": "Create invitation ID",
     "description": "Enter an e-mail address to create the invitation ID for.",
     "invitationId": "Invitation ID",
-    "link": "Invitation link"
+    "link": "Invitation link",
+    "error": "Failed to create invitation",
+    "create": "Create invitation"
   },
   "menu": {
     "invitation": "Create invitation",
