@@ -35,7 +35,7 @@ create_invitation:
     url: http://resql:8087/create-invitation
     body: 
       user_email: ${email}
-  result: result_thing
+  result: post_result
   next: get_invitation_code
 
 get_invitation_code:
