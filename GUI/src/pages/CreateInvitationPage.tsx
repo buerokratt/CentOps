@@ -9,6 +9,7 @@ const CreateInvitationPage: React.FC = () => {
   const { t } = useTranslation();
   const [invitationResult, setInvResult] = useState('');
   const [invitationResultLink, setInvResultLink] = useState('');
+  const [invitationError, setInvError] = useState('');
   const [email, setEmail] = useState<string>('');
 
   const getInvitationLink = (invitationCode: string): string => {
@@ -19,7 +20,8 @@ const CreateInvitationPage: React.FC = () => {
 
   const handleCreateInv = async () => {
     try {
-      setInvResult('loading . . . .');
+      setInvResult('');
+      setInvResultLink('');
       const res = await axios.post(createInvitation(), {
         user_email: email,
       });
@@ -28,7 +30,7 @@ const CreateInvitationPage: React.FC = () => {
       setInvResult(invitationRes);
       setInvResultLink(getInvitationLink(invitationRes));
     } catch (err: any) {
-      setInvResult('failed to send user e-mail: ' + err.toString());
+      setInvError('failed to send user e-mail: ' + err.toString());
     }
   };
 
@@ -48,7 +50,7 @@ const CreateInvitationPage: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
         ></FormInput>
         <Button disabled={email.length < 1} onClick={handleCreateInv}>
-          createInvitation
+          Create invitation
         </Button>
       </Track>
       {invitationResult && (
@@ -62,6 +64,7 @@ const CreateInvitationPage: React.FC = () => {
           <a href={invitationResultLink}>{invitationResultLink}</a>
         </span>
       )}
+      {invitationError && <span>{invitationError}</span>}
     </>
   );
 };
