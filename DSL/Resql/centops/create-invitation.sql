@@ -1,2 +1,2 @@
-INSERT INTO invitation (user_email)
+INSERT INTO institutions_invitations (user_email)
 VALUES (:user_email);
