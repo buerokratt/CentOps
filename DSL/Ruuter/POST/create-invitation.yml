@@ -27,7 +27,6 @@ check_for_email:
 set_email:
   assign:
     email: ${incoming.body.user_email}
-  next: create_invitation
 
 create_invitation:
   call: http.post
@@ -36,7 +35,6 @@ create_invitation:
     body: 
       user_email: ${email}
   result: post_result
-  next: get_invitation_code
 
 get_invitation_code:
   call: http.post
@@ -45,7 +43,6 @@ get_invitation_code:
     body:
       user_email: ${email}
   result: invitationCodes
-  next: return_ok
 
 return_ok:
   wrapper: false

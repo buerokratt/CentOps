@@ -49,7 +49,7 @@ const CreateInvitationPage: React.FC = () => {
           name="e-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        ></FormInput>
+        />
         <Button disabled={email.length < 1} onClick={handleCreateInv}>
           {t('invitation.create')}
         </Button>
