@@ -5,12 +5,10 @@
 #       next: return_unauthorized
 
 authenticate:
-  template: templates/extract-token
+  template: templates/permissions/admin
   requestType: post
   headers:
     cookie: cookie #${incoming.headers.cookie}
-  body:
-    role: "ROLE_ADMINISTRATOR"
   result: permission
 
 validate_permission:
