@@ -10,5 +10,5 @@ extract_token_data:
   result: tokenResult
 
 validate_permission:
-  return: ${tokenResult.response.body.response.authorities.includes(incoming.body.role)}
+  return: ${tokenResult.response.body.response.authorities.includes("ROLE_ADMINISTRATOR")}
   next: end
