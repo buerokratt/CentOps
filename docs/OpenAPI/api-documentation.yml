@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  description: Byrokratt-Centops API documentation
+  version: 1.0.0
+  title: Byrokratt-Centops API
+  contact:
+    email: TODO@TODO.ee
+  license:
+    name: MIT
+    url: https://github.com/buerokratt/Buerokratt-onboarding/blob/main/LICENSE
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: public
+    description: Operations available publicly
+paths:
+  /create-invitation:
+    post:
+      tags:
+        - admins
+      summary: creates an invitation
+      operationId: create-invitation
+      description: Creates an invitation and returns the id for it
+      parameters: 
+        - in: cookie
+          name: customJwtCookie
+          schema:
+            type: string
+            format: jwt
+          required: true
+      responses:
+        '200':
+          description: item created, responds with the invitation ID
+        '400':
+          description: User email is required
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invitation'
+        description: User e-mail to create an invitation ID for
+components:
+  schemas:
+    Invitation:
+      type: object
+      required:
+        - user_email
+      properties:
+        user_email:
+          type: string
+          format: email
+          example: admin@admin.ee
