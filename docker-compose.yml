@@ -1,7 +1,7 @@
 version: '3.9'
 services:
-  ruuter:
-    container_name: ruuter
+  ruuter-private:
+    container_name: ruuter-private
     image: ruuter
     environment:
       - application.cors.allowedOrigins=http://localhost:3006,https://tim.buerokratt.ee
@@ -11,9 +11,25 @@ services:
       - server.port=8085
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
     volumes:
-      - ./DSL/Ruuter:/DSL
+      - ./DSL/Ruuter.private:/DSL
     ports:
       - 8085:8085
+    networks:
+      - bykstack
+  ruuter-public:
+    container_name: ruuter-public
+    image: ruuter
+    environment:
+      - application.cors.allowedOrigins=http://localhost:3006,https://tim.buerokratt.ee
+      - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
+      - application.logging.displayRequestContent=true
+      - application.logging.displayResponseContent=true
+      - server.port=8084
+      - application.DSL.processedFiletypes=.yml,.yaml,.tmp
+    volumes:
+      - ./DSL/Ruuter.public:/DSL
+    ports:
+      - 8084:8084
     networks:
       - bykstack
   resql:

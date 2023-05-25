@@ -8,7 +8,7 @@ get_dummy:
 map_values:
   call: http.post
   args:
-    url: http://data_mapper:3005/hbs/centops/dummy
+    url: http://data_mapper:3005/hbs/dummy
     headers:
       type: "json"
     body:
