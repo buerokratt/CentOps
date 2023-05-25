@@ -1,0 +1,51 @@
+check_for_invitation_id:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.invitation_id == null}
+      next: return_incorrect_request
+
+set_invitation_id:
+  assign:
+    invitation_id: ${incoming.body.invitation_id}
+
+get_invitation_id:
+  call: http.post
+  args:
+    url: http://resql:8087/get-invitation-code-by-uuid
+    body:
+      invitation_id: ${invitation_id}
+  result: invitation
+
+get_invitation_id_valid:
+  switch:
+    - condition: ${invitation.response == null || invitation.response.body[0].invitationId == null}
+      next: return_invitation_invalid
+
+generate_jwt:
+  call: http.post
+  args:
+    url: http://tim:8086/jwt/custom-jwt-generate
+  result: set_cookie
+
+return_result:
+  status: 200
+  return: ${invitation}
+  next: end
+
+return_ok:
+  wrapper: false
+  headers:
+    Set-Cookie: ${set_cookie}
+  status: 200
+  return: ${invitationCodes.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Invitation id is required"
+  next: end
+
+
+return_invitation_invalid:
+  status: 404
+  return: "Inserted invitation ID is not valid"
+  next: end
