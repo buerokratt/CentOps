@@ -17,26 +17,24 @@ get_invitation_id:
 
 get_invitation_id_valid:
   switch:
-    - condition: ${invitation.response == null || invitation.response.body[0].invitationId == null}
+    - condition: ${invitation.response.body[0] == null || invitation.response.body[0].invitationId == null}
       next: return_invitation_invalid
 
 generate_jwt:
   call: http.post
   args:
-    url: http://tim:8086/jwt/custom-jwt-generate
-  result: set_cookie
+    url: http://ruuter-public:8084/mocks/mock-tim-token-response
+  result: cookie
 
-return_result:
-  status: 200
-  return: ${invitation}
-  next: end
+assign_cookie:
+  assign:
+      customJwtCookie: ${cookie.response.body.response.jwt}
 
 return_ok:
-  wrapper: false
   headers:
-    Set-Cookie: ${set_cookie}
+    Set-Cookie: "customJwtCookie=${customJwtCookie}; Domain=localhost; Max-Age=36000; HttpOnly"
   status: 200
-  return: ${invitationCodes.response.body}
+  return: ""
   next: end
 
 return_incorrect_request:

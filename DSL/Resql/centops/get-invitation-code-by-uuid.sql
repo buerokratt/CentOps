@@ -1,4 +1,4 @@
-SELECT invitation_id 
+SELECT invitation_id, user_email
 FROM institutions_invitations
 WHERE invitation_id::text = :invitation_id
 AND valid = TRUE
