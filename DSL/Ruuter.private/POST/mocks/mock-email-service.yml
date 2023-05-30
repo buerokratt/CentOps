@@ -1,0 +1,26 @@
+check_for_data:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.to == null || incoming.body.subject == null || incoming.body.text == null}
+      next: return_invalid
+
+mock_value:
+  call: reflect.mock
+  args:
+    request:
+      body:
+        from: byrokratt@email.here # ToDo add correct e-mail
+        to: ${incoming.body.to}
+        subject: ${incoming.body.subject}
+        text: ${incoming.body.text}
+    response:
+      success: true
+  result: reflectedRequest
+
+return_mock_value:
+  return: ${reflectedRequest.response.body}
+  next: end
+
+return_invalid:
+  status: 400
+  return: "Invalid request"
+  next: end
