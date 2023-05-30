@@ -22,7 +22,7 @@ check_for_email:
     - condition: ${incoming.body == null || incoming.body.user_email == null}
       next: return_incorrect_request
 
-set_email:
+assign_email:
   assign:
     email: ${incoming.body.user_email}
 
@@ -41,6 +41,31 @@ get_invitation_code:
     body:
       user_email: ${email}
   result: invitationCodes
+
+assign_email_content:
+  assign:
+    invitation_code: ${invitationCodes.response.body[0].invitationId}
+    email_content: >
+        Hello!
+
+
+        Thank you for your interest in Bürokratt!
+        Please use this link to start filling in your application: http://localhost:3007/centops/application/${invitation_code}
+
+
+        Best regards,
+
+        Bürokratt team
+
+send_email:
+  call: http.post
+  args:
+    url: http://ruuter-private:8085/mocks/mock-email-service
+    body:
+      to: ${email}
+      subject: "Your invitation to start using Bürokratt"
+      text: ${email_content}
+  result: emailResponseData
 
 return_ok:
   wrapper: false

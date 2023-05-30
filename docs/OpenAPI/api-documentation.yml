@@ -1,13 +1,11 @@
 openapi: 3.0.0
 info:
-  description: Byrokratt-Centops API documentation
-  version: 1.0.0
-  title: Byrokratt-Centops API
-  contact:
-    email: TODO@TODO.ee
+  version: 0.1.0
+  title: Central Operations API
   license:
     name: MIT
-    url: https://github.com/buerokratt/Buerokratt-onboarding/blob/main/LICENSE
+    url: 'https://opensource.org/licenses/MIT'
+  description: Component responsible for enrolling and monitoring participants in the Bürokratt network.
 tags:
   - name: admins
     description: Secured Admin-only calls
