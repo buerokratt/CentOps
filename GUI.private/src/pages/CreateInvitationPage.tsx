@@ -13,10 +13,6 @@ const CreateInvitationPage: React.FC = () => {
   const [invitationError, setInvError] = useState('');
   const [email, setEmail] = useState('');
 
-  // const getInvitationLink = (invitationCode: string): string => {
-  //   return ROUTES.APPLICATION_ROUTE + '/' + invitationCode
-  // };
-
   const handleCreateInv = async () => {
     try {
       setInvResult('');
