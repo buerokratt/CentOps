@@ -1,19 +1,33 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
-import { Layout } from './components'
-import NotFoundPage from './pages/NotFoundPage'
-import OverviewPage from './pages/OverviewPage'
-import { ROUTES } from './resources/routes-constants'
-import './styles/main.scss'
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+
+import { Layout } from './components';
+import {
+  ApplicationPage,
+  CreateInvitationPage,
+  OverviewPage,
+  NotFoundPage,
+} from './pages';
+import { ROUTES } from './resources/routes-constants';
+import './styles/main.scss';
 
 const RootComponent: React.FC = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
+        <Route path={ROUTES.APPLICATION_ROUTE} element={<ApplicationPage />} />
+        <Route
+          path={ROUTES.APPLICATION_ROUTE_WITH_ID}
+          element={<ApplicationPage />}
+        />
+        <Route
+          path={ROUTES.INVITATION_ROUTE}
+          element={<CreateInvitationPage />}
+        />
         <Route path={ROUTES.OVERVIEW_ROUTE} element={<OverviewPage />} />
         <Route path="*" element={<NotFoundPage />} />
-      </Route >
-    </Routes >
+      </Route>
+    </Routes>
   );
 };
 
