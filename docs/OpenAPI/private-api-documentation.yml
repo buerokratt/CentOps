@@ -1,23 +1,23 @@
 openapi: 3.0.0
 info:
   version: 0.1.0
-  title: Central Operations API
+  title: Central Operations Private API
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
   description: Component responsible for enrolling and monitoring participants in the Bürokratt network.
+servers:
+  - url: 'http://localhost:8085'
 tags:
   - name: admins
     description: Secured Admin-only calls
-  - name: public
-    description: Operations available publicly
 paths:
-  /create-invitation:
+  /invitation:
     post:
       tags:
         - admins
       summary: creates an invitation
-      operationId: create-invitation
+      operationId: invitation
       description: Creates an invitation and returns the id for it
       parameters: 
         - in: cookie
