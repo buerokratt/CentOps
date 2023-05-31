@@ -13,12 +13,12 @@ authenticate:
 validate_permission:
   switch:
     - condition: ${permission}
-      next: set_invitation_id
+      next: check_body
   next: return_unauthorized
 
 check_body:
   switch:
-    - condition: ${incoming.body == null || incoming.body.invitation_id == null}
+    - condition: ${incoming.body == null || incoming.body.invitation_id == null || incoming.body.email == null || incoming.body.organisation_name == null}
       next: return_incorrect_request
 
 set_invitation_id:
@@ -59,11 +59,6 @@ invalidate_invitation:
       user_email: ${invitation.response.body[0].userEmail}
   result: invalidated_invitation
 
-return_with_result:
-  status: 200
-  return: ${invitation}
-  next: end
-
 return_success:
   status: 200
   return: "Application saved successfully"
@@ -71,7 +66,7 @@ return_success:
 
 return_incorrect_request:
   status: 400
-  return: "Invitation id is required"
+  return: "Missing required parameters"
   next: end
 
 return_invitation_invalid:
