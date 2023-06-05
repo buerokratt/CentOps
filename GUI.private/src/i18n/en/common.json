@@ -13,8 +13,30 @@
   },
   "menu": {
     "invitation": "Create invitation",
-    "application": "Apply to become a participant",
-    "overview": "Overview"
+    "overview": "Overview",
+    "requests": "Application requests"
+  },
+  "requests": {
+    "edit": "edit",
+    "title": "Application requests",
+    "description": "All application requests"
+  },
+  "edit-requests": {
+    "enable-status-change": "Enable status change",
+    "enable-details-change": "Enable details change",
+    "application-status": "Application status",
+    "approved": "Approved",
+    "back": "Back",
+    "cancel-status-change": "Cancel",
+    "cancel-details-change": "Cancel",
+    "change-application-status": "Change application status",
+    "confirm-status-change": "Confirm status change",
+    "confirm-details-change": "Confirm details change",
+    "contact-email": "Contact email",
+    "organisation-name": "Organisation name",
+    "title": "Edit application request",
+    "submitted": "Submitted",
+    "processing": "Processing",
+    "deleted": "Deleted"
   }
-
 }
