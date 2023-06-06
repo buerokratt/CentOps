@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const RequestsPage: React.FC = () => {
   const { t } = useTranslation();
   const { data: applicationRequests } = useQuery<ApplicationRequest[]>({
-    queryKey: ['application-requests'],
+    queryKey: ['admin/participants/applications'],
   });
   const navigate = useNavigate();
 
