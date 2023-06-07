@@ -1,0 +1,79 @@
+openapi: 3.0.3
+info:
+  title: Central Operations API for creating participants
+  version: 0.1.0
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  description: Component responsible for enrolling participants in the Bürokratt network.
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /admin/participants:
+    post:
+      summary: ''
+      operationId: post-participants
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+      description: (For Admin) Create a new participant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Participant'
+        description: ''
+      tags:
+        - admin/participants
+    parameters: []
+components:
+  schemas:
+    Participant:
+      title: Participant
+      type: object
+      description: ''
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 141ee581-6d97-4845-968a-43f41464c677
+          readOnly: true
+        name:
+          type: string
+          example: NLib
+          readOnly: false
+        type:
+          type: string
+          enum:
+            - Dmr
+            - Chatbot
+            - Classifier
+          example: Chatbot
+        institutionId:
+          type: string
+        host:
+          type: string
+          example: 'http://nlib.gov:12133'
+        apiKey:
+          type: string
+      required:
+        - id
+        - type
+        - institutionId
+        - host
+        - apiKey
+  parameters:
+    X-Api-Key:
+      name: X-Api-Key
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Temporary solution to get started with authentication. Key is provided on registration.
+tags:
+  - name: admin/participants
+    description: Participant management
