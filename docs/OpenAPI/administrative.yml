@@ -1,15 +1,30 @@
 openapi: 3.0.3
 info:
-  title: Central Operations API for creating participants
+  title: Central Operations API
   version: 0.1.0
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-  description: Component responsible for enrolling participants in the Bürokratt network.
+  description: Component responsible for central operations control in the Bürokratt network.
 servers:
   - url: 'http://localhost:3000'
 paths:
   /admin/participants:
+    get:
+      summary: Get endpoint for getting an array of participants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Institution'
+      operationId: get-private-api-institutions
+      description: (For Admin) Get all institutions
+      tags:
+        - admin/institutions
     post:
       summary: ''
       operationId: post-participants
@@ -30,6 +45,22 @@ paths:
       tags:
         - admin/participants
     parameters: []
+  /admin/institutions:
+    get:
+      summary: Get endpoint for getting an array of institutions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Institution'
+      operationId: get-private-api-institutions
+      description: (For Admin) Get all institutions
+      tags:
+        - admin/institutions
 components:
   schemas:
     Participant:
@@ -66,6 +97,24 @@ components:
         - institutionId
         - host
         - apiKey
+    Institution:
+      title: PublicInstitution
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Disabled
+      required:
+        - id
+        - name
+        - status
   parameters:
     X-Api-Key:
       name: X-Api-Key
