@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: Central Operations API for creating and monitoritng participants
+  title: Central Operations API
   version: 0.1.0
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-  description: Component responsible for enrolling and monitoring participants in the Bürokratt network.
+  description: Component responsible for central operations control in the Bürokratt network.
 servers:
   - url: 'http://localhost:3000'
 paths:
@@ -29,9 +29,10 @@ paths:
         description: ''
       tags:
         - admin/participants
+    parameters: []
+  /admin/institutions:
     get:
-      summary: ''
-      operationId: get-participants
+      summary: Get endpoint for getting an array of institutions
       responses:
         '200':
           description: OK
@@ -40,11 +41,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Participant'
-      description: (For Admin) Get all participants
+                  $ref: '#/components/schemas/Institution'
+      operationId: get-private-api-institutions
+      description: (For Admin) Get all institutions
       tags:
-        - admin/participants
-    parameters: []
+        - admin/institutions
 components:
   schemas:
     Participant:
@@ -81,6 +82,24 @@ components:
         - institutionId
         - host
         - apiKey
+    Institution:
+      title: PublicInstitution
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Disabled
+      required:
+        - id
+        - name
+        - status
   parameters:
     X-Api-Key:
       name: X-Api-Key
