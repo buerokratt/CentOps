@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: Central Operations API for creating participants
+  title: Central Operations API for creating and monitoritng participants
   version: 0.1.0
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-  description: Component responsible for enrolling participants in the Bürokratt network.
+  description: Component responsible for enrolling and monitoring participants in the Bürokratt network.
 servers:
   - url: 'http://localhost:3000'
 paths:
@@ -27,6 +27,21 @@ paths:
             schema:
               $ref: '#/components/schemas/Participant'
         description: ''
+      tags:
+        - admin/participants
+    get:
+      summary: ''
+      operationId: get-participants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Participant'
+      description: (For Admin) Get all participants
       tags:
         - admin/participants
     parameters: []
