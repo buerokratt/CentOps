@@ -61,25 +61,6 @@ paths:
       description: (For Admin) Get all institutions
       tags:
         - admin/institutions
-    post:
-      summary: Post endpoint for adding new institutions
-      operationId: post-private-api-institutions
-      responses:
-        '201':
-          description: Created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Institution'
-      description: (For Admin) Create a new institution
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Institution'
-      tags:
-        - admin/institutions
-    parameters: [ ]
 components:
   schemas:
     Participant:
