@@ -10,6 +10,21 @@ servers:
   - url: 'http://localhost:3000'
 paths:
   /admin/participants:
+    get:
+      summary: Get endpoint for getting an array of participants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Institution'
+      operationId: get-private-api-institutions
+      description: (For Admin) Get all institutions
+      tags:
+        - admin/institutions
     post:
       summary: ''
       operationId: post-participants
