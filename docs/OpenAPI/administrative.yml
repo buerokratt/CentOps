@@ -112,6 +112,15 @@ paths:
       description: (For Admin) Update specific institution
       tags:
         - admin/institutions
+    delete:
+      summary: 'endpoint to delete institution based on id'
+      operationId: delete-admin-institution
+      responses:
+        '204':
+          description: No Content
+      description: (For Admin) Delete institution by id
+      tags:
+        - admin/institutions
     parameters:
       - schema:
           type: string
