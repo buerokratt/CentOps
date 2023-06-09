@@ -80,6 +80,23 @@ paths:
       tags:
         - admin/institutions
     parameters: [ ]
+  '/admin/participants/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Participant ID
+    delete:
+      summary: 'endpoint to delete participant based on id'
+      operationId: delete-admin-participant
+      responses:
+        '204':
+          description: No Content
+      description: (For Admin) Delete participant by id
+      tags:
+        - admin/participants
   '/admin/institutions/{id}':
     get:
       summary: Get endpoint for getting a institution by id
