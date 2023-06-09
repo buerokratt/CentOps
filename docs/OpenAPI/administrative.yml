@@ -115,6 +115,19 @@ paths:
       description: (For Admin) Update specific participant
       tags:
         - admin/participants
+    get:
+      summary: 'endpoint for getting the participant based on the id'
+      operationId: get-admin-participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+      description: (For Admin) Get specific participant by id with sensitive info in payload (e.g. apiKey)
+      tags:
+        - admin/participants
   '/admin/institutions/{id}':
     get:
       summary: Get endpoint for getting a institution by id
