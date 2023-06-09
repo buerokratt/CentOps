@@ -20,7 +20,7 @@ services:
     container_name: ruuter-public
     image: ruuter
     environment:
-      - application.cors.allowedOrigins=http://localhost:3006,https://tim.buerokratt.ee
+      - application.cors.allowedOrigins=http://localhost:3007,https://tim.buerokratt.ee
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
       - application.logging.displayRequestContent=true
       - application.logging.displayResponseContent=true
@@ -102,27 +102,44 @@ services:
       - 9876:5432
     networks:
       - bykstack
-  gui_dev:
-    container_name: gui_dev
+  gui_dev_private:
+    container_name: gui_dev_private
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - REACT_APP_API_URL=http://localhost:8085
+      - REACT_APP_PUBLIC_URL=http://localhost:3007
       - PORT=3006
     build:
-      context: ./GUI
+      context: ./GUI.private
       dockerfile: Dockerfile.dev
     ports:
       - 3006:3006
     volumes:
       - /app/node_modules
-      - ./GUI:/app
+      - ./GUI.private:/app
+    networks:
+      - bykstack
+  gui_dev_public:
+    container_name: gui_dev_public
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://localhost:8084
+      - PORT=3007
+    build:
+      context: ./GUI.public
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3007:3007
+    volumes:
+      - /app/node_modules
+      - ./GUI.public:/app
     networks:
       - bykstack
 
 volumes:
   opensearch-data1:
-
 
 networks:
   bykstack:
