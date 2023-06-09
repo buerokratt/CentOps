@@ -17,6 +17,7 @@ mock_value:
   result: reflectedRequest
 
 return_mock_value:
+  status: 200
   return: ${reflectedRequest.response.body}
   next: end
 
