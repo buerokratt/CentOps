@@ -80,6 +80,27 @@ paths:
       tags:
         - admin/institutions
     parameters: [ ]
+  '/admin/institutions/{id}':
+    get:
+      summary: Get endpoint for getting a institution by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+      operationId: get-private-api-institution
+      description: (For Admin) Get specific institution by id
+      tags:
+        - admin/institutions
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Institution ID
 components:
   schemas:
     Participant:
@@ -145,3 +166,5 @@ components:
 tags:
   - name: admin/participants
     description: Participant management
+  - name: admin/institutions
+    description: Institution management
