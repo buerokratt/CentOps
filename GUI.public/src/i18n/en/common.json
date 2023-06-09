@@ -1,0 +1,16 @@
+{
+  "global": {
+    "title": "CentOps Module",
+    "backhome": "Back to homepage"
+  },
+  "application": {
+    "enter-invitation-id": "Please enter your invitation ID",
+    "insert-organisation-details": "Please enter detailed information about your organisation",
+    "invalid-id": "Invitation ID is invalid or already used",
+    "invitation-error": "Invitation error",
+    "title": "Application page",
+    "validate-id": "Validate ID",
+    "send-application": "Send application",
+    "submit-success": "Thanks for your application!"
+  }
+}
