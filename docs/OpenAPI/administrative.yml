@@ -94,6 +94,24 @@ paths:
       description: (For Admin) Get specific institution by id
       tags:
         - admin/institutions
+    put:
+      summary: 'endpoint for updating the institution based on the id'
+      operationId: put-admin-institution
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Institution'
+      description: (For Admin) Update specific institution
+      tags:
+        - admin/institutions
     parameters:
       - schema:
           type: string
