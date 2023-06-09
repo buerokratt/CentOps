@@ -97,6 +97,24 @@ paths:
       description: (For Admin) Delete participant by id
       tags:
         - admin/participants
+    put:
+      summary: 'endpoint for updating the participant based on the id'
+      operationId: put-admin-participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Participant'
+      description: (For Admin) Update specific participant
+      tags:
+        - admin/participants
   '/admin/institutions/{id}':
     get:
       summary: Get endpoint for getting a institution by id
