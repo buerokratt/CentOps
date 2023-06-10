@@ -80,6 +80,54 @@ paths:
       tags:
         - admin/institutions
     parameters: [ ]
+  '/admin/participants/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Participant ID
+    delete:
+      summary: 'endpoint to delete participant based on id'
+      operationId: delete-admin-participant
+      responses:
+        '204':
+          description: No Content
+      description: (For Admin) Delete participant by id
+      tags:
+        - admin/participants
+    put:
+      summary: 'endpoint for updating the participant based on the id'
+      operationId: put-admin-participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Participant'
+      description: (For Admin) Update specific participant
+      tags:
+        - admin/participants
+    get:
+      summary: 'endpoint for getting the participant based on the id'
+      operationId: get-admin-participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+      description: (For Admin) Get specific participant by id with sensitive info in payload (e.g. apiKey)
+      tags:
+        - admin/participants
   '/admin/institutions/{id}':
     get:
       summary: Get endpoint for getting a institution by id
@@ -92,6 +140,33 @@ paths:
                 $ref: '#/components/schemas/Institution'
       operationId: get-private-api-institution
       description: (For Admin) Get specific institution by id
+      tags:
+        - admin/institutions
+    put:
+      summary: 'endpoint for updating the institution based on the id'
+      operationId: put-admin-institution
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Institution'
+      description: (For Admin) Update specific institution
+      tags:
+        - admin/institutions
+    delete:
+      summary: 'endpoint to delete institution based on id'
+      operationId: delete-admin-institution
+      responses:
+        '204':
+          description: No Content
+      description: (For Admin) Delete institution by id
       tags:
         - admin/institutions
     parameters:
