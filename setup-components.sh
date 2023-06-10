@@ -15,51 +15,65 @@ if [ -d "TechStack/Ruuter" ]; then
     cd TechStack/Ruuter
     git fetch
     git pull
-    cd ..
+    if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ];then
+     docker build -t ruuter .
+    fi 
+    cd ../..
 else
     echo -e "[+] \x1b[1;32mcloning Ruuter\x1b[0m"
     if [ ! -d "TechStack" ];then 
        mkdir TechStack 
     fi
     (cd TechStack && git clone https://github.com/buerokratt/Ruuter.git)
-    sed -i '' 's/FROM openjdk:17-jdk-alpine/FROM --platform=linux\/amd64 openjdk:17-jdk-alpine/' Ruuter/Dockerfile # For Apple Silicon Devices
-    (cd Ruuter && docker build -t ruuter .)
+    sed -i '' 's/FROM openjdk:17-jdk-alpine/FROM --platform=linux\/amd64 openjdk:17-jdk-alpine/' TechStack/Ruuter/Dockerfile # For Apple Silicon Devices
+    (cd TechStack/Ruuter && docker build -t ruuter .)
 fi
 
-if [ -d "TIM" ]; then
+if [ -d "TechStack/TIM" ]; then
     echo -e "[+] TIM clone already exists: checking updates from git"
-    cd TIM
+    cd TechStack/TIM
     git fetch
     git pull
-    cd ..
+    if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ];then
+     docker build -t tim .
+    fi
+    cd ../..
 else
     echo -e "[+] \x1b[1;32mcloning TIM\x1b[0m"
-    git clone https://github.com/buerokratt/TIM.git
-    sed -i '' 's/FROM node:19/FROM --platform=linux\/amd64 node:19/' TIM/Dockerfile # For Apple Silicon Devices
-    (cd TIM && docker build -t tim .)
+    (cd TechStack && git clone https://github.com/buerokratt/TIM.git)
+    sed -i '' 's/FROM node:19/FROM --platform=linux\/amd64 node:19/' TechStack/TIM/Dockerfile # For Apple Silicon Devices
+    sed -i '' 's/host.docker.internal:9876/host.docker.internal:8056/' TechStack/TIM/src/main/resources/application.properties
+    sed -i '' 's/security.allowlist.jwt=127.0.0.1,::1/security.allowlist.jwt=ruuter-private,ruuter-public,resql,database,data_mapper,tim,tim-postgresql,gui_dev_private,gui_dev_public,127.0.0.1,::1/' TechStack/TIM/src/main/resources/application.properties
+    (cd TechStack/TIM && docker build -t tim .)
 fi
 
-if [ -d "Resql" ]; then
+if [ -d "TechStack/Resql" ]; then
     echo -e "[+] Resql clone already exists: checking updates from git"
-    cd Resql
+    cd TechStack/Resql
     git fetch
     git pull
-    cd ..
+    if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ];then
+     docker build -t resql .
+    fi
+    cd ../..
 else
     echo -e "[+] \x1b[1;32mcloning Resql\x1b[0m"
-    git clone https://github.com/buerokratt/Resql.git
-    (cd Resql && docker build -t resql .)
+    (cd TechStack && git clone https://github.com/buerokratt/Resql.git)
+    (cd TechStack/Resql && docker build -t resql .)
 fi
 
-if [ -d "Datamapper" ]; then
+if [ -d "TechStack/Datamapper" ]; then
     echo -e "[+] DataMapper clone already exists: checking updates from git"
-    cd DataMapper
+    cd TechStack/DataMapper
     git fetch
     git pull
-    cd ..
+    if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ];then
+     docker build -t datamapper-node .
+    fi
+    cd ../..
 else
     echo -e "[+] \x1b[1;32mcloning DataMapper\x1b[0m"
-    git clone https://github.com/buerokratt/DataMapper.git
-    sed -i '' 's/FROM node:19/FROM --platform=linux\/amd64 node:19/' DataMapper/Dockerfile # For Apple Silicon Devices
-    (cd DataMapper && docker build -t datamapper-node .)
+    (cd TechStack && git clone https://github.com/buerokratt/DataMapper.git)
+    sed -i '' 's/FROM node:19/FROM --platform=linux\/amd64 node:19/' TechStack/DataMapper/Dockerfile # For Apple Silicon Devices
+    (cd TechStack/DataMapper && docker build -t datamapper-node .)
 fi
