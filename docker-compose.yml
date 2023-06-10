@@ -4,7 +4,7 @@ services:
     container_name: ruuter-private
     image: ruuter
     environment:
-      - application.cors.allowedOrigins=http://localhost:3006,https://tim.buerokratt.ee
+      - application.cors.allowedOrigins=http://localhost:8057,https://tim.buerokratt.ee
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
       - application.logging.displayRequestContent=true
       - application.logging.displayResponseContent=true
@@ -21,7 +21,7 @@ services:
     container_name: ruuter-public
     image: ruuter
     environment:
-      - application.cors.allowedOrigins=http://localhost:3007,https://tim.buerokratt.ee
+      - application.cors.allowedOrigins=http://localhost:8058,https://tim.buerokratt.ee
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
       - application.logging.displayRequestContent=true
       - application.logging.displayResponseContent=true
@@ -61,7 +61,7 @@ services:
       - POSTGRES_PASSWORD=01234
       - POSTGRES_MULTIPLE_DATABASES=centops_db
     ports:
-      - 8053:8053
+      - 8053:5432
     volumes:
       - ./data:/var/lib/postgresql/data
       - ./init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh
@@ -70,7 +70,7 @@ services:
 
   data_mapper:
     container_name: data_mapper
-    image: datamapper-node
+    image: datamapper
     environment:
       - PORT=8054
     volumes:
@@ -105,7 +105,7 @@ services:
     volumes:
       - ./tim-db:/var/lib/postgresql/data
     ports:
-      - 8056:8056
+      - 8056:5432
     networks:
       - bykstack
 
@@ -114,8 +114,8 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:8085
-      - REACT_APP_PUBLIC_URL=http://localhost:3007
+      - REACT_APP_API_URL=http://localhost:8050
+      - REACT_APP_PUBLIC_URL=http://localhost:8058
       - PORT=8057
     build:
       context: ./GUI.private
@@ -133,7 +133,7 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:8084
+      - REACT_APP_API_URL=http://localhost:8051
       - PORT=8058
     build:
       context: ./GUI.public
