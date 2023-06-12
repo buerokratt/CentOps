@@ -1,0 +1,80 @@
+check_for_cookie:
+  switch:
+    - condition: ${incoming.headers == null || incoming.headers.cookie == null}
+      next: return_unauthorized
+
+authenticate:
+  template: templates/permissions/applicant
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: permission
+
+validate_permission:
+  switch:
+    - condition: ${permission}
+      next: check_body
+  next: return_unauthorized
+
+check_body:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.invitation_id == null || incoming.body.email == null || incoming.body.organisation_name == null}
+      next: return_incorrect_request
+
+set_invitation_id:
+  assign:
+    email: ${incoming.body.email}
+    name: ${incoming.body.organisation_name}
+    invitation_id: ${incoming.body.invitation_id}
+
+get_invitation_id:
+  call: http.post
+  args:
+    url: http://resql:8087/get-invitation-code-by-uuid
+    body:
+      invitation_id: ${invitation_id}
+  result: invitation
+
+get_invitation_id_valid:
+  switch:
+    - condition: ${invitation.response.body[0] == null || invitation.response.body[0].invitationId == null}
+      next: return_invitation_invalid
+
+create_institution:
+  call: http.post
+  args:
+    url: http://resql:8087/create-institution
+    body:
+      invitation_id: ${invitation_id}
+      user_email: ${email}
+      name: ${name}
+  result: institution
+
+invalidate_invitation:
+  call: http.post
+  args:
+    url: http://resql:8087/invalidate-invitation
+    body: 
+      invitation_id: ${invitation.response.body[0].invitationId}
+      user_email: ${invitation.response.body[0].userEmail}
+  result: invalidated_invitation
+
+return_success:
+  status: 200
+  return: "Application saved successfully"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Missing required parameters"
+  next: end
+
+return_invitation_invalid:
+  status: 404
+  return: "Inserted invitation ID is not valid"
+  next: end
+
+return_unauthorized:
+  return: "error: unauthorized"
+  status: 401
+  next: end

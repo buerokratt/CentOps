@@ -1,0 +1,9 @@
+mock_value:
+  call: reflect.mock
+  args:
+    response:
+      jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJmaXJzdE5hbWUiOiJNQVJZIMOETk4iLCJpZENvZGUiOiJFRTYwMDAxMDE5OTA2IiwiZGlzcGxheU5hbWUiOiJNQVJZIMOETk4iLCJpc3MiOiJ0ZXN0LmJ1ZXJva3JhdHQuZWUiLCJleHAiOiIxNjcwMjUwOTQ4IiwibG9naW4iOiJFRTYwMDAxMDE5OTA2IiwiaWF0IjoiMTY3MDI0Mzc0OCIsImp0aSI6ImUxNGE1MDg0LTNiMzAtNGE1NS04NzIwLWMyZWUyMmY0M2MyYyIsImF1dGhvcml0aWVzIjpbIlJPTEVfQVBQTElDQU5UIl19.7mPCt7EJvlJEIyaZmCTMMhpsUEM8VfagKn6Wj8_75vw
+  result: reflectedRequest
+
+return_mock_value:
+  return: ${reflectedRequest.response.body}
