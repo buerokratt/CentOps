@@ -1,15 +1,30 @@
 openapi: 3.0.3
 info:
-  title: Central Operations API for creating participants
+  title: Central Operations API
   version: 0.1.0
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-  description: Component responsible for enrolling participants in the Bürokratt network.
+  description: Component responsible for central operations control in the Bürokratt network.
 servers:
   - url: 'http://localhost:3000'
 paths:
   /admin/participants:
+    get:
+      summary: Get endpoint for getting an array of participants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Participant'
+      operationId: get-participants
+      description: (For Admin) Get all participants
+      tags:
+        - admin/participants
     post:
       summary: ''
       operationId: post-participants
@@ -30,6 +45,137 @@ paths:
       tags:
         - admin/participants
     parameters: []
+  /admin/institutions:
+    get:
+      summary: Get endpoint for getting an array of institutions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Institution'
+      operationId: get-private-api-institutions
+      description: (For Admin) Get all institutions
+      tags:
+        - admin/institutions
+    post:
+      summary: Post endpoint for adding new institutions
+      operationId: post-private-api-institutions
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+      description: (For Admin) Create a new institution
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Institution'
+      tags:
+        - admin/institutions
+    parameters: [ ]
+  '/admin/participants/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Participant ID
+    delete:
+      summary: 'endpoint to delete participant based on id'
+      operationId: delete-admin-participant
+      responses:
+        '204':
+          description: No Content
+      description: (For Admin) Delete participant by id
+      tags:
+        - admin/participants
+    put:
+      summary: 'endpoint for updating the participant based on the id'
+      operationId: put-admin-participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Participant'
+      description: (For Admin) Update specific participant
+      tags:
+        - admin/participants
+    get:
+      summary: 'endpoint for getting the participant based on the id'
+      operationId: get-admin-participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+      description: (For Admin) Get specific participant by id with sensitive info in payload (e.g. apiKey)
+      tags:
+        - admin/participants
+  '/admin/institutions/{id}':
+    get:
+      summary: Get endpoint for getting a institution by id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+      operationId: get-private-api-institution
+      description: (For Admin) Get specific institution by id
+      tags:
+        - admin/institutions
+    put:
+      summary: 'endpoint for updating the institution based on the id'
+      operationId: put-admin-institution
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Institution'
+      description: (For Admin) Update specific institution
+      tags:
+        - admin/institutions
+    delete:
+      summary: 'endpoint to delete institution based on id'
+      operationId: delete-admin-institution
+      responses:
+        '204':
+          description: No Content
+      description: (For Admin) Delete institution by id
+      tags:
+        - admin/institutions
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Institution ID
 components:
   schemas:
     Participant:
@@ -66,6 +212,24 @@ components:
         - institutionId
         - host
         - apiKey
+    Institution:
+      title: PublicInstitution
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Disabled
+      required:
+        - id
+        - name
+        - status
   parameters:
     X-Api-Key:
       name: X-Api-Key
@@ -77,3 +241,5 @@ components:
 tags:
   - name: admin/participants
     description: Participant management
+  - name: admin/institutions
+    description: Institution management
