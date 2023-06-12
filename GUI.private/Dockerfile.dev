@@ -1,7 +1,7 @@
 FROM node:alpine AS development
 
 ENV NODE_ENV development
-ENV PORT=3001
+ENV PORT=8057
 
 WORKDIR /app
 COPY ./package.json .
