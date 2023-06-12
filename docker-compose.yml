@@ -4,34 +4,36 @@ services:
     container_name: ruuter-private
     image: ruuter
     environment:
-      - application.cors.allowedOrigins=http://localhost:3006,https://tim.buerokratt.ee
+      - application.cors.allowedOrigins=http://localhost:8057,https://tim.buerokratt.ee
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
       - application.logging.displayRequestContent=true
       - application.logging.displayResponseContent=true
-      - server.port=8085
+      - server.port=8050
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
     volumes:
       - ./DSL/Ruuter.private:/DSL
     ports:
-      - 8085:8085
+      - 8050:8050
     networks:
       - bykstack
+      
   ruuter-public:
     container_name: ruuter-public
     image: ruuter
     environment:
-      - application.cors.allowedOrigins=http://localhost:3007,https://tim.buerokratt.ee
+      - application.cors.allowedOrigins=http://localhost:8058,https://tim.buerokratt.ee
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
       - application.logging.displayRequestContent=true
       - application.logging.displayResponseContent=true
-      - server.port=8084
+      - server.port=8051
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
     volumes:
       - ./DSL/Ruuter.public:/DSL
     ports:
-      - 8084:8084
+      - 8051:8051
     networks:
       - bykstack
+
   resql:
     container_name: resql
     image: resql
@@ -39,17 +41,18 @@ services:
       - database
     environment:
       - sqlms.datasources.[0].name=centops
-      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/centops_db
+      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:8053/centops_db
       - sqlms.datasources.[0].username=byk
       - sqlms.datasources.[0].password=01234
       - logging.level.org.springframework.boot=INFO
-      - server.port=8087
+      - server.port=8052
     ports:
-      - 8087:8087
+      - 8052:8052
     volumes:
       - ./DSL/Resql/centops:/workspace/app/templates/centops
     networks:
       - bykstack
+
   database:
     container_name: database
     image: postgres:14.1
@@ -58,36 +61,39 @@ services:
       - POSTGRES_PASSWORD=01234
       - POSTGRES_MULTIPLE_DATABASES=centops_db
     ports:
-      - 5433:5432
+      - 8053:5432
     volumes:
       - ./data:/var/lib/postgresql/data
       - ./init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh
     networks:
       - bykstack
+
   data_mapper:
     container_name: data_mapper
-    image: datamapper-node
+    image: datamapper
     environment:
-      - PORT=3005
+      - PORT=8054
     volumes:
       - ./DSL/DMapper/hbs:/workspace/app/views/centops
       - ./DSL/DMapper/js:/workspace/app/js/centops
       - ./DSL/DMapper/lib:/workspace/app/lib
     ports:
-      - 3005:3005
+      - 8054:8054
     networks:
       - bykstack
+
   tim:
     container_name: tim
     image: tim
     depends_on:
       - tim-postgresql
     ports:
-      - 8086:8086
+      - 8055:8055
     networks:
       - bykstack
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
   tim-postgresql:
     container_name: tim-postgresql
     image: postgres:14.1
@@ -99,39 +105,41 @@ services:
     volumes:
       - ./tim-db:/var/lib/postgresql/data
     ports:
-      - 9876:5432
+      - 8056:5432
     networks:
       - bykstack
+
   gui_dev_private:
     container_name: gui_dev_private
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:8085
-      - REACT_APP_PUBLIC_URL=http://localhost:3007
-      - PORT=3006
+      - REACT_APP_API_URL=http://localhost:8050
+      - REACT_APP_PUBLIC_URL=http://localhost:8058
+      - PORT=8057
     build:
       context: ./GUI.private
       dockerfile: Dockerfile.dev
     ports:
-      - 3006:3006
+      - 8057:8057
     volumes:
       - /app/node_modules
       - ./GUI.private:/app
     networks:
       - bykstack
+
   gui_dev_public:
     container_name: gui_dev_public
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:8084
-      - PORT=3007
+      - REACT_APP_API_URL=http://localhost:8051
+      - PORT=8058
     build:
       context: ./GUI.public
       dockerfile: Dockerfile.dev
     ports:
-      - 3007:3007
+      - 8058:8058
     volumes:
       - /app/node_modules
       - ./GUI.public:/app
