@@ -19,3 +19,10 @@ Bürokratt Central Operations
 - If you made changes to tim, rebuild the image again using `docker build -t tim .`
 
 - If you made changes to data mapper, rebuild the image again using `docker build -t docker build -t datamapper .`
+
+### Database setup
+
+- For setting up the users database initially, run
+  `docker run --platform linux/amd64 --network=bykstack riaee/byk-users-db:liquibase20220615 --url=jdbc:postgresql://database:5432/users_db --username=byk --password=01234 --changelog-file=./master.yml update`
+- Run migrations added in this repository by running the helper script `./migrate.sh`
+- When creating new migrations, use the helper `./create-migration.sh name-of-migration` which will create a timestamped file in the correct directory and add the required headers
