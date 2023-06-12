@@ -24,8 +24,8 @@ const RequestsPage: React.FC = () => {
       appRequestColumnHelper.accessor('name', {
         cell: (name) => name.getValue(),
       }),
-      appRequestColumnHelper.accessor('userEmail', {
-        cell: (userEmail) => userEmail.getValue(),
+      appRequestColumnHelper.accessor('contactEmail', {
+        cell: (contactEmail) => contactEmail.getValue(),
       }),
       appRequestColumnHelper.display({
         header: '',

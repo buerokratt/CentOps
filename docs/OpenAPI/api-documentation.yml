@@ -44,9 +44,9 @@ components:
     Invitation:
       type: object
       required:
-        - user_email
+        - contact_email
       properties:
-        user_email:
+        contact_email:
           type: string
           format: email
           example: admin@admin.ee

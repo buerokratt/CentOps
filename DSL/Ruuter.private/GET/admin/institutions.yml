@@ -14,21 +14,19 @@ authenticate:
 validate_permission:
   switch:
     - condition: ${permission}
-      next: get_participants_requests
+      next: get_institutions
   next: return_unauthorized
 
-get_participants_requests:
+get_institutions:
   call: http.post
   args:
-    url: http://resql:8087/get-participants-by-status
-    body: 
-      participant_status: 'unprocessed'
-  result: participants_result
+    url: http://resql:8087/get-institutions
+  result: institutions_result
 
 return_ok:
   wrapper: false
   status: 200
-  return: ${participants_result.response.body}
+  return: ${institutions_result.response.body}
   next: end
 
 return_unauthorized:

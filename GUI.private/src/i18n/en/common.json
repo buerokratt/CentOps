@@ -4,12 +4,13 @@
     "backhome": "Back to homepage"
   },
   "invitation": {
-    "title": "Create invitation ID",
+    "create": "Create invitation",
     "description": "Enter an e-mail address to create the invitation ID for.",
+    "error": "Failed to create invitation",
     "invitationId": "Invitation ID",
     "link": "Invitation link",
-    "error": "Failed to create invitation",
-    "create": "Create invitation"
+    "select-institution": "Select institution",
+    "title": "Create invitation ID"
   },
   "menu": {
     "invitation": "Create invitation",
@@ -18,25 +19,32 @@
   },
   "requests": {
     "edit": "edit",
-    "title": "Application requests",
-    "description": "All application requests"
+    "description": "All application requests",
+    "title": "Application requests"
   },
   "edit-requests": {
-    "enable-status-change": "Enable status change",
-    "enable-details-change": "Enable details change",
+    "active": "Active",
+    "applicant-type": "Applicant type",
     "application-status": "Application status",
     "approved": "Approved",
     "back": "Back",
     "cancel-status-change": "Cancel",
     "cancel-details-change": "Cancel",
+    "chatbot": "Chatbot",
     "change-application-status": "Change application status",
+    "classifier": "Classifier",
     "confirm-status-change": "Confirm status change",
     "confirm-details-change": "Confirm details change",
     "contact-email": "Contact email",
+    "deactivated": "Deactivated",
+    "deleted": "Deleted",
+    "drm": "DRM",
+    "enable-status-change": "Enable status change",
+    "enable-details-change": "Enable details change",
+    "inactive": "Inactive",
     "organisation-name": "Organisation name",
-    "title": "Edit application request",
-    "submitted": "Submitted",
-    "processing": "Processing",
-    "deleted": "Deleted"
+    "unknown": "Unknown",
+    "unprocessed": "Unprocessed",
+    "title": "Edit application request"
   }
 }

@@ -19,19 +19,21 @@ validate_permission:
 
 check_for_email:
   switch:
-    - condition: ${incoming.body == null || incoming.body.user_email == null}
+    - condition: ${incoming.body == null || incoming.body.contactEmail == null || incoming.body.institutionId == null}
       next: return_incorrect_request
 
-assign_email:
+assign_variables:
   assign:
-    email: ${incoming.body.user_email}
+    email: ${incoming.body.contactEmail}
+    institution_id: ${incoming.body.institutionId}
 
 create_invitation:
   call: http.post
   args:
     url: http://resql:8087/create-invitation
     body: 
-      user_email: ${email}
+      contact_email: ${email}
+      institution_id: ${institution_id}
   result: post_result
 
 get_invitation_code:
@@ -39,7 +41,7 @@ get_invitation_code:
   args:
     url: http://resql:8087/get-invitation-code
     body:
-      user_email: ${email}
+      contact_email: ${email}
   result: invitationCodes
 
 assign_email_content:
