@@ -205,6 +205,25 @@ paths:
       tags:
         - participants
     parameters: [ ]
+  /institutions:
+    get:
+      summary: Get endpoint for getting non-confidential institutions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicInstitution'
+      operationId: get-public-api-institutions
+      parameters:
+        - $ref: '#/components/parameters/X-Api-Key'
+      description: (For Participants) Get all institutions with sensitive info removed from payload
+      tags:
+        - institutions
+    parameters: [ ]
 components:
   schemas:
     Participant:
@@ -290,6 +309,24 @@ components:
         - id
         - name
         - status
+    PublicInstitution:
+      title: Institution
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Disabled
+      required:
+        - id
+        - name
+        - status
   parameters:
     X-Api-Key:
       name: X-Api-Key
@@ -303,3 +340,7 @@ tags:
     description: Participant management
   - name: admin/institutions
     description: Institution management
+  - name: institutions
+    description: Institutions queryable by Participants
+  - name: participants
+    description: Participants queryable by Participants
