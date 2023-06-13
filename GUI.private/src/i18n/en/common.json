@@ -41,6 +41,7 @@
     "drm": "DRM",
     "enable-status-change": "Enable status change",
     "enable-details-change": "Enable details change",
+    "host": "Host",
     "inactive": "Inactive",
     "organisation-name": "Organisation name",
     "unknown": "Unknown",
