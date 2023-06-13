@@ -1,36 +1,35 @@
 {
   "version": "1.0.0",
-  "regexSource": "some-url",
+  "vaildatorSource": "some-url",
   "fields": [
     {
       "id": "age",
       "type": "number",
-      "displayName": "Age",
-      "customRegex": ""
+      "label": "Age",
+      "vaildationType": "age"
     },
     {
       "id": "fullname",
       "type": "text",
-      "displayName": "Full Name",
-      "customRegex": ""
+      "label": "Full Name",
+      "vaildationType": "name"
     },
     {
       "id": "email",
       "type": "email",
-      "displayName": "Email",
-      "customRegex": ""
+      "label": "Email",
+      "vaildationType": "email"
     },
     {
       "id": "datepicker",
       "type": "date",
-      "displayName": "Date Picker",
-      "customRegex": ""
+      "label": "Date Picker",
+      "vaildationType": "date"
     },
     {
       "id": "enabled",
       "type": "checkbox",
-      "displayName": "Enabled",
-      "customRegex": ""
+      "label": "Enabled"
     }
   ]
 }
