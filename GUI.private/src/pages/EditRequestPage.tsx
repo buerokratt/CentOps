@@ -82,7 +82,6 @@ const EditRequestPage: React.FC = () => {
     setparticipantType(
       capitalize(applicationRequest.participantType) ?? ParticipantType.Unknown
     );
-    console.log('cancel');
   };
 
   return (
