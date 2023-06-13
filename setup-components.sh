@@ -52,7 +52,7 @@ else
     (cd TechStack && git clone https://github.com/buerokratt/TIM.git)
     sed -i '' 's/FROM node:19/FROM --platform=linux\/amd64 node:19/' TechStack/TIM/Dockerfile # For Apple Silicon Devices
     sed -i '' 's/host.docker.internal:9876/host.docker.internal:8056/' TechStack/TIM/src/main/resources/application.properties
-    sed -i '' 's/security.allowlist.jwt=127.0.0.1,::1/security.allowlist.jwt=ruuter-private,ruuter-public,resql,resql_users,database,data_mapper,tim,tim-postgresql,gui_dev_private,gui_dev_public,127.0.0.1,::1/' TechStack/TIM/src/main/resources/application.properties
+    sed -i '' 's/security.allowlist.jwt=127.0.0.1,::1/security.allowlist.jwt=ruuter-private,ruuter-public,resql,resql-users,database,data_mapper,tim,tim-postgresql,gui_dev_private,gui_dev_public,127.0.0.1,::1/' TechStack/TIM/src/main/resources/application.properties
     sed -i '' "s/server.port=8085/server.port=$TIM_PORT/" TechStack/TIM/src/main/resources/application.properties
     (cd TechStack/TIM && docker build -t tim .)
 fi

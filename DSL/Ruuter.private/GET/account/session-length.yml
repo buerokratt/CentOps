@@ -1,0 +1,15 @@
+extract_request_data:
+  assign:
+    login: ${incoming.body.login}
+    password: ${incoming.body.password}
+
+check_for_request_data:
+  switch:
+    - condition: ${login == null || password == null}
+      next: missing_params
+  next: end 
+
+missing_params:
+  status: 400
+  return: 'Missing required parameters'
+  next: end

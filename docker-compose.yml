@@ -53,7 +53,7 @@ services:
     networks:
       - bykstack
 
-  resql_users:
+  resql-users:
     container_name: resql-users
     image: resql
     depends_on:
