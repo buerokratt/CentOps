@@ -62,8 +62,8 @@ invalidate_invitation:
   result: invalidated_invitation
 
 return_success:
-  status: 200
-  return: "Application saved successfully"
+  status: 201
+  return: "Application created successfully"
   next: end
 
 return_incorrect_request:

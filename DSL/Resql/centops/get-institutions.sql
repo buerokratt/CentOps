@@ -1,2 +1,2 @@
 SELECT * FROM institutions
-WHERE status!='deleted';
+WHERE status != 'deleted';
