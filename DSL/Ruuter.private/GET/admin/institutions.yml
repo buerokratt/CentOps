@@ -20,7 +20,7 @@ validate_permission:
 get_institutions:
   call: http.post
   args:
-    url: http://resql:8087/get-institutions
+    url: http://resql:8052/get-institutions
   result: institutions_result
 
 return_ok:

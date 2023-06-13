@@ -30,7 +30,7 @@ assign_variables:
 get_invitation_id:
   call: http.post
   args:
-    url: http://resql:8087/get-invitation-code-by-uuid
+    url: http://resql:8052/get-invitation-code-by-uuid
     body:
       invitation_id: ${invitation_id}
   result: invitation
@@ -43,7 +43,7 @@ get_invitation_id_valid:
 create_participant:
   call: http.post
   args:
-    url: http://resql:8087/create-participant-application
+    url: http://resql:8052/create-participant-application
     body:
       invitation_id: ${invitation_id}
       contact_email: ${email}
@@ -54,7 +54,7 @@ create_participant:
 invalidate_invitation:
   call: http.post
   args:
-    url: http://resql:8087/invalidate-invitation
+    url: http://resql:8052/invalidate-invitation
     body: 
       invitation_id: ${invitation.response.body[0].invitationId}
       contact_email: ${invitation.response.body[0].contactEmail}

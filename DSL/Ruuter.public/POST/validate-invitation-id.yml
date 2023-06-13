@@ -10,7 +10,7 @@ set_invitation_id:
 get_invitation_id:
   call: http.post
   args:
-    url: http://resql:8087/get-invitation-code-by-uuid
+    url: http://resql:8052/get-invitation-code-by-uuid
     body:
       invitation_id: ${invitation_id}
   result: invitation
@@ -23,7 +23,7 @@ get_invitation_id_valid:
 generate_jwt:
   call: http.post
   args:
-    url: http://ruuter-public:8084/mocks/mock-tim-token-response
+    url: http://ruuter-public:8051/mocks/mock-tim-token-response
   result: cookie
 
 assign_cookie:
