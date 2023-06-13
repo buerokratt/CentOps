@@ -18,8 +18,8 @@ const RequestsPage: React.FC = () => {
 
   const appRequestColumns = useMemo(
     () => [
-      appRequestColumnHelper.accessor('id', {
-        cell: (id) => id.getValue(),
+      appRequestColumnHelper.accessor('uniqueIdentifier', {
+        cell: (uniqueIdentifier) => uniqueIdentifier.getValue(),
       }),
       appRequestColumnHelper.accessor('name', {
         cell: (name) => name.getValue(),
@@ -33,9 +33,12 @@ const RequestsPage: React.FC = () => {
           <Button
             appearance="text"
             onClick={() =>
-              navigate(`/centops/requests/edit/${props.row.original.id}`, {
-                state: props.row.original,
-              })
+              navigate(
+                `/centops/requests/edit/${props.row.original.uniqueIdentifier}`,
+                {
+                  state: props.row.original,
+                }
+              )
             }
           >
             {t('requests.edit')}

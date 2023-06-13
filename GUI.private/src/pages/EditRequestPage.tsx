@@ -6,6 +6,13 @@ import { ApplicationRequest } from '../types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ParticipantState } from '../types/participantState';
 import { ParticipantType } from '../types/participantType';
+import { set } from 'date-fns';
+import axios from 'axios';
+import {
+  deleteParticipant,
+  updateParticipantDetails,
+  updateParticipantStatus,
+} from '../resources/api-constants';
 
 const EditRequestPage: React.FC = () => {
   const { t } = useTranslation();
@@ -27,20 +34,55 @@ const EditRequestPage: React.FC = () => {
     capitalize(applicationRequest.participantStatus) ??
       ParticipantState.Inactive
   );
-  const [applicantType, setApplicantType] = useState(
+  const [participantType, setparticipantType] = useState(
     capitalize(applicationRequest.participantType) ?? ParticipantType.Unknown
   );
   const [detailsChangeEnabled, setDetailsChangeEnabled] = useState(false);
   const [statusChangeEnabled, setStatusChangeEnabled] = useState(false);
 
-  const handleStatusChange = () => {
-    console.log(applicationRequest);
-    console.log(applicationStatus);
+  const handleStatusChange = async () => {
+    if (applicationStatus === applicationRequest.participantStatus) {
+      return;
+    } else if (applicationStatus === ParticipantState.Deleted) {
+      await axios.delete(
+        deleteParticipant(applicationRequest.uniqueIdentifier),
+        { withCredentials: true }
+      );
+    }
+    await axios.put(
+      updateParticipantStatus(applicationRequest.uniqueIdentifier),
+      {
+        participantStatus: applicationStatus.toLowerCase(),
+      },
+      { withCredentials: true }
+    );
     setStatusChangeEnabled(false);
   };
-  const handleDetailsChange = () => {
-    console.log(applicationStatus);
+
+  const handleDetailsChange = async () => {
+    await axios.put(
+      updateParticipantDetails(applicationRequest.uniqueIdentifier),
+      {
+        id: applicationRequest.id,
+        contactEmail,
+        host,
+        participantType: participantType.toLowerCase(),
+        name: organisationName,
+        institutionId: applicationRequest.institutionId,
+      },
+      { withCredentials: true }
+    );
     setDetailsChangeEnabled(false);
+  };
+
+  const handleDetailsCancel = () => {
+    setOrganisationName(applicationRequest.name ?? '');
+    setContactEmail(applicationRequest.contactEmail ?? '');
+    setHost(applicationRequest.host ?? '');
+    setparticipantType(
+      capitalize(applicationRequest.participantType) ?? ParticipantType.Unknown
+    );
+    console.log('cancel');
   };
 
   return (
@@ -58,14 +100,14 @@ const EditRequestPage: React.FC = () => {
             label={t('edit-requests.organisation-name')}
             value={organisationName}
             disabled={!detailsChangeEnabled}
-            onChange={(e) => setContactEmail(e.target.value)}
+            onChange={(e) => setOrganisationName(e.target.value)}
           />
           <FormInput
             name="contact-email"
             label={t('edit-requests.contact-email')}
             value={contactEmail}
             disabled={!detailsChangeEnabled}
-            onChange={(e) => setOrganisationName(e.target.value)}
+            onChange={(e) => setContactEmail(e.target.value)}
           />
           <FormInput
             name="host"
@@ -77,8 +119,8 @@ const EditRequestPage: React.FC = () => {
           <FormSelect
             label={t('edit-requests.applicant-type')}
             name="applicant-type"
-            defaultValue={applicantType}
-            onSelectionChange={(value) => setApplicantType(value!.value)}
+            defaultValue={participantType}
+            onSelectionChange={(value) => setparticipantType(value!.value)}
             disabled={!detailsChangeEnabled}
             options={[
               {
@@ -115,7 +157,7 @@ const EditRequestPage: React.FC = () => {
                 appearance="text"
                 onClick={() => {
                   setDetailsChangeEnabled(false);
-                  // setApplicationStatus(applicationRequest.participantStatus);
+                  handleDetailsCancel();
                 }}
               >
                 {t('edit-requests.cancel-details-change')}

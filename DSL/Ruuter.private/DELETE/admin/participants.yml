@@ -1,0 +1,73 @@
+# TODO uncomment lines 2-5, use actual cookie from header for authentication.
+# check_for_cookie:
+#   switch:
+#     - condition: ${incoming.headers == null || incoming.headers.cookie == null}
+#       next: return_unauthorized
+
+authenticate:
+  template: templates/permissions/admin
+  requestType: post
+  headers:
+    cookie: cookie #${incoming.headers.cookie}
+  result: permission
+
+validate_permission:
+  switch:
+    - condition: ${permission}
+      next: check_for_parameters
+  next: return_unauthorized
+
+check_for_parameters:
+  switch:
+    - condition: ${incoming.params.uuid == null}
+      next: return_incorrect_request
+
+get_participant:
+  call: http.post
+  args:
+    url: http://resql:8052/get-participant-by-id
+    body:
+      unique_identifier: ${unique_identifier}
+  result: participant_result
+
+assign_variables:
+  assign:
+    id: ${participant_result.response.body[0].id}
+    email: ${participant_result.response.body[0].contactEmail}
+    institution_id: ${participant_result.response.body[0].institutionId}
+    name: ${participant_result.response.body[0].name}
+    host: ${participant_result.response.body[0].host}
+    participant_type: ${participant_result.response.body[0].participantType}
+    unique_identifier: ${incoming.params.uuid}
+    participant_status: 'deleted'
+
+delete_participant:
+  call: http.post
+  args:
+    url: http://resql:8052/update-participant
+    body:
+      id: ${id}
+      contact_email: ${email}
+      institution_id: ${institution_id}
+      name: ${name}
+      host: ${host}
+      participant_type: ${participant_type}
+      participant_status: ${participant_status}
+      unique_identifier: ${unique_identifier}
+  result: delete_result
+
+return_ok:
+  wrapper: false
+  status: 200
+  return: ${update_result.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "error: incorrect request"
+  next: end
+
+return_unauthorized:
+  return: "error: unauthorized"
+  status: 401
+  next: end
