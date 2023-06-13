@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "regexSource": "some-url",
+  "fields": [
+    {
+      "id": "age",
+      "type": "number",
+      "displayName": "Age",
+      "customRegex": ""
+    },
+    {
+      "id": "fullname",
+      "type": "text",
+      "displayName": "Full Name",
+      "customRegex": ""
+    },
+    {
+      "id": "email",
+      "type": "email",
+      "displayName": "Email",
+      "customRegex": ""
+    },
+    {
+      "id": "datepicker",
+      "type": "date",
+      "displayName": "Date Picker",
+      "customRegex": ""
+    },
+    {
+      "id": "enabled",
+      "type": "checkbox",
+      "displayName": "Enabled",
+      "customRegex": ""
+    }
+  ]
+}
