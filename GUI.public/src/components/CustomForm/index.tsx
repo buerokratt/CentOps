@@ -16,6 +16,10 @@ interface FormData {
   vaildatorSource: string;
   fields: Field[];
 }
+interface Validator {
+  id: string;
+  regex: string;
+}
 
 interface CustomFormProps {
   formId: string;
@@ -31,6 +35,7 @@ const CustomForm: FC<CustomFormProps> = ({
   const [formData, setFormData] = useState<FormData | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
+  const [validator, setValidator] = useState<Validator[]>([])
 
   useEffect(() => {
     fetchFormData();
@@ -41,6 +46,9 @@ const CustomForm: FC<CustomFormProps> = ({
       setError(false);
       const res = await axios.get(getCustomFormConfig(formId));
       setFormData(res.data);
+
+      const validator = await axios.get(res.data.vaildatorSource);
+      setValidator(validator.data);
     } catch {
       setError(true)
     }

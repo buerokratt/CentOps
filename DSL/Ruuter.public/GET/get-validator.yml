@@ -1,0 +1,37 @@
+check_params:
+  switch:
+    - condition: ${incoming.params == null || incoming.params.validator_id == null}
+      next: return_incorrect_request
+
+assign_file_path:
+  assign:
+    file_path: '/vaidator/${incoming.params.validator_id}.json'
+
+get_form_validation_config_file:
+  call: http.post
+  args:
+    url: http://data_mapper:8054/file-manager/read
+    body:
+      file_path: ${file_path}
+  result: formResult
+
+check_result:
+  switch:
+    - condition: ${formResult.response.body == null || formResult.response.body.error == true || formResult.response.body.data == null}
+      next: return_bad_request
+      
+return_success:
+  status: 200
+  wrapper: false
+  return: ${formResult.response.body.data}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Missing required parameters"
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Bad request"
+  next: end
