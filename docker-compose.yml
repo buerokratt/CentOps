@@ -41,7 +41,7 @@ services:
       - database
     environment:
       - sqlms.datasources.[0].name=centops
-      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:8053/centops_db
+      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/centops_db
       - sqlms.datasources.[0].username=byk
       - sqlms.datasources.[0].password=01234
       - logging.level.org.springframework.boot=INFO
