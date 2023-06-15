@@ -1,6 +1,7 @@
 /data
-/tim-db
+/docker
 /TechStack
+/tim-db
 /docker
 .DS_Store
 .vscode

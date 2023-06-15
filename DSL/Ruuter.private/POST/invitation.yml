@@ -29,7 +29,7 @@ assign_email:
 create_invitation:
   call: http.post
   args:
-    url: http://resql:8087/create-invitation
+    url: http://resql:8052/create-invitation
     body: 
       user_email: ${email}
   result: post_result
@@ -37,7 +37,7 @@ create_invitation:
 get_invitation_code:
   call: http.post
   args:
-    url: http://resql:8087/get-invitation-code
+    url: http://resql:8052/get-invitation-code
     body:
       user_email: ${email}
   result: invitationCodes
@@ -60,7 +60,7 @@ assign_email_content:
 send_email:
   call: http.post
   args:
-    url: http://ruuter-private:8085/mocks/mock-email-service
+    url: http://ruuter-private:8050/mocks/mock-email-service
     body:
       to: ${email}
       subject: "Your invitation to start using Bürokratt"
@@ -69,7 +69,7 @@ send_email:
 
 return_ok:
   wrapper: false
-  status: 200
+  status: 201
   return: ${invitationCodes.response.body}
   next: end
 

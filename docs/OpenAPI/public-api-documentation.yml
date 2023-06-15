@@ -38,7 +38,7 @@ paths:
         - public
       summary: sends an application to become a Bürokratt member
       operationId: institution
-      description: Creates a new institution with status SUBMITTED to indicate this is a not-yet-approved application
+      description: Creates a new institution with status "Inactive" to indicate this is a not-yet-approved application
       responses:
         '200':
           description: Application saved successfully
@@ -72,7 +72,7 @@ components:
         - organisation_name
         - invitation_id
       properties:
-        user_email:
+        contact_email:
           type: string
           format: email
           example: admin@admin.ee

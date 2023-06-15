@@ -1,2 +1,2 @@
-INSERT INTO institutions (name, invitation_id, user_email)
-VALUES (:name, :invitation_id::UUID, :user_email);
+INSERT INTO institutions (name, contact_email)
+VALUES (:name, :contact_email);

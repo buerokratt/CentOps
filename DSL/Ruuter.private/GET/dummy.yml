@@ -2,7 +2,7 @@
 get_dummy:
   call: http.post
   args:
-    url: http://resql:8087/get-dummy
+    url: http://resql:8052/get-dummy
   result: results
 
 map_values:

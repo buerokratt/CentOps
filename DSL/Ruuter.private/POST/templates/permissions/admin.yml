@@ -2,7 +2,7 @@ extract_token_data:
   call: http.post
   args:
     # TODO: Use real TIM endpoint
-    url: http://ruuter-private:8085/mocks/mock-tim-admin-response
+    url: http://ruuter-private:8050/mocks/mock-tim-admin-response
     headers:
       cookie: ${incoming.headers.cookie}
     body:

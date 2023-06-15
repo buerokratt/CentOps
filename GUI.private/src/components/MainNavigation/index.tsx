@@ -141,6 +141,7 @@ const MainNavigation: FC = () => {
       children: [
         { path: ROUTES.OVERVIEW_ROUTE, label: t('menu.overview') },
         { path: ROUTES.INVITATION_ROUTE, label: t('menu.invitation') },
+        { path: ROUTES.REQUESTS_ROUTE, label: t('menu.requests') },
       ],
     },
     {
