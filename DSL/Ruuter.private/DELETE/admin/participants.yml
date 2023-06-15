@@ -27,7 +27,7 @@ get_participant:
   args:
     url: http://resql:8052/get-participant-by-id
     body:
-      unique_identifier: ${unique_identifier}
+      unique_identifier: ${incoming.params.uuid}
   result: participant_result
 
 assign_variables:
@@ -58,8 +58,8 @@ delete_participant:
 
 return_ok:
   wrapper: false
-  status: 200
-  return: ${update_result.response.body}
+  status: 204
+  return: "deleted successfully"
   next: end
 
 return_incorrect_request:
