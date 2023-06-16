@@ -3,6 +3,7 @@ export interface DynamicFormConfig {
   title: string;
   vaildatorSource: string;
   fields: Field[];
+  submitUrl?: string;
 }
 
 export interface Field {

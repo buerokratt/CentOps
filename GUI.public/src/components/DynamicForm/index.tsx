@@ -8,12 +8,15 @@ import { DynamicFormConfig } from './types';
 import { useTranslation } from 'react-i18next';
 import Track from '../Track';
 import Label from '../Label';
+import { useToast } from '../../hooks/useToast';
 
 interface DynamicFormProps {
   formId: string;
-  onSubmit: (form: DynamicFormResult) => void;
+  onSubmit?: (form: DynamicFormResult, submitUrl?: string) => void;
   hideTitle?: boolean;
   skipValidation?: boolean;
+  hideSubmitButton?: boolean;
+  submitButtonTitle?: string;
 }
 
 interface DynamicFormResult {
@@ -26,6 +29,8 @@ const DynamicForm: FC<DynamicFormProps> = ({
   onSubmit,
   hideTitle = false,
   skipValidation = false,
+  hideSubmitButton = false,
+  submitButtonTitle,
 }: DynamicFormProps) => {
   const [formConfig, setFormConfig] = useState<DynamicFormConfig | null>(null);
   const [error, setError] = useState<boolean>(false);
@@ -33,6 +38,7 @@ const DynamicForm: FC<DynamicFormProps> = ({
   const [validator, setValidator] = useState<ValidationRule>({});
   const [errors, setErrors] = useState<ValidationError>({});
   const { t } = useTranslation();
+  const toast = useToast();
 
   useEffect(() => {
     fetchFormConfig();
@@ -76,28 +82,50 @@ const DynamicForm: FC<DynamicFormProps> = ({
         return;
       }
     }
-    onSubmit({ formId, values: formValues });
+
+    const submitedForm = { formId, values: formValues };
+
+    if (onSubmit) {
+      onSubmit(submitedForm, formConfig?.submitUrl);
+    }
+    else if (formConfig && formConfig.submitUrl) {
+      axios.post(formConfig.submitUrl, submitedForm)
+        .then(() => {
+          toast.open({
+            type: 'success',
+            title: t('forms.toast_title'),
+            message: t('forms.submit_success'),
+          });
+        })
+        .catch((err) => {
+          toast.open({
+            type: 'error',
+            title: t('forms.toast_title'),
+            message: t('forms.submit_failed'),
+          });
+        })
+    }
   }
 
   if (error) {
     return (
       <div>
-        <span>Failed to fetch the required form</span>
-        <Button appearance='primary' onClick={fetchFormConfig}>Retry</Button>
+        <span>{t('forms.failed')}</span>
+        <Button appearance='primary' onClick={fetchFormConfig}>{t('forms.retry')}</Button>
       </div>
     )
   }
 
   if (!formConfig) {
     return (
-      <div>Loading...</div>
+      <div>{t('forms.loading')}</div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <Track direction='vertical' align='stretch' justify='center' gap={16}>
-        {!hideTitle && <h5>{formConfig.title}</h5>}
+        {!hideTitle && <h5>{t(formConfig.title)}</h5>}
         <Track direction='vertical' align='stretch' gap={8}>
           {
             formConfig.fields.map((field: any) => (
@@ -108,15 +136,23 @@ const DynamicForm: FC<DynamicFormProps> = ({
                   handleInputChange={handleInputChange}
                 />
                 <Track direction='vertical' align='left' gap={8}>
-                  {errors[field.id]?.map((error) => <Label type='error' key={error}>{error}</Label>)}
+                  {errors[field.id]?.map((error) => <Label type='error' key={error}>{t(error)}</Label>)}
                 </Track>
               </Track>
             ))
           }
         </Track>
-        <Track direction='vertical' align='center' gap={12}>
-          <Button type='submit'>submit</Button>
-        </Track>
+        {
+          !hideSubmitButton &&
+          <Track direction='vertical' align='center' gap={12}>
+            <Button
+              type='submit'
+              disabled={!onSubmit && !formConfig?.submitUrl}
+            >
+              {submitButtonTitle || t('forms.submit')}
+            </Button>
+          </Track>
+        }
       </Track>
     </form>
   )

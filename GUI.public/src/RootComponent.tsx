@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { Layout } from './components';
-import { ApplicationPage, OverviewPage, NotFoundPage } from './pages';
+import { ApplicationPage, OverviewPage, NotFoundPage, FormPage } from './pages';
 import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
 
@@ -16,6 +16,7 @@ const RootComponent: React.FC = () => {
           element={<ApplicationPage />}
         />
         <Route path={ROUTES.OVERVIEW_ROUTE} element={<OverviewPage />} />
+        <Route path={ROUTES.FORM_ROUTE} element={<FormPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

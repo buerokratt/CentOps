@@ -2,6 +2,7 @@ import React, { FC, ChangeEvent } from 'react';
 import { Field } from './types';
 import FieldInput from '../FormElements/FormInput';
 import { FormSelect, SwitchBox } from '../FormElements';
+import { useTranslation } from 'react-i18next';
 
 interface DynamicInputProps {
   field: Field;
@@ -14,6 +15,7 @@ export const DynamicInput: FC<DynamicInputProps> = ({
   value,
   handleInputChange,
 }: DynamicInputProps) => {
+  const { t } = useTranslation();
   switch (field.type) {
     case 'text':
     case 'email':
@@ -22,7 +24,7 @@ export const DynamicInput: FC<DynamicInputProps> = ({
     case 'time':
       return (
         <FieldInput
-          label={field.label ?? ''}
+          label={t(field.label) ?? ''}
           hideLabel={!field.label}
           type={field.type}
           id={field.id}
@@ -36,7 +38,7 @@ export const DynamicInput: FC<DynamicInputProps> = ({
         <SwitchBox
           id={field.id}
           name={field.id}
-          label={field.label ?? ''}
+          label={t(field.label) ?? ''}
           hideLabel={!field.label}
           checked={value === 'on'}
           onChange={(e) => handleInputChange(e)}
@@ -49,7 +51,7 @@ export const DynamicInput: FC<DynamicInputProps> = ({
           name={field.id}
           value={value || ''}
           onChange={handleInputChange}
-          label={field.label ?? ''}
+          label={t(field.label) ?? ''}
           options={field.options ?? []}
         />
       );

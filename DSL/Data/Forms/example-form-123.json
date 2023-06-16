@@ -1,6 +1,7 @@
 {
   "title": "Example Form Number 123",
   "vaildatorSource": "http://localhost:8051/get-validator?validator_id=form-validator-123",
+  "submitUrl": "ttp://localhost:8051/some-api-to-submit-the-from-data-to-it-if-any",
   "fields": [
     {
       "id": "age",

@@ -7,6 +7,16 @@
   "overview": {
     "title": "Overview"
   },
+  "forms": {
+    "failed": "Failed to fetch the form",
+    "retry": "Retry",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "id_missing": "Form Id is missing",
+    "toast_title": "Form",
+    "submit_success": "Form has been submitted successfully",
+    "submit_failed": "Failed to submit the form"
+  },
   "application": {
     "enter-invitation-id": "Please enter your invitation ID",
     "insert-organisation-details": "Please enter detailed information about your organisation",
