@@ -1,7 +1,7 @@
 get_dummy:
   call: http.post
   args:
-    url: http://resql:8087/get-dummy
+    url: http://resql:8052/get-dummy
   result: results
 
 toggle_value:
@@ -23,7 +23,7 @@ set_off:
 update-dummy:
   call: http.post
   args:
-    url: http://resql:8087/update-dummy
+    url: http://resql:8052/update-dummy
     body:
       status: ${newstatus}
   result: results

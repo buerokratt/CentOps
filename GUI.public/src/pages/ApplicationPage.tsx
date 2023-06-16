@@ -25,7 +25,7 @@ const ApplicationPage: React.FC = () => {
       await axios.post(
         validateInvitation(),
         {
-          invitation_id: invitationId,
+          invitationId: invitationId,
         },
         { withCredentials: true }
       );
@@ -42,8 +42,8 @@ const ApplicationPage: React.FC = () => {
         sendApplication(),
         {
           email,
-          invitation_id: invitationId,
-          organisation_name: name,
+          invitationId: invitationId,
+          organisationName: name,
         },
         { withCredentials: true }
       );

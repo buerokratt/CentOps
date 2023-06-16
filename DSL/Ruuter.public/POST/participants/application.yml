@@ -18,14 +18,14 @@ validate_permission:
 
 check_body:
   switch:
-    - condition: ${incoming.body == null || incoming.body.invitation_id == null || incoming.body.email == null || incoming.body.organisation_name == null}
+    - condition: ${incoming.body == null || incoming.body.invitationId == null || incoming.body.email == null || incoming.body.organisationName == null}
       next: return_incorrect_request
 
-set_invitation_id:
+assign_variables:
   assign:
     email: ${incoming.body.email}
-    name: ${incoming.body.organisation_name}
-    invitation_id: ${incoming.body.invitation_id}
+    name: ${incoming.body.organisationName}
+    invitation_id: ${incoming.body.invitationId}
 
 get_invitation_id:
   call: http.post
@@ -40,13 +40,14 @@ get_invitation_id_valid:
     - condition: ${invitation.response.body[0] == null || invitation.response.body[0].invitationId == null}
       next: return_invitation_invalid
 
-create_institution:
+create_participant:
   call: http.post
   args:
-    url: http://resql:8052/create-institution
+    url: http://resql:8052/create-participant-application
     body:
       invitation_id: ${invitation_id}
-      user_email: ${email}
+      contact_email: ${email}
+      institution_id: ${invitation.response.body[0].institutionId}
       name: ${name}
   result: institution
 
@@ -56,12 +57,13 @@ invalidate_invitation:
     url: http://resql:8052/invalidate-invitation
     body: 
       invitation_id: ${invitation.response.body[0].invitationId}
-      user_email: ${invitation.response.body[0].userEmail}
+      contact_email: ${invitation.response.body[0].contactEmail}
+      institution_id: ${invitation.response.body[0].institutionId}
   result: invalidated_invitation
 
 return_success:
-  status: 200
-  return: "Application saved successfully"
+  status: 201
+  return: "Application created successfully"
   next: end
 
 return_incorrect_request:
