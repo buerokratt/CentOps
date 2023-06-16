@@ -1,56 +1,52 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, FormInput, FormSelect, Track } from '../components';
-import { ApplicationRequest } from '../types';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ParticipantState } from '../types/participantState';
-import { ParticipantType } from '../types/participantType';
-import { set } from 'date-fns';
-import axios from 'axios';
 import {
   deleteParticipant,
   updateParticipantDetails,
   updateParticipantStatus,
 } from '../resources/api-constants';
+import { Participant, ParticipantStatus, ParticipantType } from '../types';
 
-const EditRequestPage: React.FC = () => {
+const EditParticipantPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const applicationRequest = location.state as ApplicationRequest;
+  const participant = location.state as Participant;
+  const isRequestPage = location.pathname.includes('requests');
   const capitalize = (input: string): string => {
     const value = input.toLowerCase();
     return value.charAt(0).toUpperCase() + value.slice(1);
   };
   const [organisationName, setOrganisationName] = useState(
-    applicationRequest.name ?? ''
+    participant.name ?? ''
   );
   const [contactEmail, setContactEmail] = useState(
-    applicationRequest.contactEmail ?? ''
+    participant.contactEmail ?? ''
   );
-  const [host, setHost] = useState(applicationRequest.host ?? '');
+  const [host, setHost] = useState(participant.host ?? '');
   const [applicationStatus, setApplicationStatus] = useState(
-    capitalize(applicationRequest.participantStatus) ??
-      ParticipantState.Inactive
+    capitalize(participant.participantStatus) ?? ParticipantStatus.Inactive
   );
   const [participantType, setparticipantType] = useState(
-    capitalize(applicationRequest.participantType) ?? ParticipantType.Unknown
+    capitalize(participant.participantType) ?? ParticipantType.Unknown
   );
   const [detailsChangeEnabled, setDetailsChangeEnabled] = useState(false);
   const [statusChangeEnabled, setStatusChangeEnabled] = useState(false);
 
   const handleStatusChange = async () => {
-    if (applicationStatus === applicationRequest.participantStatus) {
+    if (applicationStatus === participant.participantStatus) {
       return;
-    } else if (applicationStatus === ParticipantState.Deleted) {
-      await axios.delete(
-        deleteParticipant(applicationRequest.uniqueIdentifier),
-        { withCredentials: true }
-      );
+    } else if (applicationStatus === ParticipantStatus.Deleted) {
+      await axios.delete(deleteParticipant(participant.uniqueIdentifier), {
+        withCredentials: true,
+      });
     }
     await axios.put(
-      updateParticipantStatus(applicationRequest.uniqueIdentifier),
+      updateParticipantStatus(participant.uniqueIdentifier),
       {
         participantStatus: applicationStatus.toLowerCase(),
       },
@@ -61,14 +57,14 @@ const EditRequestPage: React.FC = () => {
 
   const handleDetailsChange = async () => {
     await axios.put(
-      updateParticipantDetails(applicationRequest.uniqueIdentifier),
+      updateParticipantDetails(participant.uniqueIdentifier),
       {
-        id: applicationRequest.id,
+        id: participant.id,
         contactEmail,
         host,
         participantType: participantType.toLowerCase(),
         name: organisationName,
-        institutionId: applicationRequest.institutionId,
+        institutionId: participant.institutionId,
       },
       { withCredentials: true }
     );
@@ -76,66 +72,95 @@ const EditRequestPage: React.FC = () => {
   };
 
   const handleDetailsCancel = () => {
-    setOrganisationName(applicationRequest.name ?? '');
-    setContactEmail(applicationRequest.contactEmail ?? '');
-    setHost(applicationRequest.host ?? '');
+    setOrganisationName(participant.name ?? '');
+    setContactEmail(participant.contactEmail ?? '');
+    setHost(participant.host ?? '');
     setparticipantType(
-      capitalize(applicationRequest.participantType) ?? ParticipantType.Unknown
+      capitalize(participant.participantType) ?? ParticipantType.Unknown
     );
+  };
+
+  const getOptions = () => {
+    const options = [
+      {
+        label: t('edit-participants.inactive'),
+        value: ParticipantStatus.Inactive,
+      },
+      {
+        label: t('edit-participants.active'),
+        value: ParticipantStatus.Active,
+      },
+      {
+        label: t('edit-participants.deactivated'),
+        value: ParticipantStatus.Deactivated,
+      },
+      {
+        label: t('edit-participants.deleted'),
+        value: ParticipantStatus.Deleted,
+      },
+    ];
+    if (isRequestPage) {
+      options.unshift({
+        label: t('edit-participants.unprocessed'),
+        value: ParticipantStatus.Unprocessed,
+      });
+    }
+    return options;
   };
 
   return (
     <>
       <Track justify="between">
-        <h1>{t('edit-requests.title')}</h1>
+        {isRequestPage && <h1>{t('edit-requests.title')}</h1>}
+        {!isRequestPage && <h1>{t('edit-participants.title')}</h1>}
         <Button appearance="text" onClick={() => navigate(-1)}>
-          {t('edit-requests.back')}
+          {t('edit-participants.back')}
         </Button>
       </Track>
       <Track gap={32} direction="vertical" align="stretch">
         <Track gap={16} direction="vertical">
           <FormInput
             name="organisation-name"
-            label={t('edit-requests.organisation-name')}
+            label={t('edit-participants.organisation-name')}
             value={organisationName}
             disabled={!detailsChangeEnabled}
             onChange={(e) => setOrganisationName(e.target.value)}
           />
           <FormInput
             name="contact-email"
-            label={t('edit-requests.contact-email')}
+            label={t('edit-participants.contact-email')}
             value={contactEmail}
             disabled={!detailsChangeEnabled}
             onChange={(e) => setContactEmail(e.target.value)}
           />
           <FormInput
             name="host"
-            label={t('edit-requests.host')}
+            label={t('edit-participants.host')}
             value={host}
             disabled={!detailsChangeEnabled}
             onChange={(e) => setHost(e.target.value)}
           />
           <FormSelect
-            label={t('edit-requests.applicant-type')}
-            name="applicant-type"
+            label={t('edit-participants.participant-type')}
+            name="participant-type"
             defaultValue={participantType}
             onSelectionChange={(value) => setparticipantType(value!.value)}
             disabled={!detailsChangeEnabled}
             options={[
               {
-                label: t('edit-requests.unknown'),
+                label: t('edit-participants.unknown'),
                 value: ParticipantType.Unknown,
               },
               {
-                label: t('edit-requests.chatbot'),
+                label: t('edit-participants.chatbot'),
                 value: ParticipantType.Chatbot,
               },
               {
-                label: t('edit-requests.classifier'),
+                label: t('edit-participants.classifier'),
                 value: ParticipantType.Classifier,
               },
               {
-                label: t('edit-requests.drm'),
+                label: t('edit-participants.drm'),
                 value: ParticipantType.Drm,
               },
             ]}
@@ -144,13 +169,13 @@ const EditRequestPage: React.FC = () => {
         <Track gap={32}>
           {!detailsChangeEnabled && (
             <Button onClick={() => setDetailsChangeEnabled(true)}>
-              {t('edit-requests.enable-details-change')}
+              {t('edit-participants.enable-details-change')}
             </Button>
           )}
           {detailsChangeEnabled && (
             <>
               <Button onClick={() => handleDetailsChange()}>
-                {t('edit-requests.confirm-details-change')}
+                {t('edit-participants.confirm-details-change')}
               </Button>
               <Button
                 appearance="text"
@@ -159,62 +184,41 @@ const EditRequestPage: React.FC = () => {
                   handleDetailsCancel();
                 }}
               >
-                {t('edit-requests.cancel-details-change')}
+                {t('edit-participants.cancel-details-change')}
               </Button>
             </>
           )}
         </Track>
         <Track gap={16} direction="vertical" align="stretch">
-          <h4>{t('edit-requests.change-application-status')}</h4>
+          <h4>{t('edit-participants.change-application-status')}</h4>
           <FormSelect
-            label={t('edit-requests.application-status')}
+            label={t('edit-participants.application-status')}
             name="application-status"
             defaultValue={applicationStatus}
             onSelectionChange={(value) => setApplicationStatus(value!.value)}
             disabled={!statusChangeEnabled}
             value={applicationStatus}
-            options={[
-              {
-                label: t('edit-requests.unprocessed'),
-                value: ParticipantState.Unprocessed,
-              },
-              {
-                label: t('edit-requests.inactive'),
-                value: ParticipantState.Inactive,
-              },
-              {
-                label: t('edit-requests.active'),
-                value: ParticipantState.Active,
-              },
-              {
-                label: t('edit-requests.deactivated'),
-                value: ParticipantState.Deactivated,
-              },
-              {
-                label: t('edit-requests.deleted'),
-                value: ParticipantState.Deleted,
-              },
-            ]}
+            options={getOptions()}
           />
           <Track gap={32}>
             {!statusChangeEnabled && (
               <Button onClick={() => setStatusChangeEnabled(true)}>
-                {t('edit-requests.enable-status-change')}
+                {t('edit-participants.enable-status-change')}
               </Button>
             )}
             {statusChangeEnabled && (
               <>
                 <Button onClick={() => handleStatusChange()}>
-                  {t('edit-requests.confirm-status-change')}
+                  {t('edit-participants.confirm-status-change')}
                 </Button>
                 <Button
                   appearance="text"
                   onClick={() => {
                     setStatusChangeEnabled(false);
-                    setApplicationStatus(applicationRequest.participantStatus);
+                    setApplicationStatus(participant.participantStatus);
                   }}
                 >
-                  {t('edit-requests.cancel-status-change')}
+                  {t('edit-participants.cancel-status-change')}
                 </Button>
               </>
             )}
@@ -225,4 +229,4 @@ const EditRequestPage: React.FC = () => {
   );
 };
 
-export default EditRequestPage;
+export default EditParticipantPage;

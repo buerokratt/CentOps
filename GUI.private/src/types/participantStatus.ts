@@ -1,4 +1,4 @@
-export enum ParticipantState {
+export enum ParticipantStatus {
   Unprocessed = 'Unprocessed',
   Inactive = 'Inactive',
   Active = 'Active',
