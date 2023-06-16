@@ -5,7 +5,7 @@ check_params:
 
 assign_file_path:
   assign:
-    file_path: '/vaidator/${incoming.params.validator_id}.json'
+    file_path: '/validators/${incoming.params.validator_id}.json'
 
 get_form_validation_config_file:
   call: http.post

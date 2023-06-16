@@ -1,6 +1,6 @@
 {
   "title": "Example Form Number 123",
-  "vaildatorSource": "http://localhost:8051/get-vaidator?vaidator_id=form-validator-123",
+  "vaildatorSource": "http://localhost:8051/get-validator?validator_id=form-validator-123",
   "fields": [
     {
       "id": "age",
