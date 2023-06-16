@@ -2,9 +2,9 @@ import React, { FC, useState, useEffect, FormEvent } from 'react';
 import axios from 'axios';
 import { getDynamicFormConfig } from '../../resources/api-constants';
 import Button from '../Button';
-import { ValidationError, ValidationRule, validateForm } from './validation';
+import { ValidationRule, validateForm } from './validation';
 import { DynamicInput } from './input';
-import { DynamicFormConfig } from './types';
+import { DynamicFormConfig, KeyValueMap, KeyValuesMap } from './types';
 import { useTranslation } from 'react-i18next';
 import Track from '../Track';
 import Label from '../Label';
@@ -13,6 +13,7 @@ import { useToast } from '../../hooks/useToast';
 interface DynamicFormProps {
   formId: string;
   onSubmit?: (form: DynamicFormResult, submitUrl?: string) => void;
+  onChange?: (values: KeyValueMap, isValid: boolean) => void;
   hideTitle?: boolean;
   skipValidation?: boolean;
   hideSubmitButton?: boolean;
@@ -21,12 +22,13 @@ interface DynamicFormProps {
 
 interface DynamicFormResult {
   formId: string;
-  values: { [key: string]: string };
+  values: KeyValueMap;
 }
 
 const DynamicForm: FC<DynamicFormProps> = ({
   formId,
   onSubmit,
+  onChange,
   hideTitle = false,
   skipValidation = false,
   hideSubmitButton = false,
@@ -34,15 +36,21 @@ const DynamicForm: FC<DynamicFormProps> = ({
 }: DynamicFormProps) => {
   const [formConfig, setFormConfig] = useState<DynamicFormConfig | null>(null);
   const [error, setError] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
+  const [formValues, setFormValues] = useState<KeyValueMap>({});
   const [validator, setValidator] = useState<ValidationRule>({});
-  const [errors, setErrors] = useState<ValidationError>({});
+  const [errors, setErrors] = useState<KeyValuesMap>({});
   const { t } = useTranslation();
   const toast = useToast();
 
   useEffect(() => {
     fetchFormConfig();
   }, [formId]);
+
+  useEffect(() => {
+    const validation = validate();
+    setErrors(validation.errors || {});
+    onChange?.(formValues, validation.valid);
+  }, [formValues]);
 
   const fetchFormConfig = async () => {
     try {
@@ -70,17 +78,20 @@ const DynamicForm: FC<DynamicFormProps> = ({
       ...prevState,
       [name]: value,
     }));
-    setErrors({ ...errors, [name]: [], });
   }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!skipValidation) {
-      const errors = validateForm(validator, formValues, formConfig?.fields);
-      if (Object.keys(errors).length > 0) {
-        setErrors(errors)
-        return;
-      }
+
+    const validation = validate();
+    setErrors(validation.errors || {});
+    if (!validation.valid) {
+      toast.open({
+        type: 'error',
+        title: t('forms.toast_title'),
+        message: t('forms.invalid_form'),
+      });
+      return;
     }
 
     const submitedForm = { formId, values: formValues };
@@ -106,6 +117,20 @@ const DynamicForm: FC<DynamicFormProps> = ({
         })
     }
   }
+
+  const validate = () => {
+    if (!skipValidation) {
+      const errors = validateForm(validator, formValues, formConfig?.fields);
+      if (Object.keys(errors).length > 0) {
+        return {
+          valid: false,
+          errors
+        };
+      }
+    }
+    return { valid: true, };
+  }
+
 
   if (error) {
     return (

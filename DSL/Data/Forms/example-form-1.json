@@ -1,0 +1,57 @@
+{
+  "title": "Example Form Number 123",
+  "vaildatorSource": "http://localhost:8051/get-validator?validator_id=basic-form-validator",
+  "submitUrl": "ttp://localhost:8051/some-api-to-submit-the-from-data-to-it-if-any",
+  "fields": [
+    {
+      "id": "age",
+      "type": "number",
+      "label": "Age",
+      "vaildationType": "age"
+    },
+    {
+      "id": "fullname",
+      "type": "text",
+      "label": "Full Name",
+      "vaildationType": "name"
+    },
+    {
+      "id": "email",
+      "type": "email",
+      "label": "Email",
+      "vaildationType": "email"
+    },
+    {
+      "id": "datepicker",
+      "type": "date",
+      "label": "Date Picker",
+      "vaildationType": "date"
+    },
+    {
+      "id": "timepicker",
+      "type": "time",
+      "label": "Time Picker",
+      "vaildationType": "time"
+    },
+    {
+      "id": "enabled",
+      "type": "checkbox",
+      "label": "Enabled"
+    },
+    {
+      "id": "selector",
+      "type": "select",
+      "label": "Country",
+      "options": [
+        {
+          "value": "et",
+          "label": "Estonia"
+        },
+        {
+          "value": "de",
+          "label": "Germany"
+        }
+      ]
+    }
+  ]
+}

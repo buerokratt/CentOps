@@ -15,7 +15,8 @@
     "id_missing": "Form Id is missing",
     "toast_title": "Form",
     "submit_success": "Form has been submitted successfully",
-    "submit_failed": "Failed to submit the form"
+    "submit_failed": "Failed to submit the form",
+    "invalid_form": "Invalid form"
   },
   "application": {
     "enter-invitation-id": "Please enter your invitation ID",

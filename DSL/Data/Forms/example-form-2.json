@@ -1,6 +1,6 @@
 {
   "title": "Second Example Form",
-  "vaildatorSource": "http://localhost:8051/get-validator?validator_id=form-validator-123",
+  "vaildatorSource": "http://localhost:8051/get-validator?validator_id=basic-form-validator",
   "fields": [
     {
       "id": "firstname",

@@ -8,16 +8,19 @@ import {
   sendApplication,
   validateInvitation,
 } from '../resources/api-constants';
+import DynamicForm from '../components/DynamicForm';
+import { KeyValueMap } from '../components/DynamicForm/types';
+import { formIds } from '../constants/forms';
 
 const ApplicationPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const [invitationId, setInvId] = useState(id ?? '');
-  const [email, setInvEmail] = useState('');
-  const [name, setInvName] = useState('');
   const [invitationError, setInvitationError] = useState('');
   const [invitationValid, setInvitationValid] = useState(false);
   const [invitationSent, setInvitationSent] = useState(false);
+  const [formValues, setFormValues] = useState<KeyValueMap>({});
+  const [formValid, setFormValid] = useState(true);
 
   const handleCheckInv = async () => {
     try {
@@ -41,9 +44,8 @@ const ApplicationPage: React.FC = () => {
       await axios.post(
         sendApplication(),
         {
-          email,
           invitationId: invitationId,
-          organisationName: name,
+          ...formValues
         },
         { withCredentials: true }
       );
@@ -100,24 +102,19 @@ const ApplicationPage: React.FC = () => {
               onChange={(e) => setInvId(e.target.value)}
             />
           </Track>
-          <Track>
-            <FormInput
-              label="Organisation name"
-              name="organisation-name"
-              value={name}
-              onChange={(e) => setInvName(e.target.value)}
-            />
-          </Track>
-          <Track>
-            <FormInput
-              label="Contact e-mail address"
-              name="e-mail"
-              value={email}
-              onChange={(e) => setInvEmail(e.target.value)}
-            />
-          </Track>
+
+          <DynamicForm
+            formId={formIds.INVITATION_FORM}
+            hideSubmitButton
+            hideTitle
+            onChange={(values, isValid) => {
+              setFormValues(values);
+              setFormValid(isValid);
+            }}
+          />
+
           <Button
-            disabled={invitationId.length < 1}
+            disabled={invitationId.length < 1 || !formValid}
             onClick={handleSendInvitation}
           >
             {t('application.send-application')}

@@ -13,3 +13,7 @@ export interface Field {
   options?: { value: string; label: string }[];
   vaildationType?: string;
 }
+
+export type KeyValueMap = { [key: string]: string };
+
+export type KeyValuesMap = { [key: string]: string[] };

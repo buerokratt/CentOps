@@ -1,4 +1,4 @@
-import { Field } from './types';
+import { Field, KeyValueMap, KeyValuesMap } from './types';
 
 export interface ValidationRule {
   [key: string]: [
@@ -9,21 +9,17 @@ export interface ValidationRule {
   ]
 }
 
-export interface ValidationError {
-  [key: string]: string[];
-}
-
 export const validateForm = (
   validator: ValidationRule,
-  formValues: { [key: string]: string },
+  formValues: KeyValueMap,
   formFields?: Field[],
   defaultErrorMessage = 'Invalid value',
-): ValidationError => {
+): KeyValuesMap => {
   if (!validator || !formFields?.length) {
     return {};
   }
 
-  const errors: ValidationError = {};
+  const errors: KeyValuesMap = {};
 
   for (const key in validator) {
     if (!validator.hasOwnProperty(key)) {
