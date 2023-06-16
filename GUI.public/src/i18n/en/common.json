@@ -1,7 +1,11 @@
 {
   "global": {
     "title": "CentOps Module",
-    "backhome": "Back to homepage"
+    "backhome": "Back to homepage",
+    "choose": "Choose"
+  },
+  "overview": {
+    "title": "Overview"
   },
   "application": {
     "enter-invitation-id": "Please enter your invitation ID",

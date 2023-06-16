@@ -1,5 +1,7 @@
 import React, { FC, ChangeEvent } from 'react';
 import { Field } from './types';
+import FieldInput from '../FormElements/FormInput';
+import { FormSelect, SwitchBox } from '../FormElements';
 
 interface DynamicInputProps {
   field: Field;
@@ -19,7 +21,9 @@ export const DynamicInput: FC<DynamicInputProps> = ({
     case 'date':
     case 'time':
       return (
-        <input
+        <FieldInput
+          label={field.label ?? ''}
+          hideLabel={!field.label}
           type={field.type}
           id={field.id}
           name={field.id}
@@ -29,28 +33,25 @@ export const DynamicInput: FC<DynamicInputProps> = ({
       );
     case 'checkbox':
       return (
-        <input
-          type="checkbox"
+        <SwitchBox
           id={field.id}
           name={field.id}
+          label={field.label ?? ''}
+          hideLabel={!field.label}
           checked={value === 'on'}
-          onChange={handleInputChange}
+          onChange={(e) => handleInputChange(e)}
         />
       );
     case 'select':
       return (
-        <select
+        <FormSelect
           id={field.id}
           name={field.id}
           value={value || ''}
           onChange={handleInputChange}
-        >
-          {field.options?.map((option: any) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          label={field.label ?? ''}
+          options={field.options ?? []}
+        />
       );
 
     default:

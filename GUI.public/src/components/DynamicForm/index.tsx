@@ -6,6 +6,8 @@ import { ValidationError, ValidationRule, validateForm } from './validation';
 import { DynamicInput } from './input';
 import { DynamicFormConfig } from './types';
 import { useTranslation } from 'react-i18next';
+import Track from '../Track';
+import Label from '../Label';
 
 interface DynamicFormProps {
   formId: string;
@@ -93,27 +95,30 @@ const DynamicForm: FC<DynamicFormProps> = ({
   }
 
   return (
-    <div>
-      {!hideTitle && <h4>{formConfig.title}</h4>}
-      <form onSubmit={handleSubmit}>
-        {
-          formConfig.fields.map((field: any) => (
-            <div key={field.id}>
-              <label htmlFor={field.id}>{field.label}</label>
-              <DynamicInput
-                field={field}
-                value={formValues[field.id]}
-                handleInputChange={handleInputChange}
-              />
-              <div style={{ display: 'flex', flexDirection: 'column', color: 'red' }}>
-                {errors[field.id]?.map((error) => <span key={error}>{error}</span>)}
-              </div>
-            </div>
-          ))
-        }
-        <Button type='submit'>submit</Button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <Track direction='vertical' align='stretch' justify='center' gap={16}>
+        {!hideTitle && <h5>{formConfig.title}</h5>}
+        <Track direction='vertical' align='stretch' gap={8}>
+          {
+            formConfig.fields.map((field: any) => (
+              <Track key={field.id} direction='vertical' align='right' gap={8}>
+                <DynamicInput
+                  field={field}
+                  value={formValues[field.id]}
+                  handleInputChange={handleInputChange}
+                />
+                <Track direction='vertical' align='left' gap={8}>
+                  {errors[field.id]?.map((error) => <Label type='error' key={error}>{error}</Label>)}
+                </Track>
+              </Track>
+            ))
+          }
+        </Track>
+        <Track direction='vertical' align='center' gap={12}>
+          <Button type='submit'>submit</Button>
+        </Track>
+      </Track>
+    </form>
   )
 }
 
