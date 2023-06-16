@@ -1,0 +1,40 @@
+check_for_parameters:
+  switch:
+    - condition: ${incoming.body.sender == null || incoming.body.sender.name == null || incoming.body.sender.nameAbbriviated == null || incoming.body.sender.ipAddress == null || incoming.body.sender.token == null || incoming.body.sender.uuid}
+      next: return_incorrect_request
+
+get_sender:
+  call: http.post
+  args:
+    url: http://resql:8052/get-participant-by-ip-address
+    body:
+      unique_identifier: ${incoming.body.uuid}
+  result: participant_result
+
+check_result:
+  switch:
+    - condition: ${participant_result.body == null}
+    - next: return_incorrect_request
+
+
+check_sender_participant_match:
+  switch:
+    - condition: ${participant_result.body.name != incoming.body.sender.name && participant_result.body.nameAbbriviated != incoming.body.sender.nameAbbriviated && participant_result.body.ipAddress != incoming.body.sender.ipAddress && participant_result.body.token != incoming.body.sender.token}
+      next: return_forbidden
+
+return_ok:
+  wrapper: false
+  status: 204
+  return: "Request body validated"
+  next: end
+
+return_forbidden:
+  wrapper: false
+  status: 403
+  return: "Request body invalid"
+  next: end
+  
+return_incorrect_request:
+  status: 400
+  return: "error: incorrect request"
+  next: end

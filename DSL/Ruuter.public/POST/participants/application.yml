@@ -18,7 +18,7 @@ validate_permission:
 
 check_body:
   switch:
-    - condition: ${incoming.body == null || incoming.body.invitationId == null || incoming.body.email == null || incoming.body.organisationName == null}
+    - condition: ${incoming.body == null || incoming.body.invitationId == null || incoming.body.email == null || incoming.body.organisationName == null || incoming.body.nameAbbreviated == null || incoming.body.ipAddress == null || incoming.body.host == null}
       next: return_incorrect_request
 
 assign_variables:
@@ -26,6 +26,9 @@ assign_variables:
     email: ${incoming.body.email}
     name: ${incoming.body.organisationName}
     invitation_id: ${incoming.body.invitationId}
+    name_abbreviated: ${incoming.body.nameAbbreviated}
+    ip_address: ${incoming.body.ipAddress}
+    host: ${incoming.body.host}
 
 get_invitation_id:
   call: http.post
@@ -49,6 +52,9 @@ create_participant:
       contact_email: ${email}
       institution_id: ${invitation.response.body[0].institutionId}
       name: ${name}
+      name_abbreviated: ${name_abbreviated}
+      ip_address: ${ip_address}
+      host: ${host}
   result: institution
 
 invalidate_invitation:
