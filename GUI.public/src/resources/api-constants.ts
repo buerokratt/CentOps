@@ -4,3 +4,5 @@ export const dummyApi = (): string => `${baseUrl}/dummy`;
 export const toggleDummyApi = (): string => `${baseUrl}/toggle-dummy`;
 export const validateInvitation = (): string =>
   `${baseUrl}/validate-invitation-id`;
+export const getDynamicFormConfig = (formId: string): string =>
+  `${baseUrl}/get-form?form_id=${formId}`;

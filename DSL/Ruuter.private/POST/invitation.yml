@@ -42,6 +42,7 @@ get_invitation_code:
       user_email: ${email}
   result: invitationCodes
 
+## ToDo use correct link to the application
 assign_email_content:
   assign:
     invitation_code: ${invitationCodes.response.body[0].invitationId}
@@ -50,7 +51,7 @@ assign_email_content:
 
 
         Thank you for your interest in Bürokratt!
-        Please use this link to start filling in your application: http://localhost:3007/centops/application/${invitation_code}
+        Please use this link to start filling in your application: http://localhost:8058/centops/application/${invitation_code}
 
 
         Best regards,

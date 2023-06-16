@@ -1,7 +1,11 @@
 {
   "global": {
     "title": "CentOps Module",
-    "backhome": "Back to homepage"
+    "backhome": "Back to homepage",
+    "choose": "Choose"
+  },
+  "overview": {
+    "title": "Overview"
   },
   "application": {
     "contact-email": "Contact email address",
@@ -18,5 +22,11 @@
     "submit-success": "Thanks for your application!",
     "title": "Application page",
     "validate-id": "Validate ID"
+  },
+  "application-status": {
+    "processing": "Processing application, please wait",
+    "processed": "Application processed, you can start using Bürokratt now!",
+    "received": "Application received",
+    "title": "Application status page"
   }
 }
