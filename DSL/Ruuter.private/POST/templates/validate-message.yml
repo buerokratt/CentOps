@@ -6,7 +6,7 @@ check_for_parameters:
 get_sender:
   call: http.post
   args:
-    url: http://resql:8052/get-participant-by-ip-address
+    url: http://resql:8052/get-participant-by-id
     body:
       unique_identifier: ${incoming.body.uuid}
   result: participant_result
