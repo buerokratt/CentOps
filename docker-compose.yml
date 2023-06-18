@@ -89,7 +89,7 @@ services:
 
   data_mapper:
     container_name: data_mapper
-    image: datamapper-node
+    image: datamapper
     environment:
       - PORT=8054
       - CONTENT_FOLDER=/data
