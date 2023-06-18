@@ -16,7 +16,7 @@ services:
       - 8050:8050
     networks:
       - bykstack
-      
+
   ruuter-public:
     container_name: ruuter-public
     image: ruuter
@@ -89,13 +89,16 @@ services:
 
   data_mapper:
     container_name: data_mapper
-    image: datamapper
+    image: datamapper-node
     environment:
       - PORT=8054
+      - CONTENT_FOLDER=/data
     volumes:
       - ./DSL/DMapper/hbs:/workspace/app/views/centops
       - ./DSL/DMapper/js:/workspace/app/js/centops
       - ./DSL/DMapper/lib:/workspace/app/lib
+      - ./DSL/Data/Forms:/data/forms
+      - ./DSL/Data/Validation:/data/validators
     ports:
       - 8054:8054
     networks:
@@ -167,6 +170,7 @@ services:
 
 volumes:
   opensearch-data1:
+
 
 networks:
   bykstack:

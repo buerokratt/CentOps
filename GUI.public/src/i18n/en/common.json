@@ -1,7 +1,11 @@
 {
   "global": {
     "title": "CentOps Module",
-    "backhome": "Back to homepage"
+    "backhome": "Back to homepage",
+    "choose": "Choose"
+  },
+  "overview": {
+    "title": "Overview"
   },
   "application": {
     "enter-invitation-id": "Please enter your invitation ID",
@@ -12,5 +16,11 @@
     "validate-id": "Validate ID",
     "send-application": "Send application",
     "submit-success": "Thanks for your application!"
+  },
+  "application-status": {
+    "processing": "Processing application, please wait",
+    "processed": "Application processed, you can start using Bürokratt now!",
+    "received": "Application received",
+    "title": "Application status page"
   }
 }
