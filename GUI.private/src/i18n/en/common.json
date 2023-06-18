@@ -1,28 +1,5 @@
 {
-  "global": {
-    "title": "CentOps Module",
-    "backhome": "Back to homepage"
-  },
-  "invitation": {
-    "create": "Create invitation",
-    "description": "Enter an e-mail address to create the invitation ID for.",
-    "error": "Failed to create invitation",
-    "invitationId": "Invitation ID",
-    "link": "Invitation link",
-    "select-institution": "Select institution",
-    "title": "Create invitation ID"
-  },
-  "menu": {
-    "invitation": "Create invitation",
-    "overview": "Overview",
-    "requests": "Application requests"
-  },
-  "requests": {
-    "edit": "edit",
-    "description": "All application requests",
-    "title": "Application requests"
-  },
-  "edit-requests": {
+  "edit-participants": {
     "active": "Active",
     "applicant-type": "Applicant type",
     "application-status": "Application status",
@@ -44,8 +21,45 @@
     "host": "Host",
     "inactive": "Inactive",
     "organisation-name": "Organisation name",
+    "participant-type": "Participant type",
     "unknown": "Unknown",
     "unprocessed": "Unprocessed",
-    "title": "Edit application request"
+    "title": "Edit participant"
+  },
+  "edit-requests": {
+    "title": "Edit Application Request"
+  },
+  "global": {
+    "title": "CentOps Module",
+    "backhome": "Back to homepage"
+  },
+  "invitation": {
+    "create": "Create invitation",
+    "description": "Enter an e-mail address to create the invitation ID for.",
+    "error": "Failed to create invitation",
+    "invitationId": "Invitation ID",
+    "link": "Invitation link",
+    "select-institution": "Select institution",
+    "title": "Create invitation ID"
+  },
+  "menu": {
+    "invitation": "Create invitation",
+    "overview": "Overview",
+    "participants": "Participants",
+    "requests": "Application requests"
+  },
+  "participants": {
+    "contact-email": "Contact email",
+    "description": "All participants",
+    "name": "Name",
+    "participant-status": "Participant status",
+    "participant-type": "Participant type",
+    "title": "Participants"
+  },
+  "requests": {
+    "edit": "edit",
+    "description": "All application requests",
+    "request-status": "Request status",
+    "title": "Application requests"
   }
 }

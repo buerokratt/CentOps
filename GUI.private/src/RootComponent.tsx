@@ -4,10 +4,10 @@ import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components';
 import {
   CreateInvitationPage,
-  OverviewPage,
+  EditParticipantPage,
   NotFoundPage,
-  RequestsPage,
-  EditRequestPage,
+  OverviewPage,
+  ParticipantsPage,
 } from './pages';
 import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
@@ -21,10 +21,21 @@ const RootComponent: React.FC = () => {
           element={<CreateInvitationPage />}
         />
         <Route path={ROUTES.OVERVIEW_ROUTE} element={<OverviewPage />} />
-        <Route path={ROUTES.REQUESTS_ROUTE} element={<RequestsPage />} />
         <Route
-          path={ROUTES.REQUESTS_EDIT_ROUTE}
-          element={<EditRequestPage />}
+          path={ROUTES.PARTICIPANTS_ROUTE}
+          element={<ParticipantsPage />}
+        />
+        <Route
+          path={ROUTES.PARTICIPANTS_REQUESTS_ROUTE}
+          element={<ParticipantsPage />}
+        />
+        <Route
+          path={ROUTES.PARTICIPANTS_EDIT_ROUTE}
+          element={<EditParticipantPage />}
+        />
+        <Route
+          path={ROUTES.PARTICIPANTS_REQUESTS_EDIT_ROUTE}
+          element={<EditParticipantPage />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

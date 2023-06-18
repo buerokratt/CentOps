@@ -16,6 +16,7 @@ export const DynamicInput: FC<DynamicInputProps> = ({
   handleInputChange,
 }: DynamicInputProps) => {
   const { t } = useTranslation();
+
   switch (field.type) {
     case 'text':
     case 'email':
