@@ -1,2 +1,79 @@
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.login == null || incoming.body.password == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    login: ${incoming.body.login}
+    password: ${incoming.body.password}
+  next: login_user
+
+login_user:
+  call: http.post
+  args:
+    url: http://resql-users:8059/get-user-by-login
+    body:
+      login: ${login}
+      password: ${password}
+  result: results
+  next: check_login_result  
+
+check_login_result:
+  switch:
+    - condition: ${results.response.body.length != 0}
+      next: get_session_length
+  next: return_user_not_found
+
+get_session_length:
+  call: http.post
+  args:
+    url: http://resql-users:8059/get-configuration
+    body:
+      key: "session_length"
+  result: session_result
+  next: check_session_length_result  
+
+check_session_length_result:
+  switch:
+    - condition: ${session_result.response.body.length != 0}
+      next: generate_cookie
+  next: return_session_length_not_found     
+
+generate_cookie:
+  call: http.post
+  args:
+    url: http://tim:8055/jwt/custom-jwt-generate
+    body:
+      JWTName: "customJwtCookie"
+      expirationInMinutes: 120
+      content: ${results.response.body[0]}
+  result: cookie_result
+  next: return_value     
+
 return_value:
-  return: "result"
+  headers:
+    Set-Cookie:
+      customJwtCookie: "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIiLCJmaXJzdE5hbWUiOiJEYXZpZCIsImxhc3ROYW1lIjoiU2hhd24iLCJpZENvZGUiOiJFRTMwMzAzMDM5OTE0IiwiZGlzcGxheU5hbWUiOiJEYXZpZCIsImlzcyI6ImxvY2FsaG9zdCIsImV4cCI6MTY4NzE0MDIyNCwibG9naW4iOiJFRTMwMzAzMDM5OTE0IiwiaWF0IjoxNjg3MTMzMDI0LCJqdGkiOiJiYzBhOWY2OC01MDAxLTRkMWMtOTMzNS0wZTYyOTBjMjRlMWEiLCJhdXRob3JpdGllcyI6WyJST0xFX0FETUlOSVNUUkFUT1IiXX0.JJAxrY6xM8cIvaqi7ODm53Bwa8WntisUFAC8pTsQmctPcliUMPtjox_teixTN-cJGiAoktbiu8DIiUSROUSc0GHTQSsVFK1IUwljuavrMIFJoi8j-WW18EaqGQhlPLU0QVbtDzFEesPtItHkPcSyPo-9TAyHplqouhjw0C1Xb1tmIXQPj9RhBUmKmsMyc8rIlYiIevneJbJgU0tIb9PvCbJaxnSrTRPxlL3T5STKqUDeMcovAU51aoHxCHlzrzvDkkrqStin3PoBj857VkB00nVWohlHCdPMCniHPU4vTbIpvRYz4H4xe1Uxj4cw05s3hLQkKWScoQMNpLe9vldhJQ"
+      maxAge: 28800
+      Domain: "localhost"
+      Secure: false
+      HttpOnly: true
+  return: ${cookie_result.response.body}
+  next: end 
+
+return_session_length_not_found:
+  status: 400
+  return: "Could not fetch session length"
+  next: end  
+
+return_user_not_found:
+  status: 400
+  return: "User Not Found"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter(s) missing"
+  next: end
