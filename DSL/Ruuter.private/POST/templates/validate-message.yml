@@ -1,6 +1,6 @@
 check_for_parameters:
   switch:
-    - condition: ${incoming.body.sender == null || incoming.body.sender.name == null || incoming.body.sender.nameAbbriviated == null || incoming.body.sender.ipAddress == null || incoming.body.sender.token == null || incoming.body.sender.uuid}
+    - condition: ${incoming.body.sender == null || incoming.body.sender.name == null || incoming.body.sender.nameAbbreviated == null || incoming.body.sender.ipAddress == null || incoming.body.sender.token == null || incoming.body.sender.uuid}
       next: return_incorrect_request
 
 get_sender:
@@ -8,7 +8,7 @@ get_sender:
   args:
     url: http://resql:8052/get-participant-by-id
     body:
-      unique_identifier: ${incoming.body.uuid}
+      unique_identifier: ${incoming.body.sender.uuid}
   result: participant_result
 
 check_result:
@@ -16,16 +16,36 @@ check_result:
     - condition: ${participant_result.body == null}
     - next: return_incorrect_request
 
+get_sender_by_ip:
+  call: http.post
+  args:
+    url: http://resql:8052/get-participant-by-ip-address
+    body:
+      ip_address: ${incoming.body.sender.ipAddress}
+  result: participant_result_by_ip
+
+check_ip_valid:
+  switch:
+    - condition: ${participant_result_by_ip.body != participant_result.body}
+    - next: return_incorrect_request
+
+assign_variables:
+  assign:
+    name: ${participant_result.response.body[0].name}
+    token: ${participant_result.response.body[0].securityToken}
+    name_abbreviated: ${participant_result.response.body[0].nameAbbreviated}
+    sender: ${incoming.body.sender}
+
 
 check_sender_participant_match:
   switch:
-    - condition: ${participant_result.body.name != incoming.body.sender.name && participant_result.body.nameAbbriviated != incoming.body.sender.nameAbbriviated && participant_result.body.ipAddress != incoming.body.sender.ipAddress && participant_result.body.token != incoming.body.sender.token}
+    - condition: ${name != sender.name || token != sender.token || name_abbreviated != sender.nameAbbreviated}
       next: return_forbidden
 
 return_ok:
   wrapper: false
-  status: 204
-  return: "Request body validated"
+  status: 200
+  return: ${ip_address}
   next: end
 
 return_forbidden:

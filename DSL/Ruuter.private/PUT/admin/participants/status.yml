@@ -40,6 +40,9 @@ assign_variables:
     participant_type: ${participant_result.response.body[0].participantType}
     unique_identifier: ${incoming.params.uuid}
     participant_status: ${incoming.body.participantStatus}
+    ip_address: ${participant_result.response.body[0].ipAddress}
+    token: ${participant_result.response.body[0].securityToken}
+    name_abbreviated: ${participant_result.response.body[0].nameAbbreviated}
 
 update_participant_status:
   call: http.post
@@ -54,6 +57,9 @@ update_participant_status:
       participant_type: ${participant_type}
       participant_status: ${participant_status}
       unique_identifier: ${unique_identifier}
+      name_abbreviated: ${name_abbreviated}
+      security_token: ${token}
+      ip_address: ${ip_address.value}
   result: update_result
 
 return_ok:
