@@ -10,3 +10,9 @@ export const updateParticipantStatus = (uuid: string): string =>
 export const deleteParticipant = (uuid: string): string =>
   `${baseUrl}/admin/participants?uuid=${uuid}`;
 export const toggleDummyApi = (): string => `${baseUrl}/toggle-dummy`;
+export const deleteInstitution = (id: number): string =>
+  `/centops/admin/institutions/${id}`;
+export const addInstitute = (): string =>
+  `/centops/admin/institutions`;
+
+
