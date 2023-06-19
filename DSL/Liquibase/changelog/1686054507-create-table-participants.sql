@@ -12,5 +12,6 @@ CREATE TABLE participants (
   participant_status status_type NOT NULL DEFAULT 'unprocessed',
   participant_type participant_type NOT NULL DEFAULT 'unknown',
   institution_id BIGINT NOT NULL REFERENCES institutions,
-  timestamp TIMESTAMP NOT NULL DEFAULT now()
+  timestamp TIMESTAMP NOT NULL DEFAULT now(),
+  info JSON NULL
 );

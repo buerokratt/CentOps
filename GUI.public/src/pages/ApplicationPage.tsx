@@ -45,7 +45,7 @@ const ApplicationPage: React.FC = () => {
         sendApplication(),
         {
           invitationId: invitationId,
-          ...formValues
+          info: formValues
         },
         { withCredentials: true }
       );
