@@ -10,9 +10,13 @@ export const updateParticipantStatus = (uuid: string): string =>
 export const deleteParticipant = (uuid: string): string =>
   `${baseUrl}/admin/participants?uuid=${uuid}`;
 export const toggleDummyApi = (): string => `${baseUrl}/toggle-dummy`;
-export const deleteInstitution = (id: number): string =>
-  `/centops/admin/institutions/${id}`;
+
+export const getInstitutions = (): string => `admin/institutions`;
+export const deleteInstitute = (id: number): string =>
+  `${baseUrl}/admin/delete-institute?id=${id}`;
 export const addInstitute = (): string =>
-  `/centops/admin/institutions`;
-
-
+  `${baseUrl}/admin/add-institute`;
+export const editInstitute = (): string =>
+  `${baseUrl}/admin/update-institute`;
+export const toggleInstituteActiveStatus = (id: number): string =>
+  `${baseUrl}/admin/toggle-institute-active-status?id=${id}`;

@@ -4,7 +4,7 @@
 #       next: return_unauthorized
 
 authenticate:
-  template: templates/permissions/applicant
+  template: templates/permissions/admin
   requestType: post
   headers:
     cookie: cookie #${incoming.headers.cookie}
@@ -12,27 +12,20 @@ authenticate:
 
 validate_permission:
   switch:
-    - condition: ${permission}
-      next: check_body
-  next: return_unauthorized
+    - condition: ${permission == null}
+      next: return_unauthorized
 
 check_body:
   switch:
-    - condition: ${incoming.body == null || incoming.body.email == null || incoming.body.name == null}
+    - condition: ${incoming.params == null || incoming.params.id == null}
       next: return_incorrect_request
 
-set_values:
-  assign:
-    email: ${incoming.body.email}
-    name: ${incoming.body.name}
-
-create_institution:
+toggle_institution_status:
   call: http.post
   args:
-    url: http://resql:8052/create-institution
+    url: http://resql:8052/toggle-institute-active-status
     body:
-      user_email: ${email}
-      name: ${name}
+      id: ${incoming.params.id}
   result: institution
 
 return_success:

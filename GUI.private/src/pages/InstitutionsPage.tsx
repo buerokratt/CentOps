@@ -1,27 +1,26 @@
 import React, { useMemo, useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Button, DataTable, FormInput, Modal, Track } from '../components';
+import { Button, DataTable, FormInput, Modal, Switch, SwitchBox, Track } from '../components';
 import { Institution } from '../types';
-import { addInstitute, deleteInstitution } from '../resources/api-constants';
+import { addInstitute, deleteInstitute, editInstitute, getInstitutions, toggleInstituteActiveStatus } from '../resources/api-constants';
 import { useToast } from '../hooks/useToast';
 
 const InstitutionsPages: React.FC = () => {
   const { t } = useTranslation();
-  const toast = useToast();
-  const navigate = useNavigate();
+  // const toast = useToast();
+  const toast = { open: (x: any) => { } };
+
   const [institutionToDelete, selectInstitutionIdToDelete] = useState<Institution | null>(null);
-  const [addNewInstitution, setAddNewInstitution] = useState(false);
-  const [newInstitute, setNewInstitute] = useState<{ name: string, email: string }>({ name: '', email: '' });
+  const [newInstitute, setNewInstitute] = useState<{ id?: number, name?: string, contactEmail?: string, guiStatus: 'none' | 'add' | 'edit', }>({ name: '', contactEmail: '', guiStatus: 'none' });
 
   const handleDelete = () => {
     if (!institutionToDelete) {
       return;
     }
-    axios.delete(deleteInstitution(institutionToDelete.id))
+    axios.post(deleteInstitute(institutionToDelete.id))
       .then(() => {
         refetch();
         toast.open({
@@ -40,12 +39,27 @@ const InstitutionsPages: React.FC = () => {
 
   const showConfirmDeleteModal = (inst: Institution) => selectInstitutionIdToDelete(inst);
   const closeConfirmDeleteModal = () => selectInstitutionIdToDelete(null);
+  const toggleActiveStatus = (id: number) => {
+    axios.post(toggleInstituteActiveStatus(id))
+      .then(() => {
+        refetch();
+        toast.open({
+          type: 'success',
+          title: 'Status Update',
+          message: 'Status was updated successfuly'
+        });
+      })
+      .catch(() => toast.open({
+        type: 'error',
+        title: 'Status Update',
+        message: 'Failed to update institution status'
+      }));
+  };
 
-  const handleAddNewInstitute = () => {
-    if (!newInstitute) {
-      return;
-    }
-    axios.post(addInstitute(), newInstitute)
+  const handleAddEditNewInstitute = () => {
+    const { guiStatus, ...inst } = newInstitute;
+    const url = guiStatus === 'edit' ? editInstitute() : addInstitute();
+    axios.post(url, inst)
       .then(() => {
         refetch();
         toast.open({
@@ -53,7 +67,7 @@ const InstitutionsPages: React.FC = () => {
           title: 'New Institute',
           message: 'Institution was added successfuly'
         });
-        setAddNewInstitution(false);
+        setNewInstitute({ guiStatus: 'none' });
       })
       .catch(() => toast.open({
         type: 'error',
@@ -62,8 +76,10 @@ const InstitutionsPages: React.FC = () => {
       }));
   }
 
+  const showEditModal = (inst: Institution) => setNewInstitute({ guiStatus: 'edit', ...inst });
+
   const { data: institutions, refetch, } = useQuery<Institution[]>({
-    queryKey: ['admin/institutions'],
+    queryKey: [getInstitutions()],
   });
 
   const institutionColumnHelper = createColumnHelper<Institution>();
@@ -72,6 +88,7 @@ const InstitutionsPages: React.FC = () => {
       institutionColumnHelper.accessor('id', {
         header: 'id',
         cell: (id) => id.getValue(),
+        enableSorting: true,
       }),
       institutionColumnHelper.accessor('name', {
         header: `${t('institutions.name')}`,
@@ -83,7 +100,17 @@ const InstitutionsPages: React.FC = () => {
       }),
       institutionColumnHelper.accessor('status', {
         header: `${t('institutions.status')}`,
-        cell: (status) => status.getValue(),
+        cell: (status) => (
+          <Switch
+            checked={status.getValue() === 'active'}
+            onCheckedChange={() => toggleActiveStatus(status.row.original.id)}
+            hideLabel
+            name=''
+            label=''
+            offLabel='Inactive'
+            onLabel='Active'
+          />
+        ),
       }),
       institutionColumnHelper.display({
         header: '',
@@ -92,12 +119,7 @@ const InstitutionsPages: React.FC = () => {
           <Track direction='horizontal' justify='between' gap={8}>
             <Button
               appearance="text"
-              onClick={() =>
-                navigate(
-                  `/centops/institutions/edit/${props.row.original.id}`,
-                  { state: props.row.original, }
-                )
-              }
+              onClick={() => showEditModal(props.row.original)}
             >
               {t('institutions.edit')}
             </Button>
@@ -120,7 +142,7 @@ const InstitutionsPages: React.FC = () => {
         <h1>{t('institutions.title')}</h1>
       </Track>
       <Track justify="end">
-        <Button appearance='primary' onClick={() => setAddNewInstitution(true)}>
+        <Button appearance='primary' onClick={() => setNewInstitute({ guiStatus: 'add' })}>
           Add a new institution
         </Button>
       </Track>
@@ -145,10 +167,10 @@ const InstitutionsPages: React.FC = () => {
         </Modal>
       }
       {
-        addNewInstitution &&
+        newInstitute.guiStatus !== 'none' &&
         <Modal
           title='New Institution'
-          onClose={() => setAddNewInstitution(false)}
+          onClose={() => setNewInstitute({ guiStatus: 'none' })}
         >
           <Track direction='vertical' gap={12} style={{ marginBottom: '2rem' }}>
             <FormInput
@@ -160,15 +182,15 @@ const InstitutionsPages: React.FC = () => {
             <FormInput
               label="email"
               name="email"
-              value={newInstitute.email}
-              onChange={(e) => setNewInstitute({ ...newInstitute, email: e.target.value, })}
+              value={newInstitute.contactEmail}
+              onChange={(e) => setNewInstitute({ ...newInstitute, contactEmail: e.target.value, })}
             />
           </Track>
           <Track justify='end' gap={12}>
-            <Button appearance='secondary' onClick={() => setAddNewInstitution(false)}>
+            <Button appearance='secondary' onClick={() => setNewInstitute({ guiStatus: 'none' })}>
               Cancel
             </Button>
-            <Button appearance='success' onClick={handleAddNewInstitute}>
+            <Button appearance='success' onClick={handleAddEditNewInstitute}>
               Save
             </Button>
           </Track>
