@@ -11,6 +11,10 @@ import {
 } from './pages';
 import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
+import ManifestsOverviewPage from './pages/manifests/ManifestsOverviewPage';
+import NewManifestsPage from './pages/manifests/NewManifestsPage';
+import ManifestsUpdatesPage from './pages/manifests/ManifestsUpdatesPage';
+import ManifestsHistoryPage from './pages/manifests/ManifestsHistoryPage';
 
 const RootComponent: React.FC = () => {
   return (
@@ -36,6 +40,22 @@ const RootComponent: React.FC = () => {
         <Route
           path={ROUTES.PARTICIPANTS_REQUESTS_EDIT_ROUTE}
           element={<EditParticipantPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_OVERVIEW_ROUTE}
+          element={<ManifestsOverviewPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_NEW_MANIFESTS_ROUTE}
+          element={<NewManifestsPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_UPDATES_ROUTE}
+          element={<ManifestsUpdatesPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_HISTORY_ROUTE}
+          element={<ManifestsHistoryPage />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

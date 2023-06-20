@@ -143,6 +143,28 @@ const MainNavigation: FC = () => {
         { path: ROUTES.INVITATION_ROUTE, label: t('menu.invitation') },
         { path: ROUTES.PARTICIPANTS_REQUESTS_ROUTE, label: t('menu.requests') },
         { path: ROUTES.PARTICIPANTS_ROUTE, label: t('menu.participants') },
+        {
+          label: t('menu.manifests'),
+          path: ROUTES.MANIFESTS_ROUTE,
+          children: [
+            {
+              label: t('menu.overview'),
+              path: ROUTES.MANIFESTS_OVERVIEW_ROUTE,
+            },
+            {
+              label: t('menu.new_manifests'),
+              path: ROUTES.MANIFESTS_NEW_MANIFESTS_ROUTE,
+            },
+            {
+              label: t('menu.updates'),
+              path: ROUTES.MANIFESTS_UPDATES_ROUTE,
+            },
+            {
+              label: t('menu.history'),
+              path: ROUTES.MANIFESTS_HISTORY_ROUTE,
+            },
+          ],
+        },
       ],
     },
     {

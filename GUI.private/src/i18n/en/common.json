@@ -46,7 +46,11 @@
     "invitation": "Create invitation",
     "overview": "Overview",
     "participants": "Participants",
-    "requests": "Application requests"
+    "requests": "Application requests",
+    "manifests": "Manifests",
+    "new_manifests": "New Manifests",
+    "updates": "Updates",
+    "history": "History"
   },
   "participants": {
     "contact-email": "Contact email",
