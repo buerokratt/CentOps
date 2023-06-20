@@ -10,8 +10,7 @@ import { useToast } from '../hooks/useToast';
 
 const InstitutionsPages: React.FC = () => {
   const { t } = useTranslation();
-  // const toast = useToast();
-  const toast = { open: (x: any) => { } };
+  const toast = useToast();
 
   const [institutionToDelete, selectInstitutionIdToDelete] = useState<Institution | null>(null);
   const [newInstitute, setNewInstitute] = useState<{ id?: number, name?: string, contactEmail?: string, guiStatus: 'none' | 'add' | 'edit', }>({ name: '', contactEmail: '', guiStatus: 'none' });
