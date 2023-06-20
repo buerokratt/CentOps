@@ -1,12 +1,12 @@
 check_for_required_parameters:
   switch:
-    - condition: ${incoming.body.manifestId == null}
+    - condition: ${incoming.body.manifest_id == null}
       next: return_incorrect_request
   next: extract_request_data
 
 extract_request_data:
   assign:
-    manifestId: ${incoming.body.manifestId}
+    manifest_id: ${incoming.body.manifest_id}
   next: delete_manifest
 
 delete_manifest:
@@ -14,7 +14,7 @@ delete_manifest:
   args:
     url: http://resql:8052/delete-manifest
     body:
-      manifest_id: ${manifestId}
+      manifest_id: ${manifest_id}
   result: results
   next: check_result
 
@@ -29,7 +29,7 @@ log_history:
   args:
     url: http://resql:8052/update-manifest-history
     body:
-      parent_manifest_id: ${manifestId}
+      parent_manifest_id: ${manifest_id}
       buerokratt_version: ${results.response.body[0].buerokrattVersion}
       components: ${results.response.body[0].components}
       extra_configs: ${results.response.body[0].extraConfigs}

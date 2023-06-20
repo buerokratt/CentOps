@@ -1,6 +1,4 @@
-UPDATE manifests_updates
-SET updated_at = now(),
-    status = :status::manifest_status
+DELETE FROM manifests_updates
 WHERE update_id = :update_id::uuid
 RETURNING parent_manifest_id,
           buerokratt_version,
