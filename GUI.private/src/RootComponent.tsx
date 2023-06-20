@@ -4,7 +4,6 @@ import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components';
 import {
   CreateInvitationPage,
-  EditInstitutionPage,
   EditParticipantPage,
   NotFoundPage,
   OverviewPage,
@@ -42,10 +41,6 @@ const RootComponent: React.FC = () => {
         <Route
           path={ROUTES.INSTITUTIONS_ROUTE}
           element={<InstitutionsPages />}
-        />
-        <Route
-          path={ROUTES.INSTITUTIONS_EDIT_ROUTE}
-          element={<EditInstitutionPage />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
