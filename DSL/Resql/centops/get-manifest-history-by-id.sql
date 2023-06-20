@@ -5,6 +5,7 @@ SELECT parent_manifest_id,
        components #>> '{}' as components,
        extra_configs #>> '{}' as extra_configs,
        security_configs #>> '{}' as security_configs,
+       type,
        status
 FROM manifests_history
 WHERE history_id = :history_id::uuid

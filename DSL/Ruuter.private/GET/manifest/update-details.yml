@@ -1,0 +1,48 @@
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.update_id == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    update_id: ${incoming.body.update_id}
+  next: get_update_details
+
+get_update_details:
+  call: http.post
+  args:
+    url: http://resql:8052/get-manifest-update-by-id
+    body:
+      update_id: ${update_id}
+  result: update_details_results
+  next: check_update_details_result
+
+check_update_details_result:
+  switch:
+    - condition: ${200 <= update_details_results.response.statusCodeValue && update_details_results.response.statusCodeValue < 300}
+      next: get_parent_manifest
+  next: return_bad_request
+
+get_parent_manifest:
+  call: http.post
+  args:
+    url: http://resql:8052/get-manifest-by-id
+    body:
+      manifest_id: ${update_details_results.response.body[0].parentManifestId}
+  result: parent_manifest_result
+  next: return_value
+
+return_value:
+   return: ${[parent_manifest_result.response.body, update_details_results.response.body]}
+   next: end
+
+return_bad_request:
+  status: 400
+  return: ${results.response.body.message}
+  next: end  
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter(s) missing"
+  next: end
