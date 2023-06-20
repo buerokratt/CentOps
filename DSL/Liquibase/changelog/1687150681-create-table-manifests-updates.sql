@@ -1,5 +1,5 @@
 -- liquibase formatted sql
--- changeset ahmedyasser:1687150680
+-- changeset ahmedyasser:1687150681
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "hstore";

@@ -7,43 +7,7 @@ check_for_required_parameters:
 extract_request_data:
   assign:
     manifest_id: ${incoming.body.manifest_id}
-  next: get_manifest
-
-get_manifest:
-  call: http.post
-  args:
-    url: http://resql:8052/get-manifest-by-id
-    body:
-      manifest_id: ${manifest_id}
-  result: manifest_result
-  next: check_get_manifest_result 
-
-check_get_manifest_result:
-  switch:
-    - condition: ${200 <= manifest_result.response.statusCodeValue && manifest_result.response.statusCodeValue < 300}
-      next: log_history
-  next: return_bad_request
-  
-log_history:
-  call: http.post
-  args:
-    url: http://resql:8052/update-manifest-history
-    body:
-      parent_manifest_id: ${manifest_id}
-      buerokratt_version: ${manifest_result.response.body[0].buerokrattVersion}
-      components: ${manifest_result.response.body[0].components}
-      extra_configs: ${manifest_result.response.body[0].extraConfigs}
-      security_configs: ${manifest_result.response.body[0].securityConfigs}
-      type: "create"
-      status: "rejected"
-  result: history_result
-  next: check_history_result    
-
-check_history_result:
-  switch:
-    - condition: ${200 <= history_result.response.statusCodeValue && history_result.response.statusCodeValue < 300}
-      next: delete_manifest
-  next: return_bad_request
+  next: delete_manifest
 
 delete_manifest:
   call: http.post
@@ -57,8 +21,29 @@ delete_manifest:
 check_delete_result:
   switch:
     - condition: ${200 <= delete_result.response.statusCodeValue && delete_result.response.statusCodeValue < 300}
-      next: return_ok
+      next: log_history
   next: return_bad_request
+
+log_history:
+  call: http.post
+  args:
+    url: http://resql:8052/update-manifest-history
+    body:
+      parent_manifest_id: ${manifest_id}
+      buerokratt_version: ${delete_result.response.body[0].buerokrattVersion}
+      components: ${delete_result.response.body[0].components}
+      extra_configs: ${delete_result.response.body[0].extraConfigs}
+      security_configs: ${delete_result.response.body[0].securityConfigs}
+      type: "manifest"
+      status: "rejected"
+  result: history_result
+  next: check_history_result    
+
+check_history_result:
+  switch:
+    - condition: ${200 <= history_result.response.statusCodeValue && history_result.response.statusCodeValue < 300}
+      next: return_ok
+  next: return_bad_request  
 
 return_ok:
   status: 200

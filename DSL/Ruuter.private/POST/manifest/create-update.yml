@@ -1,22 +1,24 @@
 check_for_required_parameters:
   switch:
-    - condition: ${incoming.body.buerokratt_version == null || incoming.body.components == null || incoming.body.extra_configs == null || incoming.body.security_configs == null}
+    - condition: ${incoming.body.parent_manifest_id || incoming.body.buerokratt_version == null || incoming.body.components == null || incoming.body.extra_configs == null || incoming.body.security_configs == null}
       next: return_incorrect_request
   next: extract_request_data
 
 extract_request_data:
   assign:
+    parent_manifest_id: ${incoming.bodyparent_manifest_id}
     buerokratt_version: ${incoming.body.buerokratt_version}
     components: ${incoming.body.components}
     extra_configs: ${incoming.body.extra_configs}
     security_configs: ${incoming.body.security_configs}
-  next: create_manifest
+  next: create_update
 
-create_manifest:
+create_update:
   call: http.post
   args:
-    url: http://resql:8052/create-manifest
+    url: http://resql:8052/create-manifest-update
     body:
+      parent_manifest_id: ${parent_manifest_id}
       buerokratt_version: ${buerokratt_version}
       components: ${components}
       extra_configs: ${extra_configs}
@@ -27,12 +29,28 @@ create_manifest:
 check_result:
   switch:
     - condition: ${200 <= results.response.statusCodeValue && results.response.statusCodeValue < 300}
-      next: return_ok
+      next: update_manifest_status
   next: return_bad_request  
 
+update_manifest_status:
+  call: http.post
+  args:
+    url: http://resql:8052/update-manifest-status
+    body:
+      manifest_id: ${parent_manifest_id}
+      status: "has_updates"
+  result: results
+  next: check_update_status_result   
+
+check_update_status_result:
+  switch:
+    - condition: ${200 <= results.response.statusCodeValue && results.response.statusCodeValue < 300}
+      next: return_ok
+  next: return_bad_request    
+  
 return_ok:
   status: 200
-  return: "Manifest Created Successfully"
+  return: "Manifest Update Created Successfully"
   next: end  
 
 return_bad_request:
