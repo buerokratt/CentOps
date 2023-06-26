@@ -1,0 +1,35 @@
+assign:
+  assign:
+    message: ${incoming.body.message}
+    type: 'TEXT'
+    reply_to_message_id: ${incoming.body.reply_to_message_id}
+    receiver_id: ${incoming.body.receiver_id}
+    sender_id: 12345 # todo later: extract this from jwt
+
+send_message:
+  call: http.post
+  args:
+    url: http://resql:8052/send-message
+    body: 
+      message: ${message}
+      type: ${type}
+      receiver_id: ${receiver_id}
+      sender_id: ${sender_id}
+      reply_to_message_id: ${reply_to_message_id}
+  result: messageResult
+
+return_ok:
+  wrapper: false
+  status: 201
+  return: "Message has been sent"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "User email is required"
+  next: end
+
+return_unauthorized:
+  return: "error: unauthorized"
+  status: 401
+  next: end

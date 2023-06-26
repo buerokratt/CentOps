@@ -1,0 +1,27 @@
+assign:
+  assign:
+    use_id: ${incoming.body.user_id} # todo: extract this from jwt
+
+get_inbox_messages:
+  call: http.post
+  args:
+    url: http://resql:8052/get-inbox-messages
+    body: 
+      use_id: ${user_id}
+  result: messagesResult
+
+return_ok:
+  wrapper: false
+  status: 200
+  return: ${messagesResult.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Incorrect request"
+  next: end
+
+return_unauthorized:
+  status: 401
+  return: "error: unauthorized"
+  next: end
