@@ -34,6 +34,10 @@ const EditParticipantPage: React.FC = () => {
   const [participantType, setparticipantType] = useState(
     capitalize(participant.participantType) ?? ParticipantType.Unknown
   );
+  const [ipAddress, setIpAddress] = useState(participant.ipAddress.value ?? '');
+  const [nameAbbreviated, setnameAbbreviated] = useState(
+    participant.nameAbbreviated ?? ''
+  );
   const [detailsChangeEnabled, setDetailsChangeEnabled] = useState(false);
   const [statusChangeEnabled, setStatusChangeEnabled] = useState(false);
 
@@ -65,6 +69,8 @@ const EditParticipantPage: React.FC = () => {
         participantType: participantType.toLowerCase(),
         name: organisationName,
         institutionId: participant.institutionId,
+        ipAddress: ipAddress,
+        nameAbbreviated: nameAbbreviated,
       },
       { withCredentials: true }
     );
@@ -127,6 +133,13 @@ const EditParticipantPage: React.FC = () => {
             onChange={(e) => setOrganisationName(e.target.value)}
           />
           <FormInput
+            name="name-abbreviated"
+            label={t('edit-participants.name-abbreviated')}
+            value={nameAbbreviated}
+            disabled={!detailsChangeEnabled}
+            onChange={(e) => setnameAbbreviated(e.target.value)}
+          />
+          <FormInput
             name="contact-email"
             label={t('edit-participants.contact-email')}
             value={contactEmail}
@@ -139,6 +152,13 @@ const EditParticipantPage: React.FC = () => {
             value={host}
             disabled={!detailsChangeEnabled}
             onChange={(e) => setHost(e.target.value)}
+          />
+          <FormInput
+            name="ipAddress"
+            label={t('edit-participants.ip-address')}
+            value={ipAddress}
+            disabled={!detailsChangeEnabled}
+            onChange={(e) => setIpAddress(e.target.value)}
           />
           <FormSelect
             label={t('edit-participants.participant-type')}
