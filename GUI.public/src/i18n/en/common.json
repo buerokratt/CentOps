@@ -8,14 +8,20 @@
     "title": "Overview"
   },
   "application": {
+    "contact-email": "Contact email address",
     "enter-invitation-id": "Please enter your invitation ID",
+    "host": "Network host",
     "insert-organisation-details": "Please enter detailed information about your organisation",
     "invalid-id": "Invitation ID is invalid or already used",
     "invitation-error": "Invitation error",
-    "title": "Application page",
-    "validate-id": "Validate ID",
+    "invitation-id": "Invitation Id",
+    "ip-address": "IP address",
+    "name-abbreviated": "Abbreviated name",
+    "organisation-name": "Organisation name",
     "send-application": "Send application",
-    "submit-success": "Thanks for your application!"
+    "submit-success": "Thanks for your application!",
+    "title": "Application page",
+    "validate-id": "Validate ID"
   },
   "application-status": {
     "processing": "Processing application, please wait",

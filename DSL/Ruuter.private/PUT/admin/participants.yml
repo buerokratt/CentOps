@@ -19,7 +19,7 @@ validate_permission:
 
 check_for_body_parameters:
   switch:
-    - condition: ${incoming.params.uuid == null || incoming.body == null || incoming.body.contactEmail == null || incoming.body.name == null || incoming.body.host == null || incoming.body.participantType == null}
+    - condition: ${incoming.params.uuid == null || incoming.body == null || incoming.body.contactEmail == null || incoming.body.name == null || incoming.body.host == null || incoming.body.participantType == null || incoming.body.nameAbbreviated == null || incoming.body.ipAddress == null}
       next: return_incorrect_request
 
 assign_variables:
@@ -31,6 +31,8 @@ assign_variables:
     host: ${incoming.body.host}
     participant_type: ${incoming.body.participantType}
     unique_identifier: ${incoming.params.uuid}
+    ip_address: ${incoming.body.ipAddress}
+    name_abbreviated: ${incoming.body.nameAbbreviated}
 
 get_participant:
   call: http.post
@@ -51,8 +53,11 @@ update_participant:
       name: ${name}
       host: ${host}
       participant_type: ${participant_type}
-      participant_status: ${participant_result.response.body[0].participantStatus}
       unique_identifier: ${unique_identifier}
+      ip_address: ${ip_address}
+      name_abbreviated: ${name_abbreviated}
+      participant_status: ${participant_result.response.body[0].participantStatus}
+      security_token: ${participant_result.response.body[0].securityToken}
   result: update_result
 
 return_ok:
