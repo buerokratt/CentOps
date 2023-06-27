@@ -16,14 +16,32 @@ assign_info:
     receiver_id: ${incoming.body.receiver_id}
     sender_id: ${incoming.body.sender_id} # todo later: extract this from jwt
 
+check_for_if_reply:
+  switch:
+    - condition: ${reply_to_message_id == null || reply_to_message_id == ''}
+      next: send_new_message
+  next: send_reply_message
+
 #
 # todo later: use encryption to encrypt message content
 #
 
-send_message:
+send_new_message:
   call: http.post
   args:
-    url: http://resql:8052/send-message
+    url: http://resql:8052/send-new-message
+    body: 
+      message: ${message}
+      type: ${type}
+      receiver_id: ${receiver_id}
+      sender_id: ${sender_id}
+  result: messageResult
+  next: return_ok
+
+send_reply_message:
+  call: http.post
+  args:
+    url: http://resql:8052/send-reply-message
     body: 
       message: ${message}
       type: ${type}
@@ -31,6 +49,7 @@ send_message:
       sender_id: ${sender_id}
       reply_to_message_id: ${reply_to_message_id}
   result: messageResult
+  next: return_ok
 
 return_ok:
   wrapper: false

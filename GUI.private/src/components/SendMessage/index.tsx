@@ -41,7 +41,6 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
       receiver_id: selectedReceiver,
       sender_id: 123,
       type: 'TEXT',
-      reply_to_message_id: '',
     })
       .then(() => {
         toast.open({
