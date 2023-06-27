@@ -1,19 +1,24 @@
-assign:
-  assign:
-    use_id: ${incoming.body.user_id} # todo: extract this from jwt
+check_for_body:
+  switch:
+    - condition: ${incoming.body == null}
+      next: return_incorrect_request
 
-get_inbox_messages:
+assign_info:
+  assign:
+    user_id: ${incoming.body.user_id} # todo: extract this from jwt
+
+fetch_inbox_messages:
   call: http.post
   args:
     url: http://resql:8052/get-inbox-messages
     body: 
-      use_id: ${user_id}
+      user_id: ${user_id}
   result: messagesResult
 
 return_ok:
   wrapper: false
   status: 200
-  return: ${messagesResult.response.body}
+  return: ${messagesResult.response}
   next: end
 
 return_incorrect_request:

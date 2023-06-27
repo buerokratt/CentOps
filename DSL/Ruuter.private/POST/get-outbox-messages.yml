@@ -1,4 +1,9 @@
-assign:
+check_for_body:
+  switch:
+    - condition: ${incoming.body == null}
+      next: return_incorrect_request
+
+assign_info:
   assign:
     user_id: ${incoming.body.user_id} # todo: extract this from jwt
 
@@ -7,13 +12,13 @@ get_outbox_messages:
   args:
     url: http://resql:8052/get-outbox-messages
     body: 
-      use_id: ${user_id}
+      user_id: ${user_id}
   result: messagesResult
 
 return_ok:
   wrapper: false
   status: 200
-  return: ${messagesResult.response.body}
+  return: ${messagesResult.response}
   next: end
 
 return_incorrect_request:

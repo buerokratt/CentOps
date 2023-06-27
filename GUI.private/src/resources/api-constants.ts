@@ -10,3 +10,8 @@ export const updateParticipantStatus = (uuid: string): string =>
 export const deleteParticipant = (uuid: string): string =>
   `${baseUrl}/admin/participants?uuid=${uuid}`;
 export const toggleDummyApi = (): string => `${baseUrl}/toggle-dummy`;
+
+export const getInboxMessages = (): string =>
+  `${baseUrl}/get-inbox-messages`;
+export const getOutboxMessages = (): string =>
+  `${baseUrl}/get-outbox-messages`;

@@ -11,6 +11,7 @@ import {
 } from './pages';
 import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
+import MessagesPage from './pages/MessagesPage';
 
 const RootComponent: React.FC = () => {
   return (
@@ -36,6 +37,10 @@ const RootComponent: React.FC = () => {
         <Route
           path={ROUTES.PARTICIPANTS_REQUESTS_EDIT_ROUTE}
           element={<EditParticipantPage />}
+        />
+        <Route
+          path={ROUTES.MESSAGES_PAGE_ROUTE}
+          element={<MessagesPage />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
