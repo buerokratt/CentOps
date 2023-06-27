@@ -1,3 +1,8 @@
+
+#
+# todo later: use validate-message template to validate the sender
+#
+
 check_for_body:
   switch:
     - condition: ${incoming.body == null}
@@ -10,6 +15,10 @@ assign_info:
     reply_to_message_id: ${incoming.body.reply_to_message_id}
     receiver_id: ${incoming.body.receiver_id}
     sender_id: ${incoming.body.sender_id} # todo later: extract this from jwt
+
+#
+# todo later: use encryption to encrypt message content
+#
 
 send_message:
   call: http.post

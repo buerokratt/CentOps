@@ -15,6 +15,10 @@ get_outbox_messages:
       user_id: ${user_id}
   result: messagesResult
 
+#
+# todo later: use decryption to decrypt messages content
+#
+
 return_ok:
   wrapper: false
   status: 200

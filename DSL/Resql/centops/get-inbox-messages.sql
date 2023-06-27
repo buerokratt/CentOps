@@ -13,4 +13,5 @@ FROM messages m
 JOIN participants s ON m.sender_id = s.id
 JOIN participants r ON m.receiver_id = r.id
 WHERE m.receiver_id = :user_id
+AND m.status != 'REJECTED'
 ORDER BY m.timestamp;

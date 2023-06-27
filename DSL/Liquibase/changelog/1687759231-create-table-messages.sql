@@ -6,9 +6,9 @@ CREATE TYPE messages_type AS ENUM('TEXT', 'IMAGE');
 
 CREATE TABLE messages (
   id BIGSERIAL PRIMARY KEY,
-  sender_id BIGINT NOT NULL,
-  receiver_id BIGINT NOT NULL,
-  reply_to_message_id BIGINT NULL,
+  sender_id BIGINT NOT NULL REFERENCES participants,
+  receiver_id BIGINT NOT NULL REFERENCES participants,
+  reply_to_message_id BIGINT NULL REFERENCES messages,
   message TEXT NOT NULL,
   status messages_status DEFAULT 'SENT',
   type messages_type DEFAULT 'TEXT',
