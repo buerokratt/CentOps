@@ -22,11 +22,14 @@ check_for_if_reply:
       next: send_new_message
   next: send_reply_message
 
-encrypt_message_content:
-  template: templates/encryption/aes
-  requestType: post
-  body:
-    content: ${message}
+encrpyt_message:
+  call: http.post
+  args:
+    url: http://data_mapper:3005/hbs/encrypt-message
+    headers:
+      type: "json"
+    body:
+      content: ${message}
   result: encryptedMessageResult
 
 send_new_message:
@@ -34,7 +37,7 @@ send_new_message:
   args:
     url: http://resql:8052/send-new-message
     body: 
-      message: ${encryptedMessageResult}
+      message: ${encryptedMessageResult.response.body.content}
       type: ${type}
       receiver_id: ${receiver_id}
       sender_id: ${sender_id}
