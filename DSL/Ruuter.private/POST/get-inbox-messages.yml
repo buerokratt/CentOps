@@ -7,13 +7,6 @@ assign_info:
   assign:
     user_id: ${incoming.body.user_id} # todo: extract this from jwt
 
-mark_inbox_as_received:
-  call: http.post
-  args:
-    url: http://resql:8052/mark-inbox-messages-as-received
-    body: 
-      user_id: ${user_id}
-
 fetch_inbox_messages:
   call: http.post
   args:
@@ -21,6 +14,14 @@ fetch_inbox_messages:
     body: 
       user_id: ${user_id}
   result: messagesResult
+
+mark_inbox_as_received:
+  call: http.post
+  args:
+    url: http://resql:8052/mark-inbox-messages-as-received
+    body: 
+      user_id: ${user_id}
+  result: received_messages_Result
 
 #
 # todo later: use decryption to decrypt messages content

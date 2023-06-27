@@ -15,8 +15,8 @@ JOIN participants AS r ON m.receiver_id = r.id
 JOIN (
   SELECT message_id, status
   FROM message_status
-  WHERE timestamp = (
-    SELECT MAX(timestamp)
+  WHERE id IN (
+    SELECT MAX(id)
     FROM message_status
     GROUP BY message_id
   )
