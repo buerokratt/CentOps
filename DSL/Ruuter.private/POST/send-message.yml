@@ -22,16 +22,19 @@ check_for_if_reply:
       next: send_new_message
   next: send_reply_message
 
-#
-# todo later: use encryption to encrypt message content
-#
+encrypt_message_content:
+  template: templates/encryption/aes
+  requestType: post
+  body:
+    content: ${message}
+  result: encryptedMessageResult
 
 send_new_message:
   call: http.post
   args:
     url: http://resql:8052/send-new-message
     body: 
-      message: ${message}
+      message: ${encryptedMessageResult}
       type: ${type}
       receiver_id: ${receiver_id}
       sender_id: ${sender_id}
