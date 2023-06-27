@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Button, DataTable, Track } from '../components';
 import { getInboxMessages, getOutboxMessages } from '../resources/api-constants';
 import { createColumnHelper } from '@tanstack/react-table';
+import SendMessage from '../components/SendMessage';
 
 interface Message {
   id: number;
@@ -39,12 +40,20 @@ const MessagesPage: React.FC = () => {
         header: 'Message',
         cell: (message) => message.getValue(),
       }),
+      appRequestColumnHelper.accessor('sender', {
+        header: 'Sender',
+        cell: (sender) => sender.getValue(),
+      }),
+      appRequestColumnHelper.accessor('receiver', {
+        header: 'Receiver',
+        cell: (receiver) => receiver.getValue(),
+      }),
       appRequestColumnHelper.accessor('status', {
-        header: 'status',
+        header: 'Status',
         cell: (status) => status.getValue(),
       }),
       appRequestColumnHelper.accessor('timestamp', {
-        header: 'date',
+        header: 'Date',
         cell: (timestamp) => timestamp.getValue(),
       }),
     ], []);
@@ -66,11 +75,7 @@ const MessagesPage: React.FC = () => {
             Outbox
           </Button>
         </Track>
-        <Track>
-          <Button onClick={() => { }}>
-            Send New Message
-          </Button>
-        </Track>
+        <SendMessage onSendMessage={() => fetchMessages(activeTab)} />
       </Track>
       <h2>{activeTab === 'inbox' ? 'Inbox Messages' : 'Outbox Messages'}</h2>
       <DataTable

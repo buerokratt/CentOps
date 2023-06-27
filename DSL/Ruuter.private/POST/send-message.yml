@@ -1,10 +1,15 @@
-assign:
+check_for_body:
+  switch:
+    - condition: ${incoming.body == null}
+      next: return_incorrect_request
+
+assign_info:
   assign:
     message: ${incoming.body.message}
-    type: 'TEXT'
+    type: ${incoming.body.type}
     reply_to_message_id: ${incoming.body.reply_to_message_id}
     receiver_id: ${incoming.body.receiver_id}
-    sender_id: 12345 # todo later: extract this from jwt
+    sender_id: ${incoming.body.sender_id} # todo later: extract this from jwt
 
 send_message:
   call: http.post
