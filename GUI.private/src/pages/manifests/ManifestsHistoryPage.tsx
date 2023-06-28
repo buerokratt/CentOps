@@ -3,11 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Manifest } from '../../types/manifest';
 import { useQuery } from '@tanstack/react-query';
-import { Button, DataTable, Icon } from '../../components';
+import { DataTable, Icon } from '../../components';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { capitalizeFirst } from '../../utils/capatalizeFirst';
-import { MdClose, MdPreview } from 'react-icons/md';
 import { AiFillEye } from 'react-icons/ai';
 
 const ManifestsHistoryPage: React.FC = () => {

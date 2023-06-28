@@ -20,7 +20,6 @@ const ManifestsHistoryDetailsPage: React.FC = () => {
     const res = await axios.post(manifestHistoryDetails(), {
       history_id: details.historyId,
     });
-    console.log(res.data);
     const parentManifest = {
       components: JSON.parse(res.data[0].components),
       extraConfigs: JSON.parse(res.data[0].extraConfigs),
@@ -36,7 +35,6 @@ const ManifestsHistoryDetailsPage: React.FC = () => {
       };
     }
     setHistoryDetails([parentManifest, updateManifest]);
-    console.log(res.data);
   };
 
   return (
