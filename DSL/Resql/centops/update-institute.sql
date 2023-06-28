@@ -1,5 +1,2 @@
-UPDATE institutions
-SET 
-  name = :name, 
-  contact_email = :email
-WHERE id = :id::bigint;
+INSERT INTO institution_info (institution_id, name, contact_email)
+VALUES(:id::bigint, :name, :email)

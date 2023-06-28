@@ -1,7 +1,16 @@
-UPDATE institutions
-SET status = CASE 
-    WHEN old.status = 'active' THEN 'inactive'::status_type
-    ELSE 'active'::status_type
-  END
-  FROM (SELECT status FROM institutions WHERE id = :id::bigint) AS old
-WHERE id = :id::bigint;
+WITH latest_status AS (
+  SELECT institution_id, status
+  FROM institution_status
+  WHERE institution_id = :id::bigint
+  ORDER BY id DESC
+  LIMIT 1
+)
+INSERT INTO institution_status (institution_id, status)
+VALUES(
+  :id::bigint,
+  (
+    SELECT 
+    CASE WHEN status = 'active' THEN 'inactive' ELSE 'active' END
+    FROM latest_status
+  )::status_type
+);

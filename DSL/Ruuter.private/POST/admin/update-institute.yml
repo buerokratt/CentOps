@@ -29,7 +29,7 @@ update_institute:
     body:
       id: ${incoming.body.id}
       name: ${incoming.body.name}
-      email: ${incoming.body.contactEmail}
+      email: ${incoming.body.email}
   result: update_result
 
 return_ok:

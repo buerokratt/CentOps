@@ -56,9 +56,12 @@ const InstitutionsPages: React.FC = () => {
   };
 
   const handleAddEditNewInstitute = () => {
-    const { guiStatus, ...inst } = newInstitute;
+    const { guiStatus, name, contactEmail } = newInstitute;
     const url = guiStatus === 'edit' ? editInstitute() : addInstitute();
-    axios.post(url, inst)
+    axios.post(url, {
+      name,
+      email: contactEmail
+    })
       .then(() => {
         refetch();
         toast.open({

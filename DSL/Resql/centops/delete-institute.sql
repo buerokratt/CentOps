@@ -1,3 +1,2 @@
-UPDATE institutions
-SET status = 'deleted'::status_type
-WHERE id = :id::bigint;
+INSERT INTO institution_status (institution_id, status)
+VALUES(:id::bigint, 'deleted'::status_type);
