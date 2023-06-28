@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Track } from '../../components';
 import { useLocation } from 'react-router-dom';
-import { ManifestHistory } from '../../types/manifestHistory';
+import { Manifest } from '../../types/manifest';
 import axios from 'axios';
 import { manifestHistoryDetails } from '../../resources/api-constants';
 import ReactDiffViewer from 'react-diff-viewer';
@@ -10,7 +10,7 @@ import ReactDiffViewer from 'react-diff-viewer';
 const ManifestsHistoryDetailsPage: React.FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
-  const details = location.state as ManifestHistory;
+  const details = location.state as Manifest;
   const [historyDetails, setHistoryDetails] = useState<any>([]);
   useEffect(() => {
     getHistoryDetails();

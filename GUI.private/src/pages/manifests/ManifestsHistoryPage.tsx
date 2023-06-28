@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ManifestHistory } from '../../types/manifestHistory';
+import { Manifest } from '../../types/manifest';
 import { useQuery } from '@tanstack/react-query';
 import { Button, DataTable, Icon } from '../../components';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -14,11 +14,11 @@ const ManifestsHistoryPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { data: history } = useQuery<ManifestHistory[]>({
+  const { data: history } = useQuery<Manifest[]>({
     queryKey: ['manifest/history'],
   });
 
-  const appRequestColumnHelper = createColumnHelper<ManifestHistory>();
+  const appRequestColumnHelper = createColumnHelper<Manifest>();
   const appRequestColumns = useMemo(
     () => [
       appRequestColumnHelper.accessor('historyId', {
@@ -36,17 +36,23 @@ const ManifestsHistoryPage: React.FC = () => {
       appRequestColumnHelper.accessor('createdAt', {
         header: 'Created At',
         cell: (uniqueIdentifier) =>
-          format(new Date(uniqueIdentifier.getValue()), 'dd-MM-yyyy hh:mm a'),
+          format(
+            new Date(uniqueIdentifier.getValue() ?? ''),
+            'dd-MM-yyyy hh:mm a'
+          ),
       }),
       appRequestColumnHelper.accessor('type', {
         header: 'Type',
         cell: (uniqueIdentifier) =>
-          capitalizeFirst(uniqueIdentifier.getValue()),
+          capitalizeFirst(uniqueIdentifier.getValue() ?? ''),
       }),
       appRequestColumnHelper.accessor('status', {
         header: 'Status',
         cell: (uniqueIdentifier) =>
-          capitalizeFirst(uniqueIdentifier.getValue()).replaceAll('_', ' '),
+          capitalizeFirst(uniqueIdentifier.getValue() ?? '').replaceAll(
+            '_',
+            ' '
+          ),
       }),
       appRequestColumnHelper.display({
         header: '',
