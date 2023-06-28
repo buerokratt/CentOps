@@ -13,5 +13,6 @@ export const ROUTES = {
   MANIFESTS_NEW_MANIFESTS_ROUTE: '/centops/manifests/new_manifests',
   MANIFESTS_UPDATES_ROUTE: '/centops/manifests/updates',
   MANIFESTS_HISTORY_ROUTE: '/centops/manifests/history',
-  MANIFESTS_HISTORY_DETAILS_ROUTE: '/centops/manifests/history/details/:id',
+  MANIFESTS_DETAILS_ROUTE: '/centops/manifests/details/:id',
+  MANIFESTS_CREATE_EDIT_ROUTE: '/centops/manifests/create_edit',
 };

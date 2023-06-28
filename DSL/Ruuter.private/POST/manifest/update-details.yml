@@ -34,7 +34,8 @@ get_parent_manifest:
   next: return_value
 
 return_value:
-   return: ${[parent_manifest_result.response.body, update_details_results.response.body]}
+   wrapper: false
+   return: ${[parent_manifest_result.response.body[0], update_details_results.response.body[0]]}
    next: end
 
 return_bad_request:

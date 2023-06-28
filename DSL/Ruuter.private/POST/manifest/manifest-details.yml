@@ -25,6 +25,7 @@ check_update_details_result:
   next: return_bad_request
 
 return_value:
+   wrapper: false
    return: ${manifest_details_results.response.body}
    next: end
 

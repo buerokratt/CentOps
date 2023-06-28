@@ -55,7 +55,9 @@
     "details": "Details",
     "manifest": "Manifest",
     "parentManifest": "Parent Manifest",
-    "updateManifest": "Update Manifest"
+    "updateManifest": "Update Manifest",
+    "newManifests": "New Manifests",
+    "newManifest": "New Manifest"
   },
   "participants": {
     "contact-email": "Contact email",

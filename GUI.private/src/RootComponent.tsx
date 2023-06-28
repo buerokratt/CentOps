@@ -15,7 +15,8 @@ import ManifestsOverviewPage from './pages/manifests/ManifestsOverviewPage';
 import NewManifestsPage from './pages/manifests/NewManifestsPage';
 import ManifestsUpdatesPage from './pages/manifests/ManifestsUpdatesPage';
 import ManifestsHistoryPage from './pages/manifests/ManifestsHistoryPage';
-import ManifestsHistoryDetailsPage from './pages/manifests/HistoryDetailsPage';
+import ManifestsHistoryDetailsPage from './pages/manifests/ManifestsDetailsPage';
+import CreateEditManifestPage from './pages/manifests/CreateEditManifestPage';
 
 const RootComponent: React.FC = () => {
   return (
@@ -59,8 +60,12 @@ const RootComponent: React.FC = () => {
           element={<ManifestsHistoryPage />}
         />
         <Route
-          path={ROUTES.MANIFESTS_HISTORY_DETAILS_ROUTE}
+          path={ROUTES.MANIFESTS_DETAILS_ROUTE}
           element={<ManifestsHistoryDetailsPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_CREATE_EDIT_ROUTE}
+          element={<CreateEditManifestPage />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

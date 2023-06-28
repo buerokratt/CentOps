@@ -7,4 +7,4 @@ SELECT manifest_id,
        security_configs #>> '{}' as security_configs,
        status
 FROM manifests
-WHERE status = 'approved' OR status = 'has_updates';
+WHERE status = 'pending_approval';

@@ -63,7 +63,7 @@ const ManifestsHistoryPage: React.FC = () => {
                 color="rgba(36, 89, 158, 1)"
                 onClick={() =>
                   navigate(
-                    `/centops/manifests/history/details/${props.row.original.historyId}`,
+                    `/centops/manifests/details/${props.row.original.historyId}`,
                     {
                       state: props.row.original,
                     }
