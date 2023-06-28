@@ -1,20 +1,21 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ManifestHistory } from '../../types/manifestHistory';
 import { useQuery } from '@tanstack/react-query';
-import { DataTable, Label } from '../../components';
+import { Button, DataTable, Icon } from '../../components';
 import { createColumnHelper } from '@tanstack/react-table';
+import { format } from 'date-fns';
+import { capitalizeFirst } from '../../utils/capatalizeFirst';
+import { MdClose, MdPreview } from 'react-icons/md';
+import { AiFillEye } from 'react-icons/ai';
 
 const ManifestsHistoryPage: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { data: history } = useQuery<ManifestHistory[]>({
     queryKey: ['manifest/history'],
-    onSuccess: (data) => {
-      console.log(data);
-      console.log(history);
-    },
   });
 
   const appRequestColumnHelper = createColumnHelper<ManifestHistory>();
@@ -24,16 +25,65 @@ const ManifestsHistoryPage: React.FC = () => {
         header: 'History ID',
         cell: (uniqueIdentifier) => uniqueIdentifier.getValue(),
       }),
+      appRequestColumnHelper.accessor('parentManifestId', {
+        header: 'Manifest ID',
+        cell: (uniqueIdentifier) => uniqueIdentifier.getValue(),
+      }),
+      appRequestColumnHelper.accessor('updateId', {
+        header: 'Update Id',
+        cell: (uniqueIdentifier) => uniqueIdentifier.getValue(),
+      }),
+      appRequestColumnHelper.accessor('createdAt', {
+        header: 'Created At',
+        cell: (uniqueIdentifier) =>
+          format(new Date(uniqueIdentifier.getValue()), 'dd-MM-yyyy hh:mm a'),
+      }),
+      appRequestColumnHelper.accessor('type', {
+        header: 'Type',
+        cell: (uniqueIdentifier) =>
+          capitalizeFirst(uniqueIdentifier.getValue()),
+      }),
+      appRequestColumnHelper.accessor('status', {
+        header: 'Status',
+        cell: (uniqueIdentifier) =>
+          capitalizeFirst(uniqueIdentifier.getValue()).replaceAll('_', ' '),
+      }),
+      appRequestColumnHelper.display({
+        header: '',
+        cell: (props) => (
+          <Icon
+            icon={
+              <AiFillEye
+                fontSize={25}
+                color="rgba(36, 89, 158, 1)"
+                onClick={() =>
+                  navigate(
+                    `/centops/manifests/history/details/${props.row.original.historyId}`,
+                    {
+                      state: props.row.original,
+                    }
+                  )
+                }
+              />
+            }
+            size="medium"
+          />
+        ),
+        id: 'view',
+        meta: {
+          size: '1%',
+        },
+      }),
     ],
     [history, appRequestColumnHelper, t]
   );
 
   return (
     <>
-      <DataTable data={history} columns={appRequestColumns} />
-      {/* {history && history.length && (
+      <h2>{t('menu.history')}</h2>
+      {history && history.length > 0 && (
         <DataTable data={history} columns={appRequestColumns} />
-      )} */}
+      )}
     </>
   );
 };

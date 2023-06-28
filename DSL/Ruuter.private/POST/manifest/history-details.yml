@@ -31,6 +31,7 @@ check_history_details_type:
   next: get_parent_manifest
 
 return_manifest_history:
+   wrapper: false
    return: ${history_details_results.response.body}
    next: end  
 
@@ -44,7 +45,8 @@ get_parent_manifest:
   next: return_value
 
 return_value:
-   return: ${[parent_manifest_result.response.body, history_details_results.response.body]}
+   wrapper: false
+   return: ${[parent_manifest_result.response.body[0], history_details_results.response.body[0]]}
    next: end
 
 return_bad_request:

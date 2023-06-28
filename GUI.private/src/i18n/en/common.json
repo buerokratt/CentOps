@@ -50,7 +50,12 @@
     "manifests": "Manifests",
     "new_manifests": "New Manifests",
     "updates": "Updates",
-    "history": "History"
+    "history": "History",
+    "view": "View",
+    "details": "Details",
+    "manifest": "Manifest",
+    "parentManifest": "Parent Manifest",
+    "updateManifest": "Update Manifest"
   },
   "participants": {
     "contact-email": "Contact email",
@@ -61,7 +66,7 @@
     "title": "Participants"
   },
   "requests": {
-    "edit": "edit",
+    "edit": "Edit",
     "description": "All application requests",
     "request-status": "Request status",
     "title": "Application requests"

@@ -15,6 +15,7 @@ import ManifestsOverviewPage from './pages/manifests/ManifestsOverviewPage';
 import NewManifestsPage from './pages/manifests/NewManifestsPage';
 import ManifestsUpdatesPage from './pages/manifests/ManifestsUpdatesPage';
 import ManifestsHistoryPage from './pages/manifests/ManifestsHistoryPage';
+import ManifestsHistoryDetailsPage from './pages/manifests/HistoryDetailsPage';
 
 const RootComponent: React.FC = () => {
   return (
@@ -56,6 +57,10 @@ const RootComponent: React.FC = () => {
         <Route
           path={ROUTES.MANIFESTS_HISTORY_ROUTE}
           element={<ManifestsHistoryPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_HISTORY_DETAILS_ROUTE}
+          element={<ManifestsHistoryDetailsPage />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

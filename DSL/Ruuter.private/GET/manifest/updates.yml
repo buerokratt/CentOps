@@ -5,4 +5,5 @@ get_manifests_updates:
   result: results
 
 return_value:
+   wrapper: false
    return: ${results.response.body}

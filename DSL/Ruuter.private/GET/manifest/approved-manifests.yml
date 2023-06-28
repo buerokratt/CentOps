@@ -5,4 +5,5 @@ get_approved_manifests:
   result: results
 
 return_value:
+   wrapper: false
    return: ${results.response.body}
