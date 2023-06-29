@@ -237,7 +237,7 @@ const NewManifestsPage: React.FC = () => {
       )}
       {showDeleteConfirmationModal && (
         <Dialog
-          title="Delete Manifest"
+          title={t('manifest.deleteManifest')}
           onClose={() => setShowDeleteConfirmationModal((value) => !value)}
           footer={
             <>

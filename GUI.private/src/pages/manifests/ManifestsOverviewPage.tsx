@@ -11,6 +11,8 @@ import { AiFillDelete, AiFillEdit, AiFillEye } from 'react-icons/ai';
 import { useToast } from '../../hooks/useToast';
 import api from '../../services/api';
 import { AxiosError } from 'axios';
+import animationData from '../../lottie/noData.json';
+import Lottie from 'react-lottie';
 
 const ManifestsOverviewPage: React.FC = () => {
   const { t } = useTranslation();
@@ -20,6 +22,14 @@ const ManifestsOverviewPage: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<string | number | null>(null);
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
+  const lottieDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
 
   const { data: newManifests } = useQuery<Manifest[]>({
     queryKey: ['manifest/approved-manifests'],
@@ -171,7 +181,7 @@ const ManifestsOverviewPage: React.FC = () => {
         </Button>
         {showDeleteConfirmationModal && (
           <Dialog
-            title="Delete Manifest"
+            title={t('manifest.deleteManifest')}
             onClose={() => setShowDeleteConfirmationModal((value) => !value)}
             footer={
               <>
@@ -211,6 +221,12 @@ const ManifestsOverviewPage: React.FC = () => {
       </Track>
       {newManifests && newManifests.length > 0 && (
         <DataTable data={newManifests} columns={appRequestColumns} />
+      )}
+      {newManifests && newManifests.length === 0 && (
+        <Track direction="vertical">
+          <Lottie options={lottieDefaultOptions} height={320} width={400} />
+          <label>{t('manifest.noManifests')}</label>
+        </Track>
       )}
     </>
   );

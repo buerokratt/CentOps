@@ -1,4 +1,5 @@
-DELETE FROM manifests
+UPDATE manifests
+SET status = 'deleted'
 WHERE manifest_id = :manifest_id::uuid
 RETURNING manifest_id,
           buerokratt_version,

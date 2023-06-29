@@ -7,4 +7,5 @@ SELECT parent_manifest_id,
        extra_configs #>> '{}' as extra_configs,
        security_configs #>> '{}' as security_configs,
        status
-FROM manifests_updates;
+FROM manifests_updates
+WHERE status != 'deleted';
