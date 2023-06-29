@@ -1,4 +1,5 @@
 export interface Manifest {
+  readonly buerokrattVersion?: string;
   readonly manifestId?: string;
   readonly historyId?: string;
   readonly parentManifestId?: string;

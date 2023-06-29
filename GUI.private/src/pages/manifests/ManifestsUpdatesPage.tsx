@@ -11,6 +11,7 @@ import {
   AiFillCheckCircle,
   AiFillCloseCircle,
   AiFillDelete,
+  AiFillEdit,
   AiFillEye,
 } from 'react-icons/ai';
 import api from '../../services/api';
@@ -181,6 +182,30 @@ const ManifestsUpdatesPage: React.FC = () => {
           />
         ),
         id: 'view',
+        meta: {
+          size: '1%',
+        },
+      }),
+      appRequestColumnHelper.display({
+        header: '',
+        cell: (props) =>
+          props.row.original.status === 'pending_approval' && (
+            <Icon
+              icon={
+                <AiFillEdit
+                  fontSize={22}
+                  color="rgba(36, 89, 158, 1)"
+                  onClick={() =>
+                    navigate(`/centops/manifests/create_edit`, {
+                      state: props.row.original,
+                    })
+                  }
+                />
+              }
+              size="medium"
+            />
+          ),
+        id: 'edit',
         meta: {
           size: '1%',
         },
