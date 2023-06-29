@@ -35,13 +35,13 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
       });
       return;
     }
-
-    axios.post(sendMessageApi(), {
-      message,
-      receiver_id: selectedReceiver,
-      sender_id: 123,
-      type: 'TEXT',
-    })
+    axios
+      .post(sendMessageApi(), {
+        message,
+        receiver_id: selectedReceiver,
+        sender_id: 1,
+        type: 'TEXT',
+      })
       .then(() => {
         toast.open({
           type: 'success',
@@ -57,7 +57,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
           type: 'error',
           title: 'Messages',
           message: 'Failed to send your message',
-        })
+        });
       });
   };
 
@@ -74,39 +74,44 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
     setMessageContent('');
     setSelectedReceiver(null);
     setShowModal(false);
-  }
+  };
 
   return (
     <>
       <Button onClick={() => setShowModal(true)}>Send Message</Button>
-      {showModal && (<Modal
-        title='New Message'
-        onClose={resetForm}
-      >
-        <Track>
-          <label>Receiver:</label>
-          <select value={selectedReceiver || ''} onChange={(e) => setSelectedReceiver(Number(e.target.value))}>
-            <option value="">Select Receiver</option>
-            {participants.map((participant) => (
-              <option key={participant.id} value={participant.id}>
-                {participant.name}
-              </option>
-            ))}
-          </select>
-        </Track>
-        <Track>
-          <label>Message:</label>
-          <textarea value={message} onChange={(e) => setMessageContent(e.target.value)} />
-        </Track>
-        <Track justify='end' gap={16}>
-          <Button appearance='secondary' onClick={() => setShowModal(false)}>Cancel</Button>
-          <Button onClick={handleSendMessage}>Send</Button>
-        </Track>
-      </Modal>
+      {showModal && (
+        <Modal title="New Message" onClose={resetForm}>
+          <Track>
+            <label>Receiver:</label>
+            <select
+              value={selectedReceiver || ''}
+              onChange={(e) => setSelectedReceiver(Number(e.target.value))}
+            >
+              <option value="">Select Receiver</option>
+              {participants.map((participant) => (
+                <option key={participant.id} value={participant.id}>
+                  {participant.name}
+                </option>
+              ))}
+            </select>
+          </Track>
+          <Track>
+            <label>Message:</label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessageContent(e.target.value)}
+            />
+          </Track>
+          <Track justify="end" gap={16}>
+            <Button appearance="secondary" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSendMessage}>Send</Button>
+          </Track>
+        </Modal>
       )}
     </>
   );
 };
-
 
 export default SendMessage;

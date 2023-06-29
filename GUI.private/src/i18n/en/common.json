@@ -91,7 +91,10 @@
     "name": "Name",
     "participant-status": "Participant status",
     "participant-type": "Participant type",
-    "title": "Participants"
+    "title": "Participants",
+    "nameAbbreviated": "Name Abbreviated",
+    "host": "Host",
+    "ip-address": "IP Address"
   },
   "institutions": {
     "description": "All institutions",
