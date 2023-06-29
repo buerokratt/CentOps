@@ -10,6 +10,8 @@ import {
 } from './pages';
 import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
+import ManifestsDetailsPage from './pages/manifests/ManifestsDetailsPage';
+import PastUpdatesPage from './pages/manifests/PastUpdatesPage';
 
 const RootComponent: React.FC = () => {
   return (
@@ -23,6 +25,16 @@ const RootComponent: React.FC = () => {
         <Route
           path={ROUTES.APPLICATION_STATUS_ROUTE}
           element={<ApplicationStatusPage />}
+        />
+
+        <Route
+          path={ROUTES.MANIFESTS_PAST_UPDATES_ROUTE}
+          element={<PastUpdatesPage />}
+        />
+
+        <Route
+          path={ROUTES.MANIFESTS_DETAILS_ROUTE}
+          element={<ManifestsDetailsPage />}
         />
         <Route path={ROUTES.OVERVIEW_ROUTE} element={<OverviewPage />} />
         <Route path="*" element={<NotFoundPage />} />
