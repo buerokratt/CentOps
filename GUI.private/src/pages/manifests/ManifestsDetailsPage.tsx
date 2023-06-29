@@ -87,12 +87,19 @@ const ManifestsDetailsPage: React.FC = () => {
   return (
     <>
       <h2>{t('menu.details')}</h2>
-      {details.updateId && <h4>{`Update ID: ${details.updateId}`}</h4>}
       {details.historyId && <h4>{`History ID: ${details.historyId}`}</h4>}
+      {details.type === 'manifest' && (
+        <h4>{`Manifest ID: ${details.parentManifestId}`}</h4>
+      )}
+      {details.updateId != null && <h4>{`Update ID: ${details.updateId}`}</h4>}
+      {details.parentManifestId == null && (
+        <h4>{`Manifest ID: ${details.manifestId}`}</h4>
+      )}
       {manifestDetails && (
         <Track>
           {(details.type === 'manifest' ||
-            details.parentManifestId == null) && (
+            details.parentManifestId == null ||
+            details.status === 'published') && (
             <Track direction="vertical" justify="start" align="left">
               <span style={{ marginBottom: '10px' }}>
                 <h5>{t('menu.manifest')}</h5>
@@ -104,7 +111,7 @@ const ManifestsDetailsPage: React.FC = () => {
               </Card>
             </Track>
           )}
-          {details.updateId != null && (
+          {details.updateId != null && details.status != 'published' && (
             <Track direction="vertical" justify="start" align="left">
               <span style={{ marginBottom: '10px' }}>
                 <h5>{t('menu.updateManifest')}</h5>
