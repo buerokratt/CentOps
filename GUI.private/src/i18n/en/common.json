@@ -70,7 +70,9 @@
     "manifestRejectSuccess": "Manifest Rejected Successfully",
     "updateApproveSuccess": "Update Approved Successfully",
     "updateRejectSuccess": "Update Rejected Successfully",
-    "updateDeleteSuccess": "Update Deleted Successfully"
+    "updateDeleteSuccess": "Update Deleted Successfully",
+    "noNewManifests": "No New Manifests Found",
+    "noHistoryLogs": "No History Logs"
   },
   "participants": {
     "contact-email": "Contact email",

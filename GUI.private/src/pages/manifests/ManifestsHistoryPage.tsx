@@ -3,11 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Manifest } from '../../types/manifest';
 import { useQuery } from '@tanstack/react-query';
-import { DataTable, Icon } from '../../components';
+import { DataTable, Icon, Track } from '../../components';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { capitalizeFirst } from '../../utils/capatalizeFirst';
 import { AiFillEye } from 'react-icons/ai';
+import animationData from '../../lottie/noHistory.json';
+import Lottie from 'react-lottie';
 
 const ManifestsHistoryPage: React.FC = () => {
   const { t } = useTranslation();
@@ -16,6 +18,15 @@ const ManifestsHistoryPage: React.FC = () => {
   const { data: history } = useQuery<Manifest[]>({
     queryKey: ['manifest/history'],
   });
+
+  const lottieDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
 
   const appRequestColumnHelper = createColumnHelper<Manifest>();
   const appRequestColumns = useMemo(
@@ -88,6 +99,12 @@ const ManifestsHistoryPage: React.FC = () => {
       <h2>{t('menu.history')}</h2>
       {history && history.length > 0 && (
         <DataTable data={history} columns={appRequestColumns} />
+      )}
+      {history && history.length === 0 && (
+        <Track direction="vertical">
+          <Lottie options={lottieDefaultOptions} height={270} width={350} />
+          <label>{t('manifest.noHistoryLogs')}</label>
+        </Track>
       )}
     </>
   );

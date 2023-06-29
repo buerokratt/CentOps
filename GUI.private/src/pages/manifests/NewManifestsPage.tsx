@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Manifest } from '../../types/manifest';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, DataTable, Dialog, Icon } from '../../components';
+import { Button, DataTable, Dialog, Icon, Track } from '../../components';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { capitalizeFirst } from '../../utils/capatalizeFirst';
@@ -16,6 +16,8 @@ import {
 import { useToast } from '../../hooks/useToast';
 import api from '../../services/api';
 import { AxiosError } from 'axios';
+import animationData from '../../lottie/noData.json';
+import Lottie from 'react-lottie';
 
 const NewManifestsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -25,6 +27,14 @@ const NewManifestsPage: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<string | number | null>(null);
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
+  const lottieDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
 
   const { data: newManifests } = useQuery<Manifest[]>({
     queryKey: ['manifest/new-manifests'],
@@ -263,6 +273,12 @@ const NewManifestsPage: React.FC = () => {
             </h1>
           </div>
         </Dialog>
+      )}
+      {newManifests && newManifests.length === 0 && (
+        <Track direction="vertical">
+          <Lottie options={lottieDefaultOptions} height={320} width={400} />
+          <label>{t('manifest.noNewManifests')}</label>
+        </Track>
       )}
     </>
   );
