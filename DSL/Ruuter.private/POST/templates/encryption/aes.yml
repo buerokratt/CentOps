@@ -1,0 +1,12 @@
+aes_encryption:
+  call: http.post
+  args:
+    url: http://data_mapper:8054/encryption/aes
+    body:
+      content: ${incoming.body.content}
+      key: ${incoming.body.key}
+  result: result
+
+return_value:
+  return: ${result.response.body.cipher}
+  next: end
