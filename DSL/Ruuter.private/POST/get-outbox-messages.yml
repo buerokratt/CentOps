@@ -24,7 +24,7 @@ decrpyt_messages:
     body:
       entries: ${decryptedMessagesResult.response.body}
   result: messagesResult
-  
+
 return_ok:
   wrapper: false
   status: 200
