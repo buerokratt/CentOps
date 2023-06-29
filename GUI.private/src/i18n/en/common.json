@@ -47,6 +47,7 @@
     "overview": "Overview",
     "participants": "Participants",
     "requests": "Application requests",
+    "institutions": "Institutions",
     "messages": "Messages"
   },
   "participants": {
@@ -56,6 +57,15 @@
     "participant-status": "Participant status",
     "participant-type": "Participant type",
     "title": "Participants"
+  },
+  "institutions": {
+    "description": "All institutions",
+    "title": "Institutions",
+    "name": "Name",
+    "contact-email": "Contact email",
+    "status": "Institution status",
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "requests": {
     "edit": "edit",

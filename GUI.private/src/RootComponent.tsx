@@ -11,6 +11,7 @@ import {
 } from './pages';
 import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
+import InstitutionsPages from './pages/InstitutionsPage';
 import MessagesPage from './pages/MessagesPage';
 
 const RootComponent: React.FC = () => {
@@ -41,6 +42,10 @@ const RootComponent: React.FC = () => {
         <Route
           path={ROUTES.MESSAGES_PAGE_ROUTE}
           element={<MessagesPage />}
+        />
+        <Route
+          path={ROUTES.INSTITUTIONS_ROUTE}
+          element={<InstitutionsPages />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

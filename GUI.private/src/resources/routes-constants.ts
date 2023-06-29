@@ -8,5 +8,6 @@ export const ROUTES = {
   PARTICIPANTS_REQUESTS_ROUTE: '/centops/requests/participants',
   PARTICIPANTS_EDIT_ROUTE: '/centops/participants/edit/:id',
   PARTICIPANTS_REQUESTS_EDIT_ROUTE: '/centops/requests/participants/edit/:id',
+  INSTITUTIONS_ROUTE: '/centops/institutions',
   MESSAGES_PAGE_ROUTE: '/centops/messages',
 };
