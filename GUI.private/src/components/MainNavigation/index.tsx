@@ -152,7 +152,7 @@ const MainNavigation: FC = () => {
               path: ROUTES.MANIFESTS_OVERVIEW_ROUTE,
             },
             {
-              label: t('menu.new_manifests'),
+              label: t('menu.newManifests'),
               path: ROUTES.MANIFESTS_NEW_MANIFESTS_ROUTE,
             },
             {

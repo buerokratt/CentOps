@@ -31,7 +31,11 @@
   },
   "global": {
     "title": "CentOps Module",
-    "backhome": "Back to homepage"
+    "backhome": "Back to homepage",
+    "yes": "Yes",
+    "cancel": "Cancel",
+    "notification": "Notification",
+    "notificationError": "Error"
   },
   "invitation": {
     "create": "Create invitation",
@@ -48,16 +52,20 @@
     "participants": "Participants",
     "requests": "Application requests",
     "manifests": "Manifests",
-    "new_manifests": "New Manifests",
+    "newManifests": "New Manifests",
     "updates": "Updates",
     "history": "History",
-    "view": "View",
-    "details": "Details",
-    "manifest": "Manifest",
+    "manifest": "Manifest"
+  },
+  "manifest": {
     "parentManifest": "Parent Manifest",
     "updateManifest": "Update Manifest",
     "newManifests": "New Manifests",
-    "newManifest": "New Manifest"
+    "newManifest": "New Manifest",
+    "view": "View",
+    "details": "Details",
+    "deleteManifestQuestion": "Are you sure you want to delete this manifest ?",
+    "deleteSuccess": "Manifest Deleted Successfully"
   },
   "participants": {
     "contact-email": "Contact email",

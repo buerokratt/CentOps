@@ -86,7 +86,7 @@ const ManifestsDetailsPage: React.FC = () => {
 
   return (
     <>
-      <h2>{t('menu.details')}</h2>
+      <h2>{t('manifest.details')}</h2>
       {details.historyId && <h4>{`History ID: ${details.historyId}`}</h4>}
       {details.type === 'manifest' && (
         <h4>{`Manifest ID: ${details.parentManifestId}`}</h4>
@@ -114,7 +114,7 @@ const ManifestsDetailsPage: React.FC = () => {
           {details.updateId != null && details.status != 'published' && (
             <Track direction="vertical" justify="start" align="left">
               <span style={{ marginBottom: '10px' }}>
-                <h5>{t('menu.updateManifest')}</h5>
+                <h5>{t('manifest.updateManifest')}</h5>
               </span>
               <Card>
                 <ReactDiffViewer
