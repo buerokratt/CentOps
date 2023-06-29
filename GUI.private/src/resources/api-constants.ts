@@ -20,3 +20,12 @@ export const editInstitute = (): string =>
   `${baseUrl}/admin/update-institute`;
 export const toggleInstituteActiveStatus = (id: number): string =>
   `${baseUrl}/admin/toggle-institute-active-status?id=${id}`;
+export const getInboxMessages = (): string =>
+  `${baseUrl}/get-inbox-messages`;
+export const getOutboxMessages = (): string =>
+  `${baseUrl}/get-outbox-messages`;
+export const getParticipants = (): string =>
+  `${baseUrl}/admin/participants`;
+
+export const sendMessageApi = (): string =>
+  `${baseUrl}/send-message`

@@ -47,7 +47,8 @@
     "overview": "Overview",
     "participants": "Participants",
     "requests": "Application requests",
-    "institutions": "Institutions"
+    "institutions": "Institutions",
+    "messages": "Messages"
   },
   "participants": {
     "contact-email": "Contact email",

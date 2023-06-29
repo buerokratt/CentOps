@@ -29,6 +29,10 @@ const ParticipantsPage: React.FC = () => {
         header: `${t('participants.name')}`,
         cell: (name) => name.getValue(),
       }),
+      appRequestColumnHelper.accessor('nameAbbreviated', {
+        header: `${t('participants.nameAbbreviated')}`,
+        cell: (nameAbbreviated) => nameAbbreviated.getValue(),
+      }),
       appRequestColumnHelper.accessor('contactEmail', {
         header: `${t('participants.contact-email')}`,
         cell: (contactEmail) => contactEmail.getValue(),
@@ -36,6 +40,14 @@ const ParticipantsPage: React.FC = () => {
       appRequestColumnHelper.accessor('participantType', {
         header: `${t('participants.participant-type')}`,
         cell: (participantType) => participantType.getValue(),
+      }),
+      appRequestColumnHelper.accessor('host', {
+        header: `${t('participants.host')}`,
+        cell: (host) => host.getValue(),
+      }),
+      appRequestColumnHelper.accessor('ipAddress.value', {
+        header: `${t('participants.ip-address')}`,
+        cell: (ipAddress) => ipAddress.getValue(),
       }),
       appRequestColumnHelper.accessor('participantStatus', {
         header: isRequestPage
