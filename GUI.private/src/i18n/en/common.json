@@ -65,7 +65,12 @@
     "view": "View",
     "details": "Details",
     "deleteManifestQuestion": "Are you sure you want to delete this manifest ?",
-    "deleteSuccess": "Manifest Deleted Successfully"
+    "manifestDeleteSuccess": "Manifest Deleted Successfully",
+    "manifestApproveSuccess": "Manifest Approved Successfully",
+    "manifestRejectSuccess": "Manifest Rejected Successfully",
+    "updateApproveSuccess": "Update Approved Successfully",
+    "updateRejectSuccess": "Update Rejected Successfully",
+    "updateDeleteSuccess": "Update Deleted Successfully"
   },
   "participants": {
     "contact-email": "Contact email",

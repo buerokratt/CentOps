@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Manifest } from '../../types/manifest';
-import { useQuery } from '@tanstack/react-query';
-import { DataTable, Icon } from '../../components';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Button, DataTable, Dialog, Icon } from '../../components';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { capitalizeFirst } from '../../utils/capatalizeFirst';
@@ -13,20 +13,90 @@ import {
   AiFillDelete,
   AiFillEye,
 } from 'react-icons/ai';
+import { useToast } from '../../hooks/useToast';
+import api from '../../services/api';
+import { AxiosError } from 'axios';
 
 const NewManifestsPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+  const [currentRow, setCurrentRow] = useState<string | number | null>(null);
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState(false);
 
   const { data: newManifests } = useQuery<Manifest[]>({
     queryKey: ['manifest/new-manifests'],
   });
 
-  const approveManifest = async () => {};
+  const approveManifestMutation = useMutation({
+    mutationFn: (manifestId: string | number | null) =>
+      api.post('manifest/approve-manifest', {
+        manifest_id: manifestId,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['manifest/new-manifests']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('manifest.manifestApproveSuccess'),
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
 
-  const rejectManifest = async () => {};
+  const rejectManifestMutation = useMutation({
+    mutationFn: (manifestId: string | number | null) =>
+      api.post('manifest/reject-manifest', {
+        manifest_id: manifestId,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['manifest/new-manifests']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('manifest.manifestRejectSuccess'),
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
 
-  const deleteManifest = async () => {};
+  const deleteManifestMutation = useMutation({
+    mutationFn: (manifestId: string | number | null) =>
+      api.post('manifest/delete-manifest', {
+        manifest_id: manifestId,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['manifest/new-manifests']);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('manifest.manifestDeleteSuccess'),
+      });
+      setCurrentRow(null);
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+      setCurrentRow(null);
+    },
+  });
 
   const appRequestColumnHelper = createColumnHelper<Manifest>();
   const appRequestColumns = useMemo(
@@ -85,7 +155,11 @@ const NewManifestsPage: React.FC = () => {
               <AiFillCheckCircle
                 fontSize={22}
                 color="rgba(34,139,34, 1)"
-                onClick={() => approveManifest()}
+                onClick={() =>
+                  approveManifestMutation.mutate(
+                    props.row.original.manifestId ?? ''
+                  )
+                }
               />
             }
             size="medium"
@@ -104,7 +178,11 @@ const NewManifestsPage: React.FC = () => {
               <AiFillCloseCircle
                 fontSize={22}
                 color="rgba(210, 4, 45, 1)"
-                onClick={() => rejectManifest()}
+                onClick={() =>
+                  rejectManifestMutation.mutate(
+                    props.row.original.manifestId ?? ''
+                  )
+                }
               />
             }
             size="medium"
@@ -123,7 +201,10 @@ const NewManifestsPage: React.FC = () => {
               <AiFillDelete
                 fontSize={22}
                 color="rgba(210, 4, 45, 1)"
-                onClick={() => deleteManifest()}
+                onClick={() => {
+                  setCurrentRow(props.row.original.manifestId ?? '');
+                  setShowDeleteConfirmationModal(true);
+                }}
               />
             }
             size="medium"
@@ -143,6 +224,45 @@ const NewManifestsPage: React.FC = () => {
       <h2>{t('menu.newManifests')}</h2>
       {newManifests && newManifests.length > 0 && (
         <DataTable data={newManifests} columns={appRequestColumns} />
+      )}
+      {showDeleteConfirmationModal && (
+        <Dialog
+          title="Delete Manifest"
+          onClose={() => setShowDeleteConfirmationModal((value) => !value)}
+          footer={
+            <>
+              <Button
+                appearance="secondary"
+                onClick={() =>
+                  setShowDeleteConfirmationModal((value) => !value)
+                }
+              >
+                {t('global.cancel')}
+              </Button>
+              <Button
+                appearance="primary"
+                onClick={() => {
+                  deleteManifestMutation.mutate(currentRow);
+                  setShowDeleteConfirmationModal((value) => !value);
+                }}
+              >
+                {t('global.yes')}
+              </Button>
+            </>
+          }
+        >
+          <div className="dialog__body">
+            <h1
+              style={{
+                fontSize: '24px',
+                fontWeight: '400',
+                color: '#09090B',
+              }}
+            >
+              {t('manifest.deleteManifestQuestion')}
+            </h1>
+          </div>
+        </Dialog>
       )}
     </>
   );

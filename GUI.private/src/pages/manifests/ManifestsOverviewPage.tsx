@@ -17,9 +17,9 @@ const ManifestsOverviewPage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [currentRow, setCurrentRow] = useState<string | number | null>(null);
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
-  const [currentRow, setCurrentRow] = useState<string | number | null>(null);
 
   const { data: newManifests } = useQuery<Manifest[]>({
     queryKey: ['manifest/approved-manifests'],
@@ -35,7 +35,7 @@ const ManifestsOverviewPage: React.FC = () => {
       toast.open({
         type: 'success',
         title: t('global.notification'),
-        message: t('manifest.deleteSuccess'),
+        message: t('manifest.manifestDeleteSuccess'),
       });
       setCurrentRow(null);
     },
