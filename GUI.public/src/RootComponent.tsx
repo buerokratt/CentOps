@@ -12,6 +12,7 @@ import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
 import ManifestsDetailsPage from './pages/manifests/ManifestsDetailsPage';
 import PastUpdatesPage from './pages/manifests/PastUpdatesPage';
+import FutureUpdatesPage from './pages/manifests/FutureUpdatesPage';
 
 const RootComponent: React.FC = () => {
   return (
@@ -30,6 +31,11 @@ const RootComponent: React.FC = () => {
         <Route
           path={ROUTES.MANIFESTS_PAST_UPDATES_ROUTE}
           element={<PastUpdatesPage />}
+        />
+
+        <Route
+          path={ROUTES.MANIFESTS_FUTURE_UPDATES_ROUTE}
+          element={<FutureUpdatesPage />}
         />
 
         <Route

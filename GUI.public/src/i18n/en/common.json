@@ -11,7 +11,9 @@
     "pastUpdates": "Past Updates",
     "manifest": "Manifest",
     "updateManifest": "Update Manifest",
-    "details": "Details"
+    "details": "Details",
+    "futureUpdates": "Future Updates",
+    "noFutureUpdates": "No Future Updates"
   },
   "application": {
     "contact-email": "Contact email address",
