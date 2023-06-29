@@ -1,0 +1,11 @@
+rsa_decryption:
+  call: http.post
+  args:
+    url: http://data_mapper:8054/decryption/rsa
+    body:
+      cipher: ${incoming.body.cipher}
+  result: result
+
+return_value:
+  return: ${result.response.body.content}
+  next: end

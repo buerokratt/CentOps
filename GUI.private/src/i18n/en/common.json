@@ -50,6 +50,8 @@
     "invitation": "Create invitation",
     "overview": "Overview",
     "participants": "Participants",
+    "institutions": "Institutions",
+    "messages": "Messages"
     "requests": "Application requests",
     "manifests": "Manifests",
     "newManifests": "New Manifests",
@@ -87,6 +89,15 @@
     "participant-status": "Participant status",
     "participant-type": "Participant type",
     "title": "Participants"
+  },
+  "institutions": {
+    "description": "All institutions",
+    "title": "Institutions",
+    "name": "Name",
+    "contact-email": "Contact email",
+    "status": "Institution status",
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "requests": {
     "edit": "Edit",
