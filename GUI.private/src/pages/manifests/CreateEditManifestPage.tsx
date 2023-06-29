@@ -4,14 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Manifest } from '../../types';
 import { AiFillMinusCircle } from 'react-icons/ai';
+import { useMutation } from '@tanstack/react-query';
+import api from '../../services/api';
+import { useToast } from '../../hooks/useToast';
+import { AxiosError } from 'axios';
 
 const CreateEditManifestPage: React.FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const details = location.state as Manifest;
+  const toast = useToast();
   let [manifest, setManifest] = useState<any>({
-    buerokrattVersion: '1.0',
+    buerokratt_version: '1.0',
     components: {
       ruuter: '1.0',
       resql: '1.0',
@@ -35,13 +40,55 @@ const CreateEditManifestPage: React.FC = () => {
   useEffect(() => {
     if (details != null) {
       setManifest({
-        buerokrattVersion: details.buerokrattVersion ?? '1.0',
+        buerokratt_version: details.buerokrattVersion ?? '1.0',
         components: JSON.parse(details.components ?? ''),
         extra_configs: JSON.parse(details.extraConfigs ?? ''),
         security_configs: JSON.parse(details.securityConfigs ?? ''),
       });
     }
   }, []);
+
+  const createManifestMutation = useMutation({
+    mutationFn: () => api.post('manifest/create-manifest', manifest),
+    onSuccess: async () => {
+      navigate(-1);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('manifest.manifestCreateSuccess'),
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
+  const createNewUpdateMutation = useMutation({
+    mutationFn: () =>
+      api.post('manifest/create-update', {
+        parent_manifest_id: details.manifestId,
+        ...manifest,
+      }),
+    onSuccess: async () => {
+      navigate(-1);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('manifest.manifestUpdateCreateSuccess'),
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
 
   return (
     <>
@@ -68,7 +115,13 @@ const CreateEditManifestPage: React.FC = () => {
               <FormInput
                 name={''}
                 label={''}
-                defaultValue={manifest.buerokrattVersion}
+                defaultValue={manifest.buerokratt_version}
+                onChange={(e) => {
+                  setManifest({
+                    ...manifest,
+                    buerokratt_version: e.currentTarget.value,
+                  });
+                }}
               ></FormInput>
             </Track>
           </Track>
@@ -80,7 +133,8 @@ const CreateEditManifestPage: React.FC = () => {
             {Object.keys(manifest.components).map((key: string, i) => (
               <Track gap={20} style={{ marginTop: '20px' }} key={i}>
                 <FormInput
-                  defaultValue={key}
+                  defaultValue={key != 'new_key' ? key : ''}
+                  placeholder={key === 'new_key' ? 'New Key' : ''}
                   name={''}
                   label={''}
                   disabled={i <= 7 ? true : false}
@@ -101,7 +155,14 @@ const CreateEditManifestPage: React.FC = () => {
                 ></FormInput>
                 :
                 <FormInput
-                  defaultValue={manifest.components[key]}
+                  defaultValue={
+                    manifest.components[key] != 'new_value'
+                      ? manifest.components[key]
+                      : ''
+                  }
+                  placeholder={
+                    manifest.components[key] === 'new_value' ? 'New Value' : ''
+                  }
                   onChange={(e) => {
                     setManifest({
                       ...manifest,
@@ -142,7 +203,7 @@ const CreateEditManifestPage: React.FC = () => {
                   ...manifest,
                   components: {
                     ...manifest.components,
-                    ['new_key']: 'New Value',
+                    ['new_key']: 'new_value',
                   },
                 });
               }}
@@ -158,7 +219,8 @@ const CreateEditManifestPage: React.FC = () => {
             {Object.keys(manifest.extra_configs).map((key, i) => (
               <Track gap={20} style={{ marginTop: '20px' }} key={i}>
                 <FormInput
-                  defaultValue={key}
+                  defaultValue={key != 'new_key' ? key : ''}
+                  placeholder={key === 'new_key' ? 'New Key' : ''}
                   name={''}
                   label={''}
                   disabled={i == 0 ? true : false}
@@ -167,7 +229,16 @@ const CreateEditManifestPage: React.FC = () => {
                 <FormInput
                   name={''}
                   label={''}
-                  defaultValue={manifest.extra_configs[key]}
+                  defaultValue={
+                    manifest.extra_configs[key] != 'new_value'
+                      ? manifest.extra_configs[key]
+                      : ''
+                  }
+                  placeholder={
+                    manifest.extra_configs[key] === 'new_value'
+                      ? 'New Value'
+                      : ''
+                  }
                   onChange={(e) => {
                     setManifest({
                       ...manifest,
@@ -206,7 +277,7 @@ const CreateEditManifestPage: React.FC = () => {
                   ...manifest,
                   extra_configs: {
                     ...manifest.extra_configs,
-                    ['new_key']: 'New Value',
+                    ['new_key']: 'new_value',
                   },
                 });
               }}
@@ -222,14 +293,24 @@ const CreateEditManifestPage: React.FC = () => {
             {Object.keys(manifest.security_configs).map((key, i) => (
               <Track gap={20} style={{ marginTop: '20px' }} key={i}>
                 <FormInput
-                  defaultValue={key}
+                  defaultValue={key != 'new_key' ? key : ''}
+                  placeholder={key === 'new_key' ? 'New Key' : ''}
                   name={''}
                   label={''}
                   disabled={i < 3 ? true : false}
                 ></FormInput>
                 :
                 <FormInput
-                  defaultValue={manifest.security_configs[key]}
+                  defaultValue={
+                    manifest.security_configs[key] != 'new_value'
+                      ? manifest.security_configs[key]
+                      : ''
+                  }
+                  placeholder={
+                    manifest.security_configs[key] === 'new_value'
+                      ? 'New Value'
+                      : ''
+                  }
                   name={''}
                   label={''}
                   onChange={(e) => {
@@ -270,7 +351,7 @@ const CreateEditManifestPage: React.FC = () => {
                   ...manifest,
                   security_configs: {
                     ...manifest.security_configs,
-                    ['new_key']: 'New Value',
+                    ['new_key']: 'new_value',
                   },
                 });
               }}
@@ -283,7 +364,15 @@ const CreateEditManifestPage: React.FC = () => {
           <Button
             style={{ marginTop: '20px' }}
             onClick={() => {
-              navigate(-1);
+              if (details && details.manifestId) {
+                console.log('Create update');
+                createNewUpdateMutation.mutate();
+              } else if (details && details.updateId != null) {
+                console.log('Edit Update');
+              } else {
+                console.log('Create Manifest');
+                createManifestMutation.mutate();
+              }
             }}
           >
             {details && details.manifestId
