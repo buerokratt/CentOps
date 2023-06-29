@@ -90,6 +90,30 @@ const CreateEditManifestPage: React.FC = () => {
     },
   });
 
+  const editManifestUpdateMutation = useMutation({
+    mutationFn: () =>
+      api.post('manifest/update-manifest-update', {
+        update_id: details.updateId,
+        parent_manifest_id: details.parentManifestId,
+        ...manifest,
+      }),
+    onSuccess: async () => {
+      navigate(-1);
+      toast.open({
+        type: 'success',
+        title: t('global.notification'),
+        message: t('manifest.manifestUpdateEditSuccess'),
+      });
+    },
+    onError: (error: AxiosError) => {
+      toast.open({
+        type: 'error',
+        title: t('global.notificationError'),
+        message: error.message,
+      });
+    },
+  });
+
   return (
     <>
       <h2>
@@ -365,12 +389,10 @@ const CreateEditManifestPage: React.FC = () => {
             style={{ marginTop: '20px' }}
             onClick={() => {
               if (details && details.manifestId) {
-                console.log('Create update');
                 createNewUpdateMutation.mutate();
               } else if (details && details.updateId != null) {
-                console.log('Edit Update');
+                editManifestUpdateMutation.mutate();
               } else {
-                console.log('Create Manifest');
                 createManifestMutation.mutate();
               }
             }}
