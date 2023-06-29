@@ -1,0 +1,36 @@
+check_for_body:
+  switch:
+    - condition: ${incoming.body == null}
+      next: return_incorrect_request
+
+assign_info:
+  assign:
+    user_id: ${incoming.body.user_id} # todo: extract this from jwt
+
+get_outbox_messages:
+  call: http.post
+  args:
+    url: http://resql:8052/get-outbox-messages
+    body: 
+      user_id: ${user_id}
+  result: messagesResult
+
+#
+# todo later: use decryption to decrypt messages content
+#
+
+return_ok:
+  wrapper: false
+  status: 200
+  return: ${messagesResult.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Incorrect request"
+  next: end
+
+return_unauthorized:
+  status: 401
+  return: "error: unauthorized"
+  next: end

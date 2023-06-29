@@ -46,7 +46,8 @@
     "invitation": "Create invitation",
     "overview": "Overview",
     "participants": "Participants",
-    "requests": "Application requests"
+    "requests": "Application requests",
+    "messages": "Messages"
   },
   "participants": {
     "contact-email": "Contact email",

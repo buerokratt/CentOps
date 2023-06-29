@@ -1,7 +1,7 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
-import { ToastProvider } from './components/Toast/ToastContext'
+import { ToastProvider } from './context/ToastContext'
 import RootComponent from './RootComponent'
 
 const App: React.FC = () => {
