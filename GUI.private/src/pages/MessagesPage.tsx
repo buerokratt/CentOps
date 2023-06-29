@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { Button, DataTable, Track } from '../components';
 import { getInboxMessages, getOutboxMessages } from '../resources/api-constants';
 import { createColumnHelper } from '@tanstack/react-table';
@@ -26,7 +26,7 @@ const MessagesPage: React.FC = () => {
   const fetchMessages = async (tab: 'inbox' | 'outbox') => {
     try {
       const url = tab === 'inbox' ? getInboxMessages() : getOutboxMessages();
-      const response: AxiosResponse<Message[]> = await axios.post(url, { user_id: 123 });
+      const response = await axios.post(url, { user_id: 123 });
       setMessages(response.data);
     } catch (error) {
       setMessages([]);

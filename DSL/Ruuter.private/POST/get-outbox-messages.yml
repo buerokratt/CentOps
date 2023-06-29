@@ -13,11 +13,17 @@ get_outbox_messages:
     url: http://resql:8052/get-outbox-messages
     body: 
       user_id: ${user_id}
-  result: messagesResult
+  result: decryptedMessagesResult
 
-#
-# todo later: use decryption to decrypt messages content
-#
+decrpyt_messages:
+  call: http.post
+  args:
+    url: http://data_mapper:3005/hbs/decrypt-messages
+    headers:
+      type: "json"
+    body:
+      entries: ${decryptedMessagesResult.response.body}
+  result: messagesResult
 
 return_ok:
   wrapper: false
