@@ -139,7 +139,6 @@ const MainNavigation: FC = () => {
       label: 'Centops',
       path: ROUTES.OVERVIEW_ROUTE,
       children: [
-        { path: ROUTES.OVERVIEW_ROUTE, label: t('menu.overview') },
         { path: ROUTES.INVITATION_ROUTE, label: t('menu.invitation') },
         { path: ROUTES.PARTICIPANTS_REQUESTS_ROUTE, label: t('menu.requests') },
         { path: ROUTES.PARTICIPANTS_ROUTE, label: t('menu.participants') },
