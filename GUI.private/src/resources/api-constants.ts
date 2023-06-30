@@ -36,3 +36,5 @@ export const getParticipants = (): string =>
 
 export const sendMessageApi = (): string =>
   `${baseUrl}/send-message`
+export const sendReplyApi = (): string =>
+  `${baseUrl}/send-reply`
