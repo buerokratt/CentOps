@@ -33,16 +33,12 @@ get_participant:
 assign_variables:
   assign:
     id: ${participant_result.response.body[0].id}
-    email: ${participant_result.response.body[0].contactEmail}
     institution_id: ${participant_result.response.body[0].institutionId}
-    name: ${participant_result.response.body[0].name}
-    host: ${participant_result.response.body[0].host}
     participant_type: ${participant_result.response.body[0].participantType}
     unique_identifier: ${incoming.params.uuid}
     participant_status: ${incoming.body.participantStatus}
-    ip_address: ${participant_result.response.body[0].ipAddress}
     token: ${participant_result.response.body[0].securityToken}
-    name_abbreviated: ${participant_result.response.body[0].nameAbbreviated}
+    info: ${participant_result.response.body[0].info}
 
 update_participant_status:
   call: http.post
@@ -50,16 +46,12 @@ update_participant_status:
     url: http://resql:8052/update-participant
     body:
       id: ${id}
-      contact_email: ${email}
       institution_id: ${institution_id}
-      name: ${name}
-      host: ${host}
       participant_type: ${participant_type}
       participant_status: ${participant_status}
       unique_identifier: ${unique_identifier}
-      name_abbreviated: ${name_abbreviated}
       security_token: ${token}
-      ip_address: ${ip_address.value}
+      info: ${info}
   result: update_result
 
 return_ok:

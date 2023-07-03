@@ -24,11 +24,9 @@ check_body:
 assign_variables:
   assign:
     invitation_id: ${incoming.body.invitationId}
+    info: ${incoming.body.info}
     email: ${incoming.body.info.email}
     name: ${incoming.body.info.name}
-    name_abbreviated: ${incoming.body.info.nameAbbreviated}
-    ip_address: ${incoming.body.info.ipAddress}
-    host: ${incoming.body.info.host}
 
 get_invitation_id:
   call: http.post
