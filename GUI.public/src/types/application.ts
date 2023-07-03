@@ -1,8 +1,6 @@
+import { KeyValueMap } from "../components/DynamicForm/types";
+
 export interface Application {
-  email: string;
-  host: string;
   invitationId: string;
-  ipAddress: string;
-  nameAbbreviated: string;
-  organisationName: string;
+  info: KeyValueMap;
 }
