@@ -1,0 +1,13 @@
+triple_des_decryption:
+  call: http.post
+  args:
+    url: http://data_mapper:8054/decryption/triple-des
+    body:
+      cipher: ${incoming.body.cipher}
+      key: ${incoming.body.key}
+      isObject: ${incoming.body.isObject}
+  result: result
+
+return_value:
+  return: ${result.response.body.content}
+  next: end

@@ -23,10 +23,12 @@ check_body:
 
 assign_variables:
   assign:
+    invitation_id: ${incoming.body.invitationId}
     email: ${incoming.body.info.email}
     name: ${incoming.body.info.name}
-    invitation_id: ${incoming.body.invitationId}
-    info: ${incoming.body.info}
+    name_abbreviated: ${incoming.body.info.nameAbbreviated}
+    ip_address: ${incoming.body.info.ipAddress}
+    host: ${incoming.body.info.host}
 
 get_invitation_id:
   call: http.post
@@ -48,8 +50,6 @@ create_participant:
     body:
       invitation_id: ${invitation_id}
       institution_id: ${invitation.response.body[0].institutionId}
-      contact_email: ${email}
-      name: ${name}
       info: ${info}
   result: participant
 

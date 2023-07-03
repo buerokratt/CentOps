@@ -1,0 +1,12 @@
+base64_decryption:
+  call: http.post
+  args:
+    url: http://data_mapper:8054/decryption/base64
+    body:
+      cipher: ${incoming.body.cipher}
+      isObject: ${incoming.body.isObject}
+  result: result
+
+return_value:
+  return: ${result.response.body.content}
+  next: end

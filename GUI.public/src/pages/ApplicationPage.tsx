@@ -1,21 +1,18 @@
-import axios, { AxiosError } from 'axios';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-
+import axios, { AxiosError } from 'axios';
 import { Button, FormInput, Track } from '../components';
-import {
-  sendApplication,
-  validateInvitation,
-} from '../resources/api-constants';
+import { validateInvitation } from '../resources/api-constants';
 import DynamicForm from '../components/DynamicForm';
 import { KeyValueMap } from '../components/DynamicForm/types';
 import { formIds } from '../constants/forms';
+import postApplication from '../services/application';
 
 const ApplicationPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams();
-  const [invitationId, setInvId] = useState(id ?? '');
+  const [invitationId, setId] = useState(id ?? '');
   const [invitationError, setInvitationError] = useState('');
   const [invitationValid, setInvitationValid] = useState(false);
   const [invitationSent, setInvitationSent] = useState(false);
@@ -41,14 +38,10 @@ const ApplicationPage: React.FC = () => {
   const handleSendInvitation = async () => {
     try {
       setInvitationError('');
-      await axios.post(
-        sendApplication(),
-        {
-          invitationId: invitationId,
-          info: formValues
-        },
-        { withCredentials: true }
-      );
+      postApplication({
+        invitationId: invitationId,
+        info: formValues,
+      });
       setInvitationSent(true);
     } catch (err: any) {
       handleError(err);
@@ -82,10 +75,10 @@ const ApplicationPage: React.FC = () => {
       {!invitationValid && (
         <Track gap={20}>
           <FormInput
-            label="invitation-id"
+            label={t('application.invitation-id')}
             name="invitation-id"
             value={invitationId}
-            onChange={(e) => setInvId(e.target.value)}
+            onChange={(e) => setId(e.target.value)}
           />
           <Button disabled={invitationId.length < 1} onClick={handleCheckInv}>
             {t('application.validate-id')}
@@ -96,23 +89,21 @@ const ApplicationPage: React.FC = () => {
         <>
           <Track gap={20}>
             <FormInput
-              label="invitation-id"
+              label={t('application.invitation-id')}
               name="invitation-id"
               value={invitationId}
-              onChange={(e) => setInvId(e.target.value)}
+              onChange={(e) => setId(e.target.value)}
             />
           </Track>
-
           <DynamicForm
             formId={formIds.INVITATION_FORM}
             hideSubmitButton
             hideTitle
-            onChange={(values, isValid) => {
+            onChange={(values: any, isValid: boolean) => {
               setFormValues(values);
               setFormValid(isValid);
             }}
           />
-
           <Button
             disabled={invitationId.length < 1 || !formValid}
             onClick={handleSendInvitation}
