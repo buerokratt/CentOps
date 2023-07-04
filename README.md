@@ -18,7 +18,7 @@ Bürokratt Central Operations
 
 - If you made changes to tim, rebuild the image again using `docker build -t tim .`
 
-- If you made changes to data mapper, rebuild the image again using `docker build -t docker build -t datamapper .`
+- If you made changes to data mapper, rebuild the image again using `docker build -t datamapper .`
 
 - Ruuter configuration should be changed for all the endpoints to work. PUT and DELETE should be added to the allowedMethodTypes array. See more information https://github.com/buerokratt/Ruuter/blob/65889552329249665e48656ed866cdf99cda391f/samples/CONFIGURATION.md
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { getParticipants, sendMessageApi } from '../../resources/api-constants';
+import { getParticipants, sendReplyApi } from '../../resources/api-constants';
 import Button from '../Button';
 import Modal from '../Modal';
 import Track from '../Track';
@@ -11,11 +11,11 @@ interface Participant {
   name: string;
 }
 
-interface SendMessageProps {
+interface ReplyMessageProps {
   onSendMessage: () => void;
 }
 
-const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
+const ReplyMessage: React.FC<ReplyMessageProps> = ({ onSendMessage }) => {
   const [showModal, setShowModal] = useState(false);
   const [message, setMessageContent] = useState('');
   const [selectedReceiver, setSelectedReceiver] = useState<number | null>(null);
@@ -26,7 +26,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
     fetchParticipants();
   }, []);
 
-  const handleSendMessage = () => {
+  const handleReplyMessage = () => {
     if (message.trim() === '' || selectedReceiver === null) {
       toast.open({
         type: 'error',
@@ -36,7 +36,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
       return;
     }
     axios
-      .post(sendMessageApi(), {
+      .post(sendReplyApi(), {
         message,
         receiver_id: selectedReceiver,
         sender_id: 1,
@@ -78,9 +78,9 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
 
   return (
     <>
-      <Button onClick={() => setShowModal(true)}>Send Message</Button>
+      <Button onClick={() => setShowModal(true)}>Reply</Button>
       {showModal && (
-        <Modal title="New Message" onClose={resetForm}>
+        <Modal title="Reply" onClose={resetForm}>
           <Track>
             <label>Receiver:</label>
             <select
@@ -106,7 +106,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
             <Button appearance="secondary" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSendMessage}>Send</Button>
+            <Button onClick={handleReplyMessage}>Reply</Button>
           </Track>
         </Modal>
       )}
@@ -114,4 +114,4 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
   );
 };
 
-export default SendMessage;
+export default ReplyMessage;

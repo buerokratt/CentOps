@@ -32,7 +32,7 @@ const RootComponent: React.FC = () => {
           path={ROUTES.MANIFESTS_PAST_UPDATES_ROUTE}
           element={<PastUpdatesPage />}
         />
-        
+
         <Route
           path={ROUTES.MANIFESTS_FUTURE_UPDATES_ROUTE}
           element={<FutureUpdatesPage />}
