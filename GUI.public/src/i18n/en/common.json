@@ -7,6 +7,12 @@
   "overview": {
     "title": "Overview"
   },
+  "manifests": {
+    "pastUpdates": "Past Updates",
+    "manifest": "Manifest",
+    "updateManifest": "Update Manifest",
+    "details": "Details"
+  },
   "application": {
     "contact-email": "Contact email address",
     "enter-invitation-id": "Please enter your invitation ID",
