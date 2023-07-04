@@ -65,6 +65,7 @@ const ManifestsDetailsPage: React.FC = () => {
     const res = await axios.post(manifestHistoryDetails(), {
       history_id: details.historyId,
     });
+
     const parentManifest = {
       buerokrattVersion: res.data[0].buerokrattVersion,
       components: JSON.parse(res.data[0].components),

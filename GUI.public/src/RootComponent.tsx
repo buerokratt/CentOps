@@ -38,7 +38,7 @@ const RootComponent: React.FC = () => {
           element={<FutureUpdatesPage />}
         />
 
-        <Route
+        <Route    
           path={ROUTES.MANIFESTS_DETAILS_ROUTE}
           element={<ManifestsDetailsPage />}
         />
