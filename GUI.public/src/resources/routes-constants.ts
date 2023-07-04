@@ -5,5 +5,5 @@ export const ROUTES = {
   OVERVIEW_ROUTE: '/centops/overview',
   MANIFESTS_PAST_UPDATES_ROUTE: '/centops/manifests/past_updates',
   MANIFESTS_DETAILS_ROUTE: '/centops/manifests/details/:id',
-  MANIFESTS_FUTURE_UPDATES_ROUTE: '/centops/manifests/future_updates',
+  MANIFESTS_FUTURE_UPDATES_ROUTE: '/centops/manifests/future_updates'
 };
