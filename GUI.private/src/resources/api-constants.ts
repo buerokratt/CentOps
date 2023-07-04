@@ -9,6 +9,13 @@ export const updateParticipantStatus = (uuid: string): string =>
   `${baseUrl}/admin/participants/status?uuid=${uuid}`;
 export const deleteParticipant = (uuid: string): string =>
   `${baseUrl}/admin/participants?uuid=${uuid}`;
+
+export const manifestHistoryDetails = (): string =>
+  `${baseUrl}/manifest/history-details`;
+export const manifestUpdateDetails = (): string =>
+  `${baseUrl}/manifest/update-details`;
+  export const manifestDetailsById = (): string =>
+  `${baseUrl}/manifest/manifest-details`;
 export const toggleDummyApi = (): string => `${baseUrl}/toggle-dummy`;
 
 export const getInstitutions = (): string => `admin/institutions`;

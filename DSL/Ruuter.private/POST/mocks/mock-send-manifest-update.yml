@@ -1,0 +1,15 @@
+mock_value:
+  call: reflect.mock
+  args:
+    response:
+      parentManifestId: "ec7679b0-7401-49c2-9d5e-c5b36ce35a7e"
+      updateId: "34618ff3-e9aa-4fa1-9e83-f9d41751e4cb"
+      buerokrattVersion: "2.0"
+      components: "{\"tim\": \"1.0\", \"resql\": \"1.0\", \"ruuter\": \"1.0\", \"database\": \"1.0\", \"users_db\": \"1.0\", \"centops_db\": \"1.0\", \"data_mapper\": \"1.0\", \"services_db\": \"1.0\"}"
+      extraConfigs: "{\"automatic_updates\": \"false\"}"
+      securityConfigs: "{\"key\": \"customKey\", \"decryption_method\": \"aes\", \"encryption_method\": \"aes\"}"
+      status: "pending_approval"
+  result: reflectedRequest
+
+return_mock_value:
+  return: ${reflectedRequest.response.body}

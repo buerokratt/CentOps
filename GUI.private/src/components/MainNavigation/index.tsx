@@ -139,12 +139,33 @@ const MainNavigation: FC = () => {
       label: 'Centops',
       path: ROUTES.OVERVIEW_ROUTE,
       children: [
-        { path: ROUTES.OVERVIEW_ROUTE, label: t('menu.overview') },
         { path: ROUTES.INVITATION_ROUTE, label: t('menu.invitation') },
         { path: ROUTES.PARTICIPANTS_REQUESTS_ROUTE, label: t('menu.requests') },
         { path: ROUTES.PARTICIPANTS_ROUTE, label: t('menu.participants') },
         { path: ROUTES.INSTITUTIONS_ROUTE, label: t('menu.institutions') },
         { path: ROUTES.MESSAGES_PAGE_ROUTE, label: t('menu.messages') },
+        {
+          label: t('menu.manifests'),
+          path: ROUTES.MANIFESTS_ROUTE,
+          children: [
+            {
+              label: t('menu.overview'),
+              path: ROUTES.MANIFESTS_OVERVIEW_ROUTE,
+            },
+            {
+              label: t('menu.newManifests'),
+              path: ROUTES.MANIFESTS_NEW_MANIFESTS_ROUTE,
+            },
+            {
+              label: t('menu.updates'),
+              path: ROUTES.MANIFESTS_UPDATES_ROUTE,
+            },
+            {
+              label: t('menu.history'),
+              path: ROUTES.MANIFESTS_HISTORY_ROUTE,
+            },
+          ],
+        },
       ],
     },
     {

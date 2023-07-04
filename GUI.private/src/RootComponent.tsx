@@ -13,6 +13,12 @@ import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
 import InstitutionsPages from './pages/InstitutionsPage';
 import MessagesPage from './pages/MessagesPage';
+import ManifestsOverviewPage from './pages/manifests/ManifestsOverviewPage';
+import NewManifestsPage from './pages/manifests/NewManifestsPage';
+import ManifestsUpdatesPage from './pages/manifests/ManifestsUpdatesPage';
+import ManifestsHistoryPage from './pages/manifests/ManifestsHistoryPage';
+import ManifestsHistoryDetailsPage from './pages/manifests/ManifestsDetailsPage';
+import CreateEditManifestPage from './pages/manifests/CreateEditManifestPage';
 
 const RootComponent: React.FC = () => {
   return (
@@ -46,6 +52,30 @@ const RootComponent: React.FC = () => {
         <Route
           path={ROUTES.INSTITUTIONS_ROUTE}
           element={<InstitutionsPages />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_OVERVIEW_ROUTE}
+          element={<ManifestsOverviewPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_NEW_MANIFESTS_ROUTE}
+          element={<NewManifestsPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_UPDATES_ROUTE}
+          element={<ManifestsUpdatesPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_HISTORY_ROUTE}
+          element={<ManifestsHistoryPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_DETAILS_ROUTE}
+          element={<ManifestsHistoryDetailsPage />}
+        />
+        <Route
+          path={ROUTES.MANIFESTS_CREATE_EDIT_ROUTE}
+          element={<CreateEditManifestPage />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
