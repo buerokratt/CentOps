@@ -1,0 +1,61 @@
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.manifest_id == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    manifest_id: ${incoming.body.manifest_id}
+  next: delete_manifest
+
+delete_manifest:
+  call: http.post
+  args:
+    url: http://resql:8052/delete-manifest
+    body:
+      manifest_id: ${manifest_id}
+  result: results
+  next: check_result
+
+check_result:
+  switch:
+    - condition: ${200 <= results.response.statusCodeValue && results.response.statusCodeValue < 300}
+      next: log_history
+  next: return_bad_request
+
+log_history:
+  call: http.post
+  args:
+    url: http://resql:8052/update-manifest-history
+    body:
+      parent_manifest_id: ${manifest_id}
+      buerokratt_version: ${results.response.body[0].buerokrattVersion}
+      components: ${results.response.body[0].components}
+      extra_configs: ${results.response.body[0].extraConfigs}
+      security_configs: ${results.response.body[0].securityConfigs}
+      type: "manifest"
+      status: "deleted"
+  result: history_result
+  next: check_history_result    
+
+check_history_result:
+  switch:
+    - condition: ${200 <= history_result.response.statusCodeValue && history_result.response.statusCodeValue < 300}
+      next: return_ok
+  next: return_bad_request    
+
+return_ok:
+  status: 200
+  return: "Manifest Deleted Successfully"
+  next: end  
+
+return_bad_request:
+  status: 400
+  return: ${results.response.body.message}
+  next: end  
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter(s) missing"
+  next: end

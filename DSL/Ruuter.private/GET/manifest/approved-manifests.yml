@@ -1,0 +1,9 @@
+get_approved_manifests:
+  call: http.post
+  args:
+    url: http://resql:8052/get-approved-manifests
+  result: results
+
+return_value:
+   wrapper: false
+   return: ${results.response.body}

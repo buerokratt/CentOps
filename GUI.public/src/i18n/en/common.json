@@ -18,6 +18,14 @@
     "submit_failed": "Failed to submit the form",
     "invalid_form": "Invalid form"
   },
+  "manifests": {
+    "pastUpdates": "Past Updates",
+    "manifest": "Manifest",
+    "updateManifest": "Update Manifest",
+    "details": "Details",
+    "futureUpdates": "Future Updates",
+    "noFutureUpdates": "No Future Updates"
+  },
   "application": {
     "contact-email": "Contact email address",
     "enter-invitation-id": "Please enter your invitation ID",

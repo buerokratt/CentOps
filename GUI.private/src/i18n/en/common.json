@@ -31,7 +31,11 @@
   },
   "global": {
     "title": "CentOps Module",
-    "backhome": "Back to homepage"
+    "backhome": "Back to homepage",
+    "yes": "Yes",
+    "cancel": "Cancel",
+    "notification": "Notification",
+    "notificationError": "Error"
   },
   "invitation": {
     "create": "Create invitation",
@@ -46,9 +50,40 @@
     "invitation": "Create invitation",
     "overview": "Overview",
     "participants": "Participants",
-    "requests": "Application requests",
     "institutions": "Institutions",
-    "messages": "Messages"
+    "messages": "Messages",
+    "requests": "Application requests",
+    "manifests": "Manifests",
+    "newManifests": "New Manifests",
+    "updates": "Updates",
+    "history": "History",
+    "manifest": "Manifest"
+  },
+  "manifest": {
+    "parentManifest": "Parent Manifest",
+    "updateManifest": "Update Manifest",
+    "newManifests": "New Manifests",
+    "newManifest": "New Manifest",
+    "view": "View",
+    "details": "Details",
+    "deleteManifestQuestion": "Are you sure you want to delete this manifest ?",
+    "deleteUpdateQuestion": "Are you sure you want to delete this update ?",
+    "manifestCreateSuccess": "Manifest Created Successfully",
+    "manifestUpdateCreateSuccess": "Manifest Update Created Successfully",
+    "manifestUpdateEditSuccess": "Manifest Update Edited Successfully",
+    "manifestDeleteSuccess": "Manifest Deleted Successfully",
+    "manifestApproveSuccess": "Manifest Approved Successfully",
+    "manifestRejectSuccess": "Manifest Rejected Successfully",
+    "updateApproveSuccess": "Update Approved Successfully",
+    "updateRejectSuccess": "Update Rejected Successfully",
+    "updateDeleteSuccess": "Update Deleted Successfully",
+    "updatePublishSuccess": "Update Published Successfully",
+    "noNewManifests": "No New Manifests Found",
+    "noManifests": "No Manifests Found",
+    "noNewUpdates": "No New Updates Found",
+    "noHistoryLogs": "No History Logs",
+    "deleteManifest": "Delete Manifest",
+    "deleteUpdate": "Delete Update"
   },
   "participants": {
     "contact-email": "Contact email",
@@ -56,7 +91,10 @@
     "name": "Name",
     "participant-status": "Participant status",
     "participant-type": "Participant type",
-    "title": "Participants"
+    "title": "Participants",
+    "nameAbbreviated": "Name Abbreviated",
+    "host": "Host",
+    "ip-address": "IP Address"
   },
   "institutions": {
     "description": "All institutions",
@@ -68,7 +106,7 @@
     "delete": "Delete"
   },
   "requests": {
-    "edit": "edit",
+    "edit": "Edit",
     "description": "All application requests",
     "request-status": "Request status",
     "title": "Application requests"

@@ -1,0 +1,60 @@
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.history_id == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    history_id: ${incoming.body.history_id}
+  next: get_history_details
+
+get_history_details:
+  call: http.post
+  args:
+    url: http://resql:8052/get-manifest-history-by-id
+    body:
+      history_id: ${history_id}
+  result: history_details_results
+  next: check_history_details_result
+
+check_history_details_result:
+  switch:
+    - condition: ${200 <= history_details_results.response.statusCodeValue && history_details_results.response.statusCodeValue < 300}
+      next: check_history_details_type
+  next: return_bad_request
+
+check_history_details_type:
+  switch:
+    - condition: ${history_details_results.response.body[0].type === 'manifest'}
+      next: return_manifest_history
+  next: get_parent_manifest
+
+return_manifest_history:
+   wrapper: false
+   return: ${history_details_results.response.body}
+   next: end  
+
+get_parent_manifest:
+  call: http.post
+  args:
+    url: http://resql:8052/get-manifest-by-id
+    body:
+      manifest_id: ${history_details_results.response.body[0].parentManifestId}
+  result: parent_manifest_result
+  next: return_value
+
+return_value:
+   wrapper: false
+   return: ${[parent_manifest_result.response.body[0], history_details_results.response.body[0]]}
+   next: end
+
+return_bad_request:
+  status: 400
+  return: ${results.response.body.message}
+  next: end  
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter(s) missing"
+  next: end

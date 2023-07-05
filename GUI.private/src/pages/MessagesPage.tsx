@@ -1,9 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { Button, DataTable, Track } from '../components';
-import { getInboxMessages, getOutboxMessages } from '../resources/api-constants';
+import {
+  getInboxMessages,
+  getOutboxMessages,
+} from '../resources/api-constants';
 import { createColumnHelper } from '@tanstack/react-table';
 import SendMessage from '../components/SendMessage';
+import ReplyMessage from '../components/ReplyMessage';
 
 interface Message {
   id: number;
@@ -26,7 +30,7 @@ const MessagesPage: React.FC = () => {
   const fetchMessages = async (tab: 'inbox' | 'outbox') => {
     try {
       const url = tab === 'inbox' ? getInboxMessages() : getOutboxMessages();
-      const response = await axios.post(url, { user_id: 123 });
+      const response = await axios.post(url, { user_id: 1 });
       setMessages(response.data);
     } catch (error) {
       setMessages([]);
@@ -56,11 +60,24 @@ const MessagesPage: React.FC = () => {
         header: 'Date',
         cell: (timestamp) => timestamp.getValue(),
       }),
-    ], []);
+      appRequestColumnHelper.display({
+        header: '',
+        cell: (_) =>
+          activeTab === 'outbox' && (
+            <ReplyMessage onSendMessage={() => fetchMessages(activeTab)} />
+          ),
+        id: 'view',
+        meta: {
+          size: '1%',
+        },
+      }),
+    ],
+    []
+  );
 
   return (
-    <Track direction='vertical' justify='start' align='stretch' gap={26}>
-      <Track direction='horizontal' justify='between'>
+    <Track direction="vertical" justify="start" align="stretch" gap={26}>
+      <Track direction="horizontal" justify="between">
         <Track gap={16}>
           <Button
             appearance={activeTab === 'inbox' ? 'primary' : 'text'}
@@ -78,10 +95,7 @@ const MessagesPage: React.FC = () => {
         <SendMessage onSendMessage={() => fetchMessages(activeTab)} />
       </Track>
       <h2>{activeTab === 'inbox' ? 'Inbox Messages' : 'Outbox Messages'}</h2>
-      <DataTable
-        data={messages}
-        columns={appRequestColumns}
-      />
+      <DataTable data={messages} columns={appRequestColumns} />
     </Track>
   );
 };

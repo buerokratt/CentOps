@@ -53,13 +53,32 @@ services:
     networks:
       - bykstack
 
+  resql-users:
+    container_name: resql-users
+    image: resql
+    depends_on:
+      - database
+    environment:
+      - server.port=8059
+      - sqlms.datasources.[0].name=users
+      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/users_db
+      - sqlms.datasources.[0].username=byk
+      - sqlms.datasources.[0].password=01234
+      - logging.level.org.springframework.boot=INFO
+    ports:
+      - 8059:8059
+    volumes:
+      - ./DSL/Resql/users:/workspace/app/templates/users
+    networks:
+      - bykstack    
+
   database:
     container_name: database
     image: postgres:14.1
     environment:
       - POSTGRES_USER=byk
       - POSTGRES_PASSWORD=01234
-      - POSTGRES_MULTIPLE_DATABASES=centops_db
+      - POSTGRES_MULTIPLE_DATABASES=users_db,centops_db
     ports:
       - 8053:5432
     volumes:
@@ -70,7 +89,7 @@ services:
 
   data_mapper:
     container_name: data_mapper
-    image: datamapper-node
+    image: datamapper
     environment:
       - PORT=8054
       - CONTENT_FOLDER=/data
