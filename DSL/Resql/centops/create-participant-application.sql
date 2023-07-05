@@ -1,3 +1,3 @@
-INSERT INTO participants(name, institution_id, contact_email, name_abbreviated, ip_address, host)
-VALUES (:name, :institution_id, :contact_email, :name_abbreviated, :ip_address::CIDR, :host)
+INSERT INTO participants(name, institution_id, info)
+VALUES (:name, :institution_id, :info)
 RETURNING id, unique_identifier;

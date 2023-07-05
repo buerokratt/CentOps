@@ -3,40 +3,34 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Button, FormInput, FormSelect, Track } from '../components';
+import { Button, DynamicForm, FormInput, FormSelect, Track } from '../components';
 import {
   deleteParticipant,
   updateParticipantDetails,
   updateParticipantStatus,
 } from '../resources/api-constants';
-import { Participant, ParticipantStatus, ParticipantType } from '../types';
+import { Participant, ParticipantStatus, ParticipantType, KeyValueMap } from '../types';
+import { formIds } from '../constants/formIds';
+import { useToast } from '../hooks/useToast';
 
 const EditParticipantPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const toast = useToast();
   const participant = location.state as Participant;
   const isRequestPage = location.pathname.includes('requests');
   const capitalize = (input: string): string => {
     const value = input.toLowerCase();
     return value.charAt(0).toUpperCase() + value.slice(1);
   };
-  const [organisationName, setOrganisationName] = useState(
-    participant.name ?? ''
-  );
-  const [contactEmail, setContactEmail] = useState(
-    participant.contactEmail ?? ''
-  );
-  const [host, setHost] = useState(participant.host ?? '');
+  const [formValues, setFormValues] = useState<KeyValueMap>(participant.info ?? {});
+  const [formValid, setFormValid] = useState(false);
   const [applicationStatus, setApplicationStatus] = useState(
     capitalize(participant.participantStatus) ?? ParticipantStatus.Inactive
   );
   const [participantType, setparticipantType] = useState(
     capitalize(participant.participantType) ?? ParticipantType.Unknown
-  );
-  const [ipAddress, setIpAddress] = useState(participant.ipAddress.value ?? '');
-  const [nameAbbreviated, setnameAbbreviated] = useState(
-    participant.nameAbbreviated ?? ''
   );
   const [detailsChangeEnabled, setDetailsChangeEnabled] = useState(false);
   const [statusChangeEnabled, setStatusChangeEnabled] = useState(false);
@@ -60,17 +54,20 @@ const EditParticipantPage: React.FC = () => {
   };
 
   const handleDetailsChange = async () => {
+    if (!formValid) {
+      return toast.open({
+        type: 'error',
+        title: 'Invalid',
+        message: 'Form contains invalid values',
+      })
+    }
     await axios.put(
       updateParticipantDetails(participant.uniqueIdentifier),
       {
         id: participant.id,
-        contactEmail,
-        host,
         participantType: participantType.toLowerCase(),
-        name: organisationName,
         institutionId: participant.institutionId,
-        ipAddress: ipAddress,
-        nameAbbreviated: nameAbbreviated,
+        info: formValues,
       },
       { withCredentials: true }
     );
@@ -78,9 +75,7 @@ const EditParticipantPage: React.FC = () => {
   };
 
   const handleDetailsCancel = () => {
-    setOrganisationName(participant.name ?? '');
-    setContactEmail(participant.contactEmail ?? '');
-    setHost(participant.host ?? '');
+    setFormValues(participant.info ?? {});
     setparticipantType(
       capitalize(participant.participantType) ?? ParticipantType.Unknown
     );
@@ -125,40 +120,14 @@ const EditParticipantPage: React.FC = () => {
       </Track>
       <Track gap={32} direction="vertical" align="stretch">
         <Track gap={16} direction="vertical">
-          <FormInput
-            name="organisation-name"
-            label={t('edit-participants.organisation-name')}
-            value={organisationName}
-            disabled={!detailsChangeEnabled}
-            onChange={(e) => setOrganisationName(e.target.value)}
-          />
-          <FormInput
-            name="name-abbreviated"
-            label={t('edit-participants.name-abbreviated')}
-            value={nameAbbreviated}
-            disabled={!detailsChangeEnabled}
-            onChange={(e) => setnameAbbreviated(e.target.value)}
-          />
-          <FormInput
-            name="contact-email"
-            label={t('edit-participants.contact-email')}
-            value={contactEmail}
-            disabled={!detailsChangeEnabled}
-            onChange={(e) => setContactEmail(e.target.value)}
-          />
-          <FormInput
-            name="host"
-            label={t('edit-participants.host')}
-            value={host}
-            disabled={!detailsChangeEnabled}
-            onChange={(e) => setHost(e.target.value)}
-          />
-          <FormInput
-            name="ipAddress"
-            label={t('edit-participants.ip-address')}
-            value={ipAddress}
-            disabled={!detailsChangeEnabled}
-            onChange={(e) => setIpAddress(e.target.value)}
+          <DynamicForm
+            formId={formIds.INVITATION_FORM}
+            hideSubmitButton
+            hideTitle
+            onChange={(values: any, isValid: boolean) => {
+              setFormValues(values);
+              setFormValid(isValid);
+            }}
           />
           <FormSelect
             label={t('edit-participants.participant-type')}

@@ -2,7 +2,6 @@ const baseUrl = process.env.REACT_APP_API_URL;
 
 export const createInvitation = (): string =>
   `${baseUrl}/admin/participants/invitation`;
-export const dummyApi = (): string => `${baseUrl}/dummy`;
 export const updateParticipantDetails = (uuid: string): string =>
   `${baseUrl}/admin/participants?uuid=${uuid}`;
 export const updateParticipantStatus = (uuid: string): string =>
@@ -14,9 +13,8 @@ export const manifestHistoryDetails = (): string =>
   `${baseUrl}/manifest/history-details`;
 export const manifestUpdateDetails = (): string =>
   `${baseUrl}/manifest/update-details`;
-  export const manifestDetailsById = (): string =>
+export const manifestDetailsById = (): string =>
   `${baseUrl}/manifest/manifest-details`;
-export const toggleDummyApi = (): string => `${baseUrl}/toggle-dummy`;
 
 export const getInstitutions = (): string => `admin/institutions`;
 export const deleteInstitute = (id: number): string =>
@@ -35,6 +33,6 @@ export const getParticipants = (): string =>
   `${baseUrl}/admin/participants`;
 
 export const sendMessageApi = (): string =>
-  `${baseUrl}/send-message`
+  `${baseUrl}/send-message`;
 export const sendReplyApi = (): string =>
-  `${baseUrl}/send-reply`
+  `${baseUrl}/send-reply`;

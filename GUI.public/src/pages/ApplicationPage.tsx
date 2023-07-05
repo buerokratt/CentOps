@@ -1,24 +1,23 @@
-import axios, { AxiosError } from 'axios';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-
+import axios, { AxiosError } from 'axios';
 import { Button, FormInput, Track } from '../components';
 import { validateInvitation } from '../resources/api-constants';
+import DynamicForm from '../components/DynamicForm';
+import { KeyValueMap } from '../components/DynamicForm/types';
+import { formIds } from '../constants/forms';
 import postApplication from '../services/application';
 
 const ApplicationPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const [invitationId, setId] = useState(id ?? '');
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [nameAbbreviated, setNameAbbreviated] = useState('');
-  const [host, setHost] = useState('');
-  const [ipAddress, setIpAddress] = useState('');
   const [invitationError, setInvitationError] = useState('');
   const [invitationValid, setInvitationValid] = useState(false);
   const [invitationSent, setInvitationSent] = useState(false);
+  const [formValues, setFormValues] = useState<KeyValueMap>({});
+  const [formValid, setFormValid] = useState(true);
 
   const handleCheckInv = async () => {
     try {
@@ -40,12 +39,8 @@ const ApplicationPage: React.FC = () => {
     try {
       setInvitationError('');
       postApplication({
-        email,
         invitationId: invitationId,
-        organisationName: name,
-        nameAbbreviated,
-        host,
-        ipAddress,
+        info: formValues,
       });
       setInvitationSent(true);
     } catch (err: any) {
@@ -63,17 +58,6 @@ const ApplicationPage: React.FC = () => {
         `${t('application.invitation-error')} ` + err.toString()
       );
     }
-  };
-
-  const getFormInvalid = () => {
-    return (
-      invitationId.length < 1 ||
-      name.length < 1 ||
-      email.length < 1 ||
-      nameAbbreviated.length < 1 ||
-      host.length < 1 ||
-      ipAddress.length < 1
-    );
   };
 
   return (
@@ -111,47 +95,19 @@ const ApplicationPage: React.FC = () => {
               onChange={(e) => setId(e.target.value)}
             />
           </Track>
-          <Track>
-            <FormInput
-              label={t('application.organisation-name')}
-              name="organisation-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </Track>
-          <Track>
-            <FormInput
-              label={t('application.name-abbreviated')}
-              name="abbreviated"
-              value={nameAbbreviated}
-              onChange={(e) => setNameAbbreviated(e.target.value)}
-            />
-          </Track>
-          <Track>
-            <FormInput
-              label={t('application.contact-email')}
-              name="e-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Track>
-          <Track>
-            <FormInput
-              label={t('application.ip-address')}
-              name="ip-address"
-              value={ipAddress}
-              onChange={(e) => setIpAddress(e.target.value)}
-            />
-          </Track>
-          <Track>
-            <FormInput
-              label={t('application.host')}
-              name="host"
-              value={host}
-              onChange={(e) => setHost(e.target.value)}
-            />
-          </Track>
-          <Button disabled={getFormInvalid()} onClick={handleSendInvitation}>
+          <DynamicForm
+            formId={formIds.INVITATION_FORM}
+            hideSubmitButton
+            hideTitle
+            onChange={(values: any, isValid: boolean) => {
+              setFormValues(values);
+              setFormValid(isValid);
+            }}
+          />
+          <Button
+            disabled={invitationId.length < 1 || !formValid}
+            onClick={handleSendInvitation}
+          >
             {t('application.send-application')}
           </Button>
         </>

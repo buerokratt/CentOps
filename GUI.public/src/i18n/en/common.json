@@ -7,6 +7,17 @@
   "overview": {
     "title": "Overview"
   },
+  "forms": {
+    "failed": "Failed to fetch the form",
+    "retry": "Retry",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "id_missing": "Form Id is missing",
+    "toast_title": "Form",
+    "submit_success": "Form has been submitted successfully",
+    "submit_failed": "Failed to submit the form",
+    "invalid_form": "Invalid form"
+  },
   "manifests": {
     "pastUpdates": "Past Updates",
     "manifest": "Manifest",

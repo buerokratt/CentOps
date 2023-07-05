@@ -25,14 +25,10 @@ check_for_body_parameters:
 assign_variables:
   assign:
     id: ${incoming.body.id}
-    email: ${incoming.body.contactEmail}
     institution_id: ${incoming.body.institutionId}
-    name: ${incoming.body.name}
-    host: ${incoming.body.host}
     participant_type: ${incoming.body.participantType}
     unique_identifier: ${incoming.params.uuid}
-    ip_address: ${incoming.body.ipAddress}
-    name_abbreviated: ${incoming.body.nameAbbreviated}
+    info: ${incoming.body.info}
 
 get_participant:
   call: http.post
@@ -48,16 +44,12 @@ update_participant:
     url: http://resql:8052/update-participant
     body:
       id: ${id}
-      contact_email: ${email}
       institution_id: ${institution_id}
-      name: ${name}
-      host: ${host}
       participant_type: ${participant_type}
       unique_identifier: ${unique_identifier}
-      ip_address: ${ip_address}
-      name_abbreviated: ${name_abbreviated}
       participant_status: ${participant_result.response.body[0].participantStatus}
       security_token: ${participant_result.response.body[0].securityToken}
+      info: ${info}
   result: update_result
 
 return_ok:

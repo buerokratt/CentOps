@@ -7,6 +7,7 @@ import {
   ApplicationStatusPage,
   NotFoundPage,
   OverviewPage,
+  FormPage,
 } from './pages';
 import { ROUTES } from './resources/routes-constants';
 import './styles/main.scss';
@@ -43,6 +44,7 @@ const RootComponent: React.FC = () => {
           element={<ManifestsDetailsPage />}
         />
         <Route path={ROUTES.OVERVIEW_ROUTE} element={<OverviewPage />} />
+        <Route path={ROUTES.FORM_ROUTE} element={<FormPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

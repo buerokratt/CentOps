@@ -1,5 +1,4 @@
 import React from 'react'
-import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { ToastProvider } from './components/Toast/ToastContext'
 import RootComponent from './RootComponent'
