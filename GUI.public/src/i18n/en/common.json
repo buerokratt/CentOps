@@ -1,0 +1,51 @@
+{
+  "global": {
+    "title": "CentOps Module",
+    "backhome": "Back to homepage",
+    "choose": "Choose"
+  },
+  "overview": {
+    "title": "Overview"
+  },
+  "forms": {
+    "failed": "Failed to fetch the form",
+    "retry": "Retry",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "id_missing": "Form Id is missing",
+    "toast_title": "Form",
+    "submit_success": "Form has been submitted successfully",
+    "submit_failed": "Failed to submit the form",
+    "invalid_form": "Invalid form"
+  },
+  "manifests": {
+    "pastUpdates": "Past Updates",
+    "manifest": "Manifest",
+    "updateManifest": "Update Manifest",
+    "details": "Details",
+    "futureUpdates": "Future Updates",
+    "noFutureUpdates": "No Future Updates"
+  },
+  "application": {
+    "contact-email": "Contact email address",
+    "enter-invitation-id": "Please enter your invitation ID",
+    "host": "Network host",
+    "insert-organisation-details": "Please enter detailed information about your organisation",
+    "invalid-id": "Invitation ID is invalid or already used",
+    "invitation-error": "Invitation error",
+    "invitation-id": "Invitation Id",
+    "ip-address": "IP address",
+    "name-abbreviated": "Abbreviated name",
+    "organisation-name": "Organisation name",
+    "send-application": "Send application",
+    "submit-success": "Thanks for your application!",
+    "title": "Application page",
+    "validate-id": "Validate ID"
+  },
+  "application-status": {
+    "processing": "Processing application, please wait",
+    "processed": "Application processed, you can start using Bürokratt now!",
+    "received": "Application received",
+    "title": "Application status page"
+  }
+}

@@ -1,0 +1,86 @@
+
+#
+# TODO later: use validate-message template to validate the sender
+#
+
+check_for_body:
+  switch:
+    - condition: ${incoming.body == null}
+      next: return_incorrect_request
+  next: assign_info
+
+assign_info:
+  assign:
+    message: ${incoming.body.message}
+    type: ${incoming.body.type}
+    reply_to_message_id: ${incoming.body.reply_to_message_id}
+    receiver_id: ${incoming.body.receiver_id}
+    sender_id: ${incoming.body.sender_id}  # TODO later: extract this from jwt
+  next: check_for_if_reply
+
+check_for_if_reply:
+  switch:
+    - condition: ${reply_to_message_id == null || reply_to_message_id == ''}
+      next: encrpyt_send_message
+  next: encrpyt_reply_message
+
+encrpyt_send_message:
+  call: http.post
+  args:
+    url: http://ruuter-private:8050/templates/encryption/aes
+    body:
+      content: ${message}
+      key: 'test'
+  result: encryptedMessageResult
+  next: send_new_message
+
+encrpyt_reply_message:
+  call: http.post
+  args:
+    url: http://ruuter-private:8050/templates/encryption/aes
+    body:
+      content: ${message}
+      key: 'test'
+  result: encryptedMessageResult
+  next: send_reply_message
+
+send_new_message:
+  call: http.post
+  args:
+    url: http://resql:8052/send-new-message
+    body: 
+      message: ${encryptedMessageResult.response.body.response}
+      type: ${type}
+      receiver_id: ${receiver_id}
+      sender_id: ${sender_id}
+  result: messageResult
+  next: return_ok
+
+send_reply_message:
+  call: http.post
+  args:
+    url: http://resql:8052/send-reply-message
+    body: 
+      message: ${message}
+      type: ${type}
+      receiver_id: ${receiver_id}
+      sender_id: ${sender_id}
+      reply_to_message_id: ${reply_to_message_id}
+  result: messageResult
+  next: return_ok
+
+return_ok:
+  wrapper: false
+  status: 201
+  return: "Message has been sent"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "User email is required"
+  next: end
+
+return_unauthorized:
+  return: "error: unauthorized"
+  status: 401
+  next: end

@@ -1,0 +1,72 @@
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.update_id || incoming.body.parent_manifest_id || incoming.body.buerokratt_version == null || incoming.body.components == null || incoming.body.extra_configs == null || incoming.body.security_configs == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    update_id: ${incoming.body.update_id}
+    parent_manifest_id: ${incoming.body.parent_manifest_id}
+    buerokratt_version: ${incoming.body.buerokratt_version}
+    components: ${incoming.body.components}
+    extra_configs: ${incoming.body.extra_configs}
+    security_configs: ${incoming.body.security_configs}
+  next: update_manifest_update
+
+update_manifest_update:
+  call: http.post
+  args:
+    url: http://resql:8052/update-manifest-update
+    body:
+      update_id: ${update_id}
+      parent_manifest_id: ${parent_manifest_id}
+      buerokratt_version: ${buerokratt_version}
+      components: ${components}
+      extra_configs: ${extra_configs}
+      security_configs: ${security_configs}
+  result: results
+  next: check_result
+
+check_result:
+  switch:
+    - condition: ${200 <= results.response.statusCodeValue && results.response.statusCodeValue < 300}
+      next: log_history
+  next: return_bad_request  
+
+log_history:
+  call: http.post
+  args:
+    url: http://resql:8052/update-manifest-update-history
+    body:
+      parent_manifest_id: ${parent_manifest_id}
+      update_id: ${update_id}
+      buerokratt_version: ${buerokratt_version}
+      components: ${components}
+      extra_configs: ${extra_configs}
+      security_configs: ${security_configs}
+      type: "update"
+      status: "pending_approval"
+  result: history_result
+  next: check_history_result    
+
+check_history_result:
+  switch:
+    - condition: ${200 <= history_result.response.statusCodeValue && history_result.response.statusCodeValue < 300}
+      next: return_ok
+  next: return_bad_request   
+  
+return_ok:
+  status: 200
+  return: "Manifest Update Updated Successfully"
+  next: end  
+
+return_bad_request:
+  status: 400
+  return: ${results.response.body.message}
+  next: end  
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter(s) missing"
+  next: end

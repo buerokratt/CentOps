@@ -1,0 +1,40 @@
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.manifest_id == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    manifest_id: ${incoming.body.manifest_id}
+  next: get_manifest_details
+
+get_manifest_details:
+  call: http.post
+  args:
+    url: http://resql:8052/get-manifest-by-id
+    body:
+      manifest_id: ${manifest_id}
+  result: manifest_details_results
+  next: check_update_details_result
+
+check_update_details_result:
+  switch:
+    - condition: ${200 <= manifest_details_results.response.statusCodeValue && manifest_details_results.response.statusCodeValue < 300}
+      next: return_value
+  next: return_bad_request
+
+return_value:
+   wrapper: false
+   return: ${manifest_details_results.response.body}
+   next: end
+
+return_bad_request:
+  status: 400
+  return: ${results.response.body.message}
+  next: end  
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter(s) missing"
+  next: end

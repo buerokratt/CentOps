@@ -1,0 +1,49 @@
+check_for_invitation_id:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.invitationId == null}
+      next: return_incorrect_request
+
+set_invitation_id:
+  assign:
+    invitation_id: ${incoming.body.invitationId}
+
+get_invitation_id:
+  call: http.post
+  args:
+    url: http://resql:8052/get-invitation-code-by-uuid
+    body:
+      invitation_id: ${invitation_id}
+  result: invitation
+
+get_invitation_id_valid:
+  switch:
+    - condition: ${invitation.response.body[0] == null || invitation.response.body[0].invitationId == null}
+      next: return_invitation_invalid
+
+generate_jwt:
+  call: http.post
+  args:
+    url: http://ruuter-public:8051/mocks/mock-tim-token-response
+  result: cookie
+
+assign_cookie:
+  assign:
+      customJwtCookie: ${cookie.response.body.response.jwt}
+
+return_ok:
+  headers:
+    Set-Cookie: "customJwtCookie=${customJwtCookie}; Domain=localhost; Max-Age=36000; HttpOnly"
+  status: 200
+  return: ""
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Invitation id is required"
+  next: end
+
+
+return_invitation_invalid:
+  status: 404
+  return: "Inserted invitation ID is not valid"
+  next: end

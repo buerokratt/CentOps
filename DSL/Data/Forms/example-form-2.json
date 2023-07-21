@@ -1,0 +1,18 @@
+{
+  "title": "Second Example Form",
+  "vaildatorSource": "http://localhost:8051/get-validator?validator_id=basic-form-validator",
+  "fields": [
+    {
+      "id": "firstname",
+      "type": "text",
+      "label": "First Name",
+      "vaildationType": "name"
+    },
+    {
+      "id": "lastname",
+      "type": "text",
+      "label": "Last Name",
+      "vaildationType": "name"
+    }
+  ]
+}

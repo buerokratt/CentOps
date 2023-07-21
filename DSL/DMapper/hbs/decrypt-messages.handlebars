@@ -1,0 +1,17 @@
+[
+  {{#each entries}}
+    {
+      "id": "{{id}}",
+      "status": "{{status}}",
+      "timestamp": "{{timestamp}}",
+      "replyToMessageId": "{{replyToMessageId}}",
+      "senderId": "{{senderId}}",
+      "sender": "{{sender}}",
+      "receiverId": "{{receiverId}}",
+      "receiver": "{{receiver}}",
+      "type": "{{type}}",
+      "message": "{{decryptMessage message}}"
+    }
+    {{#unless @last}},{{/unless}}
+  {{/each}}
+]

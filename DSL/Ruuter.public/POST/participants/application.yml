@@ -1,0 +1,137 @@
+check_for_cookie:
+  switch:
+    - condition: ${incoming.headers == null || incoming.headers.cookie == null}
+      next: return_unauthorized
+
+authenticate:
+  template: templates/permissions/applicant
+  requestType: post
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: permission
+
+validate_permission:
+  switch:
+    - condition: ${permission}
+      next: check_body
+  next: return_unauthorized
+
+check_body:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.invitationId == null || incoming.body.info == null}
+      next: return_incorrect_request
+
+assign_variables:
+  assign:
+    invitation_id: ${incoming.body.invitationId}
+    info: ${incoming.body.info}
+    email: ${incoming.body.info.email}
+    name: ${incoming.body.info.name}
+
+get_invitation_id:
+  call: http.post
+  args:
+    url: http://resql:8052/get-invitation-code-by-uuid
+    body:
+      invitation_id: ${invitation_id}
+  result: invitation
+
+get_invitation_id_valid:
+  switch:
+    - condition: ${invitation.response.body[0] == null || invitation.response.body[0].invitationId == null}
+      next: return_invitation_invalid
+
+create_participant:
+  call: http.post
+  args:
+    url: http://resql:8052/create-participant-application
+    body:
+      invitation_id: ${invitation_id}
+      institution_id: ${invitation.response.body[0].institutionId}
+      info: ${info}
+  result: participant
+
+invalidate_invitation:
+  call: http.post
+  args:
+    url: http://resql:8052/invalidate-invitation
+    body: 
+      invitation_id: ${invitation.response.body[0].invitationId}
+      contact_email: ${invitation.response.body[0].contactEmail}
+      institution_id: ${invitation.response.body[0].institutionId}
+  result: invalidated_invitation
+
+assign_email_content:
+  assign:
+    invitation_code: ${invitation.response.body[0].invitationId}
+    email_content: >
+        Hello!
+
+
+        There is a new application to start using Bürokratt!
+        Participant name: ${name}
+        Invitation id: ${invitation_code}
+        Institution unique id: ${participant.response.body[0].uniqueIdentifier}
+        Contact email: ${email}
+
+        Best regards,
+
+        Bürokratt team
+
+send_email_to_buerokratt:
+  call: http.post
+  args:
+    url: http://ruuter-private:8050/mocks/mock-email-service
+    body:
+      to: buerokratt@ria.ee ## TODO: Add correct email address
+      subject: "A new application has been submitted"
+      text: ${email_content}
+  result: emailResponseData
+
+## ToDo use correct link to the application
+assign_email_content_applicant:
+  assign:
+    applicant_email_content: >
+        Hello!
+
+
+        Thank you for applying to use Bürokratt! We will get back to you as soon as possible.
+
+        Your request id: ${participant.response.body[0].uniqueIdentifier}
+
+        In the meantime, you can check out the progress of your application here: https://localhost:8058/centops/application/status/${participant.response.body[0].uniqueIdentifier}
+
+
+        Best regards,
+
+        Bürokratt team
+
+send_email_to_applicant:
+  call: http.post
+  args:
+    url: http://ruuter-private:8050/mocks/mock-email-service
+    body:
+      to: ${email}
+      subject: "Your application has been submitted"
+      text: ${applicant_email_content}
+  result: emailResponseData
+
+return_success:
+  status: 201
+  return: "Application submitted successfully"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Missing required parameters"
+  next: end
+
+return_invitation_invalid:
+  status: 404
+  return: "Inserted invitation ID is not valid"
+  next: end
+
+return_unauthorized:
+  return: "error: unauthorized"
+  status: 401
+  next: end

@@ -1,4 +1,6 @@
 /data
+/docker
+/TechStack
 /tim-db
 /docker
 .DS_Store

@@ -1,0 +1,69 @@
+# TODO uncomment lines 2-5, use actual cookie from header for authentication.
+# check_for_cookie:
+#   switch:
+#     - condition: ${incoming.headers == null || incoming.headers.cookie == null}
+#       next: return_unauthorized
+
+authenticate:
+  template: templates/permissions/admin
+  requestType: post
+  headers:
+    cookie: cookie #${incoming.headers.cookie}
+  result: permission
+
+validate_permission:
+  switch:
+    - condition: ${permission}
+      next: check_for_body_parameters
+  next: return_unauthorized
+
+check_for_body_parameters:
+  switch:
+    - condition: ${incoming.params.uuid == null || incoming.body == null || incoming.body.contactEmail == null || incoming.body.name == null || incoming.body.host == null || incoming.body.participantType == null || incoming.body.nameAbbreviated == null || incoming.body.ipAddress == null}
+      next: return_incorrect_request
+
+assign_variables:
+  assign:
+    id: ${incoming.body.id}
+    institution_id: ${incoming.body.institutionId}
+    participant_type: ${incoming.body.participantType}
+    unique_identifier: ${incoming.params.uuid}
+    info: ${incoming.body.info}
+
+get_participant:
+  call: http.post
+  args:
+    url: http://resql:8052/get-participant-by-id
+    body:
+      unique_identifier: ${unique_identifier}
+  result: participant_result
+
+update_participant:
+  call: http.post
+  args:
+    url: http://resql:8052/update-participant
+    body:
+      id: ${id}
+      institution_id: ${institution_id}
+      participant_type: ${participant_type}
+      unique_identifier: ${unique_identifier}
+      participant_status: ${participant_result.response.body[0].participantStatus}
+      security_token: ${participant_result.response.body[0].securityToken}
+      info: ${info}
+  result: update_result
+
+return_ok:
+  wrapper: false
+  status: 200
+  return: ${update_result.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "error: incorrect request"
+  next: end
+
+return_unauthorized:
+  return: "error: unauthorized"
+  status: 401
+  next: end
