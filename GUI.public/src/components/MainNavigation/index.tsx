@@ -15,6 +15,25 @@ const MainNavigation: FC = () => {
   const location = useLocation();
   const [navCollapsed, setNavCollapsed] = useState(false);
 
+  const centopsMenu = [
+    {
+      id: 'centops',
+      label: 'Centops',
+      path: ROUTES.APPLICATION_ROUTE,
+      children: [
+        { path: ROUTES.APPLICATION_ROUTE, label: t('menu.application') },
+        {
+          path: ROUTES.MANIFESTS_PAST_UPDATES_ROUTE,
+          label: t('menu.pastUpdates'),
+        },
+        {
+          path: ROUTES.MANIFESTS_FUTURE_UPDATES_ROUTE,
+          label: t('menu.futureUpdates'),
+        },
+      ],
+    },
+  ];
+
   const menuItems = [
     {
       id: 'conversations',
@@ -217,7 +236,7 @@ const MainNavigation: FC = () => {
         <Icon icon={<MdClose />} />
         {t('menu.close')}
       </button>
-      <ul className="nav__menu">{renderMenuTree(menuItems)}</ul>
+      <ul className="nav__menu">{renderMenuTree(centopsMenu)}</ul>
     </nav>
   );
 };
