@@ -1,5 +1,8 @@
 const baseUrl = process.env.REACT_APP_API_URL;
 
+export const getDynamicFormConfig = (formId: string): string =>
+  `${baseUrl}/get-form?form_id=${formId}`;
+
 export const createInvitation = (): string =>
   `${baseUrl}/admin/participants/invitation`;
 export const updateParticipantDetails = (uuid: string): string =>
