@@ -141,6 +141,14 @@ const MainNavigation: FC = () => {
       children: [
         { path: ROUTES.OVERVIEW_ROUTE, label: t('menu.overview') },
         { path: ROUTES.APPLICATION_ROUTE, label: t('menu.application') },
+        {
+          path: ROUTES.MANIFESTS_PAST_UPDATES_ROUTE,
+          label: t('menu.pastUpdates'),
+        },
+        {
+          path: ROUTES.MANIFESTS_FUTURE_UPDATES_ROUTE,
+          label: t('menu.futureUpdates'),
+        },
       ],
     },
     {

@@ -7,6 +7,12 @@
   "overview": {
     "title": "Overview"
   },
+  "menu": {
+    "overview": "Overview",
+    "application": "Application",
+    "pastUpdates": "Past Updates",
+    "futureUpdates": "Future Updates"
+  },
   "forms": {
     "failed": "Failed to fetch the form",
     "retry": "Retry",
