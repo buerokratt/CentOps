@@ -16,6 +16,7 @@ const Layout: FC<PropsWithChildren<LayoutProps>> = ({
 }) => {
   return (
     <div className="layout">
+      {!disableMenu && <MainNavigation />}
       <div className="layout__wrapper">
         {customHeader ?? <Header />}
         <main className="layout__main">{children ?? <Outlet />}</main>

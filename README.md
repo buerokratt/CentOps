@@ -22,6 +22,15 @@ Bürokratt Central Operations
 
 - Ruuter configuration should be changed for all the endpoints to work. PUT and DELETE should be added to the allowedMethodTypes array. See more information https://github.com/buerokratt/Ruuter/blob/65889552329249665e48656ed866cdf99cda391f/samples/CONFIGURATION.md
 
+##### Public Acccessed Pages
+
+- Application: `{YOUR URL}/centops/application`
+- Application With ID: `/centops/application/{APPLICATION ID}`
+- Overview: `{YOUR URL}/centops/overview`
+- Form: `{YOUR URL}/centops/form`
+- Past Updates: `{YOUR URL}/centops/manifests/past_updates`
+- Future Updates: `{YOUR URL}/centops/manifests/future_updates`
+
 ### Database setup
 
 - For setting up the users database initially, run
