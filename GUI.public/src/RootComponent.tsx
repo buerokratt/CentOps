@@ -18,7 +18,7 @@ import FutureUpdatesPage from './pages/manifests/FutureUpdatesPage';
 const RootComponent: React.FC = () => {
   return (
     <Routes>
-      <Route element={<Layout />}>
+      <Route element={<Layout disableMenu={true} />}>
         <Route path={ROUTES.APPLICATION_ROUTE} element={<ApplicationPage />} />
         <Route
           path={ROUTES.APPLICATION_ROUTE_WITH_ID}
@@ -38,8 +38,8 @@ const RootComponent: React.FC = () => {
           path={ROUTES.MANIFESTS_FUTURE_UPDATES_ROUTE}
           element={<FutureUpdatesPage />}
         />
-        
-        <Route    
+
+        <Route
           path={ROUTES.MANIFESTS_DETAILS_ROUTE}
           element={<ManifestsDetailsPage />}
         />
