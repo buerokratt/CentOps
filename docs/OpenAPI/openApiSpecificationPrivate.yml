@@ -5,7 +5,7 @@ info:
   description: private API endpoints for Buerokratt CentOps
 servers:
   - url: 'http://localhost:8050'
-  - url: 'https://admin.play.buerokratt.ee/centops/'
+  - url: 'https://admin.play.buerokratt.ee/centops'
 tags:
   - name: Account
     description: Endpoints related to account session
