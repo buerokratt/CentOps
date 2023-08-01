@@ -1,0 +1,586 @@
+openapi: 3.0.3
+info:
+  title: Central Operations Public API
+  version: 1.0.0
+  description: public API endpoints for Buerokratt CentOps
+servers:
+  - url: 'http://localhost:8051'
+  - url: 'https://admin.play.buerokratt.ee/centops/'
+tags:
+  - name: Manifest
+    description: Endpoints related to manifest operations including historical and future updates
+  - name: Mock
+    description: Endpoints used for mocking responses, mainly used for testing purposes
+  - name: Participant
+    description: Endpoints dealing with participant applications and information
+  - name: Template
+    description: Endpoints related to template operations, mainly dealing with permissions
+  - name: Institution
+    description: Endpoints focused on handling institution-related data
+  - name: Validation
+    description: Endpoints used for validating different pieces of data such as invitation IDs
+  - name: General
+    description: Endpoints used for general work
+paths:
+  /manifest/future-updates:
+    get:
+      tags:
+        - Manifest
+      summary: Retrieves future updates for manifests
+      operationId: getManifestsFutureUpdates
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManifestUpdate'
+  /manifest/past-updates:
+    get:
+      tags:
+        - Manifest
+      summary: Retrieves past updates for manifests
+      operationId: getManifestsPastUpdates
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManifestUpdateHistory'
+  /participants/application:
+    get:
+      tags:
+        - Participant
+      summary: Retrieves the application status of a participant
+      operationId: getParticipantApplicationStatus
+      parameters:
+        - in: query
+          name: uniqueIdentifier
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the participant
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: The application status of the participant
+        '400':
+          description: Missing required parameters
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: "Missing required parameters"
+    post:
+      tags:
+        - Participant
+      summary: Create a participant application
+      operationId: createParticipantApplication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invitationId:
+                  type: string
+                info:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    name:
+                      type: string
+              required:
+                - invitationId
+                - info
+      responses:
+        '201':
+          description: Application submitted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Application submitted successfully"
+        '400':
+          description: Missing required parameters
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Missing required parameters"
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "error: unauthorized"
+        '404':
+          description: Inserted invitation ID is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Inserted invitation ID is not valid"
+  /get-form:
+    get:
+      tags:
+        - General
+      summary: Retrieves the configuration of a form
+      operationId: getFormConfiguration
+      parameters:
+        - in: query
+          name: form_id
+          required: true
+          schema:
+            type: string
+          description: The identifier of the form
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The configuration of the form
+        '400':
+          description: Missing required parameters or bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                oneOf:
+                  - default: "Missing required parameters"
+                  - default: "Bad request"
+  /get-validator:
+    get:
+      tags:
+        - General
+      summary: Retrieves the configuration of a validator
+      operationId: getValidatorConfiguration
+      parameters:
+        - in: query
+          name: validator_id
+          required: true
+          schema:
+            type: string
+          description: The identifier of the validator
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The configuration of the validator
+        '400':
+          description: Missing required parameters or bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                oneOf:
+                  - default: "Missing required parameters"
+                  - default: "Bad request"
+  /manifest/history-details:
+    post:
+      tags:
+        - Manifest
+      summary: Retrieves history details of a manifest
+      operationId: getManifestHistoryDetails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                history_id:
+                  type: string
+              required:
+                - history_id
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                description: Array of the parent manifest and its history details, if applicable.
+        '400':
+          description: Required parameter(s) missing or bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                oneOf:
+                  - default: "Required parameter(s) missing"
+                  - default: "Bad request"
+  /manifest/manifest-details:
+    post:
+      tags:
+        - Manifest
+      summary: Retrieves details of a specific manifest
+      operationId: getManifestDetails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                manifest_id:
+                  type: string
+              required:
+                - manifest_id
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                description: Array of the manifest details.
+        '400':
+          description: Required parameter(s) missing or bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                oneOf:
+                  - default: "Required parameter(s) missing"
+                  - default: "Bad request"
+  /manifest/update-details:
+    post:
+      tags:
+        - Manifest
+      summary: Retrieves details of a specific manifest update along with its parent manifest
+      operationId: getManifestUpdateDetails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                update_id:
+                  type: string
+              required:
+                - update_id
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                description: Array with two objects, the first object represents the parent manifest, and the second object represents the update details.
+        '400':
+          description: Required parameter(s) missing or bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                oneOf:
+                  - default: "Required parameter(s) missing"
+                  - default: "Bad request"
+  /mocks/mock-tim-applicant-response:
+    post:
+      tags:
+        - Mock
+      summary: Mocks TIM Applicant response
+      operationId: mockTimApplicantResponse
+      responses:
+        '200':
+          description: Successfully mocked the TIM Applicant response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockedTimApplicantResponse'
+  /mocks/mock-tim-token-response:
+    post:
+      tags:
+        - Mock
+      summary: Mocks TIM Token response
+      operationId: mockTimTokenResponse
+      responses:
+        '200':
+          description: Successfully mocked the TIM Token response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockedTimTokenResponse'
+  /templates/permissions/applicant:
+    post:
+      tags:
+        - Template
+      summary: Validate permissions of the applicant
+      operationId: validateApplicantPermission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cookieName:
+                  type: string
+              required:
+                - cookieName
+      responses:
+        '200':
+          description: Returns a boolean value indicating the validity of the applicant's permission
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /institution:
+    post:
+      tags:
+        - Institution
+      summary: sends an application to become a Bürokratt member
+      operationId: institution
+      description: Creates a new institution with status "Inactive" to indicate this is a not-yet-approved application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@admin.ee
+                organisation_name:
+                  type: string
+                  example: Riigi Infosüsteemi Amet
+                invitation_id:
+                  type: string
+                  format: UUID
+                  example: '51ad3304-a286-4232-bd30-31c7333e03c4'
+              required:
+                - email
+                - organisation_name
+                - invitation_id
+      responses:
+        '200':
+          description: Institution successfully created
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: "Application saved successfully"
+        '400':
+          description: Missing required parameters
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: "Missing required parameters"
+        '401':
+          description: Unauthorized request
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: "error: unauthorized"
+        '404':
+          description: Invalid invitation ID
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: "Inserted invitation ID is not valid"
+  /reload:
+    post:
+      tags:
+        - General
+      summary: Reload the DSL
+      operationId: reloadDSL
+      responses:
+        '200':
+          description: Successfully reloaded DSL
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: ""
+  /validate-invitation-id:
+    post:
+      tags:
+        - Validation
+      summary: Validates an invitation id
+      operationId: validateInvitationId
+      description: Validates invitation id and if invitation id is valid responds with a Set-Cookie header for further requests
+      requestBody:
+        description: Invitation id to validate
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invitationId:
+                  type: string
+              required:
+                - invitationId
+            examples:
+              example1:
+                value:
+                  invitationId: "example-invitation-id"
+      responses:
+        '200':
+          description: Invitation id is valid
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: "customJwtCookie=token; Domain=localhost; Max-Age=36000; HttpOnly"
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: ""
+        '400':
+          description: Invitation id is required
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: "Invitation id is required"
+        '404':
+          description: Inserted invitation ID is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                default: "Inserted invitation ID is not valid"
+components:
+  schemas:
+    ManifestUpdate:
+      type: object
+      properties:
+        parentManifestId:
+          type: string
+          description: ID of the parent manifest
+        buerokrattVersion:
+          type: string
+          description: The version of Buerokratt
+        updateId:
+          type: string
+          description: The ID of the update
+        createdAt:
+          type: string
+          format: date-time
+          description: When the update was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the update was last updated
+        components:
+          type: object
+          description: The components details of the update
+        extraConfigs:
+          type: object
+          description: The extra configurations of the update
+        securityConfigs:
+          type: object
+          description: The security configurations of the update
+        status:
+          type: string
+          description: The status of the update
+    ManifestUpdateHistory:
+      type: object
+      properties:
+        parentManifestId:
+          type: string
+          description: ID of the parent manifest
+        historyId:
+          type: string
+          description: The ID of the history record
+        buerokrattVersion:
+          type: string
+          description: The version of Buerokratt
+        updateId:
+          type: string
+          description: The ID of the update
+        createdAt:
+          type: string
+          format: date-time
+          description: When the update was created
+        components:
+          type: object
+          description: The components details of the update
+        extraConfigs:
+          type: object
+          description: The extra configurations of the update
+        securityConfigs:
+          type: object
+          description: The security configurations of the update
+        type:
+          type: string
+          description: The type of the record
+        status:
+          type: string
+          description: The status of the update
+    MockedTimApplicantResponse:
+      type: object
+      properties:
+        sub:
+          type: string
+          example: ""
+        firstName:
+          type: string
+          example: "MARY ÄNN"
+        idCode:
+          type: string
+          example: "EE60001019906"
+        displayName:
+          type: string
+          example: "MARY ÄNN"
+        iss:
+          type: string
+          example: "test.buerokratt.ee"
+        exp:
+          type: integer
+          example: 1670250948
+        login:
+          type: string
+          example: "EE60001019906"
+        iat:
+          type: integer
+          example: 1670243748
+        jti:
+          type: string
+          example: "e14a5084-3b30-4a55-8720-c2ee22f43c2c"
+        authorities:
+          type: array
+          items:
+            type: string
+          example:
+            - "ROLE_APPLICANT"
+    MockedTimTokenResponse:
+      type: object
+      properties:
+        jwt:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJmaXJzdE5hbWUiOiJNQVJZIMOETk4iLCJpZENvZGUiOiJFRTYwMDAxMDE5OTA2IiwiZGlzcGxheU5hbWUiOiJNQVJZIMOETk4iLCJpc3MiOiJ0ZXN0LmJ1ZXJva3JhdHQuZWUiLCJleHAiOiIxNjcwMjUwOTQ4IiwibG9naW4iOiJFRTYwMDAxMDE5OTA2IiwiaWF0IjoiMTY3MDI0Mzc0OCIsImp0aSI6ImUxNGE1MDg0LTNiMzAtNGE1NS04NzIwLWMyZWUyMmY0M2MyYyIsImF1dGhvcml0aWVzIjpbIlJPTEVfQVBQTElDQU5UIl19.7mPCt7EJvlJEIyaZmCTMMhpsUEM8VfagKn6Wj8_75vw"

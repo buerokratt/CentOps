@@ -1,0 +1,2394 @@
+openapi: 3.0.3
+info:
+  title: Central Operations Private API
+  version: 1.0.0
+  description: private API endpoints for Buerokratt CentOps
+servers:
+  - url: 'http://localhost:8050'
+  - url: 'https://admin.play.buerokratt.ee/centops/'
+tags:
+  - name: Account
+    description: Endpoints related to account session
+  - name: Manifest
+    description: Endpoints related to manifest management
+  - name: Mocks
+    description: Endpoints related to mock services
+  - name: Templates
+    description: Endpoints for various encryption and decryption templates
+  - name: Messages
+    description: Endpoints for managing messages
+  - name: Invitations
+    description: Endpoints for managing invitations
+  - name: Admin
+    description: Endpoints related to admin work
+  - name: Reload
+    description: Endpoint for reload
+  - name: Should be fixed
+    description: Endpoints that should be worked on based on the DSL file
+paths:
+  /account/session-length:
+    get:
+      tags:
+        - Account
+        - Should be fixed
+      summary: Get account session length
+      operationId: getSessionLength
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  description: Login details for the account.
+                password:
+                  type: string
+                  description: Password for the account.
+              required:
+                - login
+                - password
+      responses:
+        '200':
+          description: Successful operation, session length will be returned. Actual response model needs to be defined.
+        '400':
+          description: Bad request, incorrect request parameters e.g., missing login or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing required parameters"
+  /admin/participants/applications:
+    get:
+      tags:
+        - Admin
+      summary: Get all unprocessed participant applications
+      operationId: getParticipantApplications
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '200':
+          description: Successful operation, returns a list of unprocessed participant applications.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParticipantApplication'
+        '401':
+          description: Unauthorized request, user is not authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "error: unauthorized"
+  /admin/institutions:
+    get:
+      tags:
+        - Admin
+      summary: Get all institutions
+      operationId: getInstitutions
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '200':
+          description: Successful operation, returns a list of institutions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: Institution. The actual schema needs to be defined.
+        '401':
+          description: Unauthorized request, user is not authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "error: unauthorized"
+  /admin/participants:
+    get:
+      tags:
+        - Admin
+      summary: Get all participants
+      operationId: getParticipants
+      security:
+        - CookieAuth: [ ]
+      responses:
+        '200':
+          description: Successful operation, returns a list of participants.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: Participant. The actual schema needs to be defined.
+        '401':
+          description: Unauthorized request, user is not authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "error: unauthorized"
+    delete:
+      tags:
+        - Admin
+      summary: Delete a participant by UUID
+      operationId: deleteParticipant
+      security:
+        - CookieAuth: [ ]
+      parameters:
+        - name: uuid
+          in: query
+          required: true
+          description: Unique identifier of the participant to be deleted.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The participant was deleted successfully.
+        '400':
+          description: Bad request, incorrect request parameters, e.g. missing uuid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "error: incorrect request"
+        '401':
+          description: Unauthorized request, user is not authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "error: unauthorized"
+  /manifest/approved-manifests:
+    get:
+      tags:
+        - Manifest
+      summary: Get all approved manifests
+      operationId: getApprovedManifests
+      responses:
+        '200':
+          description: Successful operation, returns a list of approved manifests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manifest'
+        '500':
+          description: An error occurred during the operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+  /manifest/history:
+    get:
+      tags:
+        - Manifest
+      summary: Get all manifests history
+      operationId: getManifestsHistory
+      responses:
+        '200':
+          description: Successful operation, returns a list of manifests history.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManifestHistory'
+        '500':
+          description: An error occurred during the operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+  /manifest/manifests:
+    get:
+      tags:
+        - Manifest
+      summary: Get all manifests
+      operationId: getManifests
+      responses:
+        '200':
+          description: Successful operation, returns a list of manifests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manifest'
+        '500':
+          description: An error occurred during the operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+  /manifest/new-manifests:
+    get:
+      tags:
+        - Manifest
+      summary: Get all manifests pending approval
+      operationId: getNewManifests
+      responses:
+        '200':
+          description: Successful operation, returns a list of manifests pending approval.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManifestPending'
+        '500':
+          description: An error occurred during the operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+  /manifest/updates:
+    get:
+      tags:
+        - Manifest
+      summary: Get all updates for all manifests
+      operationId: getManifestUpdates
+      responses:
+        '200':
+          description: Successful operation, returns a list of manifest updates.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManifestUpdate'
+        '500':
+          description: An error occurred during the operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+  /account/login-user:
+    post:
+      tags:
+        - Account
+      summary: Login user and return a cookie
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Successful operation, returns a JWT cookie.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: 'customJwtCookie=<jwt-value>; Domain=localhost; HttpOnly; Max-Age=28800'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jwt:
+                    type: string
+                    description: The JWT token.
+        '400':
+          description: Required parameter(s) missing or User Not Found or Could not fetch session length.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Required parameter(s) missing'
+  /admin/participants/invitation:
+    post:
+      tags:
+        - Admin
+      summary: Create a new participant invitation and send the invitation email
+      operationId: createParticipantInvitation
+      security:
+        - CookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParticipantInvitation'
+      responses:
+        '201':
+          description: Invitation created successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvitationCode'
+        '400':
+          description: User email or institution ID is required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'User email is required'
+        '401':
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'error: unauthorized'
+  /admin/add-institute:
+    post:
+      tags:
+        - Admin
+      summary: Add a new institution
+      operationId: addInstitution
+      security:
+        - CookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewInstitution'
+      responses:
+        '200':
+          description: Institution saved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Institution saved successfully'
+        '400':
+          description: Missing required parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Missing required parameters'
+        '401':
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'error: unauthorized'
+  /admin/delete-institute:
+    post:
+      tags:
+        - Admin
+      summary: Delete an institution
+      operationId: deleteInstitution
+      security:
+        - CookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteInstitution'
+      responses:
+        '204':
+          description: Deleted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'deleted successfully'
+        '400':
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'error: incorrect request'
+        '401':
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'error: unauthorized'
+  /admin/toggle-institute-active-status:
+    post:
+      tags:
+        - Admin
+      summary: Toggle an institution's active status
+      operationId: toggleInstituteStatus
+      security:
+        - CookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleInstituteStatus'
+      responses:
+        '200':
+          description: Status toggled successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Institution saved successfully'
+        '400':
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'Missing required parameters'
+        '401':
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'error: unauthorized'
+  /admin/update-institute:
+    post:
+      tags:
+        - Admin
+      summary: Update an institution's information
+      operationId: updateInstitute
+      security:
+        - CookieAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInstitute'
+      responses:
+        '204':
+          description: Institution updated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'updated successfully'
+        '400':
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'error: incorrect request'
+        '401':
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'error: unauthorized'
+  /manifest/approve-manifest:
+    post:
+      tags:
+        - Manifest
+      summary: Approve a manifest
+      operationId: approveManifest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveManifest'
+      responses:
+        '200':
+          description: Manifest approved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Manifest Approved Successfully'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/approve-update:
+    post:
+      tags:
+        - Manifest
+      summary: Approve a manifest update
+      operationId: approveManifestUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveManifestUpdate'
+      responses:
+        '200':
+          description: Manifest update approved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Manifest Update Approved Successfully'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/create-manifest:
+    post:
+      tags:
+        - Manifest
+      summary: Create a manifest
+      operationId: createManifest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateManifest'
+      responses:
+        '200':
+          description: Manifest created successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Manifest Created Successfully'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/create-update:
+    post:
+      tags:
+        - Manifest
+      summary: Create a manifest update
+      operationId: createUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUpdate'
+      responses:
+        '200':
+          description: Manifest update created successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Manifest Update Created Successfully'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/delete-manifest:
+    post:
+      tags:
+        - Manifest
+      summary: Delete a manifest
+      operationId: deleteManifest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteManifest'
+      responses:
+        '200':
+          description: Manifest deleted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Manifest Deleted Successfully'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/delete-update:
+    post:
+      tags:
+        - Manifest
+      summary: Delete a manifest update
+      operationId: deleteUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUpdate'
+      responses:
+        '200':
+          description: Manifest update deleted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Manifest Update Deleted Successfully'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/history-details:
+    post:
+      tags:
+        - Manifest
+      summary: Get manifest history details
+      operationId: getManifestHistoryDetails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HistoryDetails'
+      responses:
+        '200':
+          description: Manifest history details retrieved successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ManifestHistory2'
+                  - $ref: '#/components/schemas/UpdateHistory'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/manifest-details:
+    post:
+      tags:
+        - Manifest
+      summary: Get manifest details
+      operationId: getManifestDetails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManifestDetailsRequest'
+      responses:
+        '200':
+          description: Manifest details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManifestDetailsResponse'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/publish-update:
+    post:
+      tags:
+        - Manifest
+      summary: Publish a manifest update
+      operationId: publishManifestUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManifestUpdateRequest'
+      responses:
+        '200':
+          description: Manifest update published successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/reject-manifest:
+    post:
+      tags:
+        - Manifest
+      summary: Reject a manifest
+      operationId: rejectManifest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManifestRequest'
+      responses:
+        '200':
+          description: Manifest rejected successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/reject-update:
+    post:
+      tags:
+        - Manifest
+      summary: Reject a manifest update
+      operationId: rejectUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRequest'
+      responses:
+        '200':
+          description: Manifest update rejected successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/update-details:
+    post:
+      tags:
+        - Manifest
+      summary: Fetch details of a manifest update and its parent manifest
+      operationId: getUpdateDetails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRequest'
+      responses:
+        '200':
+          description: Successfully fetched the details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManifestUpdateDetails'
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /manifest/update-manifest-update:
+    post:
+      tags:
+        - Manifest
+      summary: Update a manifest update
+      operationId: updateManifestUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManifestUpdate2'
+      responses:
+        '200':
+          description: Successfully updated the manifest update
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Incorrect request / Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /mocks/mock-email-service:
+    post:
+      tags:
+        - Mocks
+      summary: Mock an email service
+      operationId: mockEmailService
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          description: Successfully mocked the email service
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockResponse'
+        '400':
+          description: Invalid request
+          content:
+            text/plain:
+              schema:
+                type: string
+  /mocks/mock-send-manifest:
+    post:
+      tags:
+        - Mocks
+      summary: Mock a send manifest service
+      operationId: mockSendManifest
+      responses:
+        '200':
+          description: Successfully mocked the send manifest service
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockManifestResponse'
+  /mocks/mock-send-manifest-update:
+    post:
+      tags:
+        - Mocks
+      summary: Mock a send manifest update service
+      operationId: mockSendManifestUpdate
+      responses:
+        '200':
+          description: Successfully mocked the send manifest update service
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockManifestUpdateResponse'
+  /mocks/mock-tim-admin-response:
+    post:
+      tags:
+        - Mocks
+      summary: Mock a TIM admin response service
+      operationId: mockTimAdminResponse
+      responses:
+        '200':
+          description: Successfully mocked the TIM admin response service
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockTimAdminResponse'
+  /templates/decryption/aes:
+    post:
+      tags:
+        - Templates
+      summary: AES decryption service
+      operationId: aesDecryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AesDecryptionRequest'
+      responses:
+        '200':
+          description: Successfully decrypted the cipher with AES
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AesDecryptionResponse'
+  /templates/decryption/base64:
+    post:
+      tags:
+        - Templates
+      summary: Base64 decryption service
+      operationId: base64Decryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Base64DecryptionRequest'
+      responses:
+        '200':
+          description: Successfully decrypted the cipher with Base64
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Base64DecryptionResponse'
+  /templates/decryption/rsa:
+    post:
+      tags:
+        - Templates
+      summary: RSA decryption service
+      operationId: rsaDecryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RSADecryptionRequest'
+      responses:
+        '200':
+          description: Successfully decrypted the cipher with RSA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RSADecryptionResponse'
+  /templates/decryption/triple-des:
+    post:
+      tags:
+        - Templates
+      summary: Triple DES decryption service
+      operationId: tripleDesDecryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripleDesDecryptionRequest'
+      responses:
+        '200':
+          description: Successfully decrypted the cipher with Triple DES
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripleDesDecryptionResponse'
+  /templates/encryption/aes:
+    post:
+      tags:
+        - Templates
+      summary: AES encryption service
+      operationId: aesEncryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AesEncryptionRequest'
+      responses:
+        '200':
+          description: Successfully encrypted the content with AES
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AesEncryptionResponse'
+  /templates/encryption/base64:
+    post:
+      tags:
+        - Templates
+      summary: Base64 encryption service
+      operationId: base64Encryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Base64EncryptionRequest'
+      responses:
+        '200':
+          description: Successfully encrypted the content with Base64
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Base64EncryptionResponse'
+  /templates/encryption/rsa:
+    post:
+      tags:
+        - Templates
+      summary: RSA encryption service
+      operationId: rsaEncryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RsaEncryptionRequest'
+      responses:
+        '200':
+          description: Successfully encrypted the content with RSA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RsaEncryptionResponse'
+  /templates/encryption/triple-des:
+    post:
+      tags:
+        - Templates
+      summary: Triple DES encryption service
+      operationId: tripleDesEncryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripleDesEncryptionRequest'
+      responses:
+        '200':
+          description: Successfully encrypted the content with Triple DES
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripleDesEncryptionResponse'
+  /templates/permissions/admin:
+    post:
+      tags:
+        - Templates
+      summary: Validate if the user has admin permissions
+      operationId: validateAdminPermissions
+      parameters:
+        - in: header
+          name: cookie
+          schema:
+            type: string
+            example: "customJwtCookie=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          required: true
+          description: JWT token in cookie
+      responses:
+        '200':
+          description: User permission status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionResponse'
+  /templates/validate-message:
+    post:
+      tags:
+        - Templates
+      summary: Validate a message by checking sender's details
+      operationId: validateMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: Validation successful, returns IP Address
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "192.168.1.1"
+        '400':
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: incorrect request"
+        '403':
+          description: Request body invalid
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Request body invalid"
+  /get-inbox-messages:
+    post:
+      tags:
+        - Messages
+      summary: Retrieve inbox messages for a specific user
+      operationId: getInboxMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation, returns array of decrypted messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecryptedMessages'
+        '400':
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Incorrect request"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: unauthorized"
+  /get-outbox-messages:
+    post:
+      tags:
+        - Messages
+      summary: Retrieve outbox messages for a specific user
+      operationId: getOutboxMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation, returns array of decrypted messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecryptedMessages'
+        '400':
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Incorrect request"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: unauthorized"
+  /invitation:
+    post:
+      tags:
+        - Invitations
+      summary: Create and send an invitation for a specific email
+      operationId: createInvitation
+      security:
+        - CookieAuth2: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationEmail'
+      responses:
+        '201':
+          description: Successful operation, returns the created invitation code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invitation'
+        '400':
+          description: User email is required
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "User email is required"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: unauthorized"
+  /reload:
+    post:
+      tags:
+        - Reload
+      summary: Reload DSL
+      operationId: reloadDSL
+      responses:
+        '200':
+          description: Successful operation, returns an empty string
+          content:
+            application/json:
+              schema:
+                type: string
+                example: ""
+  /send-message:
+    post:
+      tags:
+        - Messages
+      summary: Send a message or reply
+      operationId: sendMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessage'
+      responses:
+        '201':
+          description: Message has been sent
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Message has been sent"
+        '400':
+          description: User email is required
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "User email is required"
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: unauthorized"
+  /send-reply:
+    post:
+      tags:
+        - Messages
+      summary: Send a reply message
+      operationId: sendReplyMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendReplyMessage'
+      responses:
+        '201':
+          description: Message has been sent
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Message has been sent"
+        '400':
+          description: User email is required
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "User email is required"
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: unauthorized"
+  /admin/participants/status/{uuid}:
+    put:
+      tags:
+        - Admin
+      summary: Update participant status
+      operationId: updateParticipantStatus
+      security:
+        - CookieAuth: [ ]
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the participant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParticipantStatus'
+      responses:
+        '200':
+          description: The updated participant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  institution_id:
+                    type: string
+                  participant_type:
+                    type: string
+                  participant_status:
+                    type: string
+                  unique_identifier:
+                    type: string
+                  security_token:
+                    type: string
+                  info:
+                    type: object
+        '400':
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: incorrect request"
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: unauthorized"
+  /admin/participants/{uuid}:
+    put:
+      tags:
+        - Admin
+      summary: Update participant
+      operationId: updateParticipant
+      security:
+        - CookieAuth: [ ]
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the participant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Participant'
+      responses:
+        '200':
+          description: The updated participant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  institution_id:
+                    type: string
+                  participant_type:
+                    type: string
+                  participant_status:
+                    type: string
+                  unique_identifier:
+                    type: string
+                  security_token:
+                    type: string
+                  info:
+                    type: object
+        '400':
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: incorrect request"
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "error: unauthorized"
+components:
+  schemas:
+    ParticipantApplication:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The ID of the participant application.
+        unique_identifier:
+          type: string
+          format: uuid
+          description: The unique identifier of the participant application.
+        participant_status:
+          type: string
+          description: The status of the participant application. It can be 'unprocessed', 'processed' or 'rejected'.
+        participant_type:
+          type: string
+          description: The type of the participant, e.g., 'unknown', 'applicant', 'institution'.
+        security_token:
+          type: string
+          format: uuid
+          description: The security token associated with the participant application.
+        institution_id:
+          type: integer
+          format: int64
+          description: The ID of the institution to which the participant application is related.
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp when the participant application was created.
+        info:
+          type: object
+          description: Additional information about the participant application in JSON format.
+    ManifestHistory:
+      type: object
+      properties:
+        parent_manifest_id:
+          type: string
+          format: uuid
+          description: The parent manifest's unique ID
+        history_id:
+          type: string
+          format: uuid
+          description: The unique history ID
+        buerokratt_version:
+          type: string
+          description: The version of Buerokratt
+        update_id:
+          type: string
+          format: uuid
+          description: The unique update ID
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the history was created
+        components:
+          type: object
+          description: The components as a JSON object
+        extra_configs:
+          type: object
+          description: The extra configurations as a JSON object
+        security_configs:
+          type: object
+          description: The security configurations as a JSON object
+        type:
+          type: string
+          enum:
+            - manifest
+            - update
+          description: The type of history
+        status:
+          type: string
+          enum:
+            - created
+            - approved
+            - pending_approval
+            - has_updates
+            - rejected
+            - published
+            - deleted
+          description: The status of the manifest
+    Manifest:
+      type: object
+      properties:
+        manifest_id:
+          type: string
+          format: uuid
+          description: The unique manifest ID
+        buerokratt_version:
+          type: string
+          description: The Buerokratt version of the manifest
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the manifest was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the manifest was last updated
+        components:
+          type: object
+          description: The components as a JSON object
+        extra_configs:
+          type: object
+          description: The extra configurations as a JSON object
+        security_configs:
+          type: object
+          description: The security configurations as a JSON object
+        status:
+          type: string
+          enum:
+            - created
+            - approved
+            - pending_approval
+            - has_updates
+            - rejected
+            - published
+            - deleted
+          description: The status of the manifest
+    ManifestPending:
+      type: object
+      properties:
+        manifest_id:
+          type: string
+          format: uuid
+          description: The unique manifest ID
+        buerokratt_version:
+          type: string
+          description: The Buerokratt version of the manifest
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the manifest was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the manifest was last updated
+        components:
+          type: object
+          description: The components as a JSON object
+        extra_configs:
+          type: object
+          description: The extra configurations as a JSON object
+        security_configs:
+          type: object
+          description: The security configurations as a JSON object
+        status:
+          type: string
+          enum: [ pending_approval ]
+          description: The status of the manifest
+    ManifestUpdate:
+      type: object
+      properties:
+        parent_manifest_id:
+          type: string
+          format: uuid
+          description: The unique ID of the parent manifest
+        buerokratt_version:
+          type: string
+          description: The Buerokratt version of the manifest update
+        update_id:
+          type: string
+          format: uuid
+          description: The unique ID of the update
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the manifest update was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the manifest update was last updated
+        components:
+          type: object
+          description: The components as a JSON object
+        extra_configs:
+          type: object
+          description: The extra configurations as a JSON object
+        security_configs:
+          type: object
+          description: The security configurations as a JSON object
+        status:
+          type: string
+          enum: [ created, pending_approval, approved, rejected ]
+          description: The status of the manifest update
+    UserLogin:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          description: The login of the user.
+        password:
+          type: string
+          description: The password of the user.
+    ParticipantInvitation:
+      type: object
+      required:
+        - contactEmail
+        - institutionId
+      properties:
+        contactEmail:
+          type: string
+          description: The contact email of the participant.
+        institutionId:
+          type: string
+          description: The institution ID of the participant.
+    InvitationCode:
+      type: object
+      properties:
+        invitationId:
+          type: string
+          description: The invitation code.
+    DeleteInstitution:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: The ID of the institution to be deleted.
+    NewInstitution:
+      type: object
+      required:
+        - email
+        - name
+      properties:
+        email:
+          type: string
+          description: The contact email of the institution.
+        name:
+          type: string
+          description: The name of the institution.
+    ToggleInstituteStatus:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: The ID of the institution to toggle status.
+    UpdateInstitute:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: The ID of the institution to update
+        name:
+          type: string
+          description: The new name of the institution
+        email:
+          type: string
+          format: email
+          description: The new contact email of the institution
+    ApproveManifest:
+      type: object
+      required:
+        - manifest_id
+      properties:
+        manifest_id:
+          type: string
+          description: The ID of the manifest to approve
+    ApproveManifestUpdate:
+      type: object
+      required:
+        - update_id
+      properties:
+        update_id:
+          type: string
+          description: The ID of the manifest update to approve
+    CreateManifest:
+      type: object
+      required:
+        - buerokratt_version
+        - components
+        - extra_configs
+        - security_configs
+      properties:
+        buerokratt_version:
+          type: string
+          description: The version of buerokratt
+        components:
+          type: array
+          items:
+            type: string
+          description: The components of the manifest
+        extra_configs:
+          type: object
+          description: Extra configurations for the manifest
+        security_configs:
+          type: object
+          description: Security configurations for the manifest
+    CreateUpdate:
+      type: object
+      required:
+        - parent_manifest_id
+        - buerokratt_version
+        - components
+        - extra_configs
+        - security_configs
+      properties:
+        parent_manifest_id:
+          type: string
+          description: The ID of the parent manifest
+        buerokratt_version:
+          type: string
+          description: The version of buerokratt
+        components:
+          type: array
+          items:
+            type: string
+          description: The components of the update
+        extra_configs:
+          type: object
+          description: Extra configurations for the update
+        security_configs:
+          type: object
+          description: Security configurations for the update
+    DeleteManifest:
+      type: object
+      required:
+        - manifest_id
+      properties:
+        manifest_id:
+          type: string
+          description: The ID of the manifest to delete
+    DeleteUpdate:
+      type: object
+      required:
+        - update_id
+      properties:
+        update_id:
+          type: string
+          description: The ID of the manifest update to delete
+    HistoryDetails:
+      type: object
+      required:
+        - history_id
+      properties:
+        history_id:
+          type: string
+          description: The ID of the history record to retrieve
+    ManifestHistory2:
+      type: object
+      description: Manifest history details
+      properties:
+        manifest_id:
+          type: string
+        buerokratt_version:
+          type: string
+        components:
+          type: array
+          items:
+            type: string
+        extra_configs:
+          type: object
+        security_configs:
+          type: object
+        status:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    UpdateHistory:
+      type: object
+      description: Update history details
+      properties:
+        parent_manifest:
+          $ref: '#/components/schemas/ManifestHistory'
+        update_id:
+          type: string
+        buerokratt_version:
+          type: string
+        components:
+          type: array
+          items:
+            type: string
+        extra_configs:
+          type: object
+        security_configs:
+          type: object
+        status:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    ManifestDetailsRequest:
+      type: object
+      required:
+        - manifest_id
+      properties:
+        manifest_id:
+          type: string
+          description: The ID of the manifest to retrieve
+    ManifestDetailsResponse:
+      type: object
+      description: Manifest details
+      properties:
+        manifest_id:
+          type: string
+        buerokratt_version:
+          type: string
+        components:
+          type: array
+          items:
+            type: string
+        extra_configs:
+          type: object
+        security_configs:
+          type: object
+        status:
+          type: string
+    ManifestUpdateRequest:
+      type: object
+      required:
+        - update_id
+      properties:
+        update_id:
+          type: string
+          description: The ID of the update to publish
+    ManifestRequest:
+      type: object
+      required:
+        - manifest_id
+      properties:
+        manifest_id:
+          type: string
+          description: The ID of the manifest to reject
+    UpdateRequest:
+      type: object
+      required:
+        - update_id
+      properties:
+        update_id:
+          type: string
+          description: The ID of the update
+    ManifestUpdateDetails:
+      type: object
+      description: The details of the manifest update and its parent manifest
+    ManifestUpdate2:
+      type: object
+      required:
+        - update_id
+        - parent_manifest_id
+        - buerokratt_version
+        - components
+        - extra_configs
+        - security_configs
+      properties:
+        update_id:
+          type: string
+          description: The ID of the update for the manifest
+        parent_manifest_id:
+          type: string
+          description: The ID of the parent manifest
+        buerokratt_version:
+          type: string
+          description: The version of the buerokratt system
+        components:
+          type: array
+          description: Array of component objects
+          items:
+            type: object
+        extra_configs:
+          type: array
+          description: Array of extra config objects
+          items:
+            type: object
+        security_configs:
+          type: array
+          description: Array of security config objects
+          items:
+            type: object
+    Email:
+      type: object
+      required:
+        - to
+        - subject
+        - text
+      properties:
+        to:
+          type: string
+          description: The email address to send the email to
+        subject:
+          type: string
+          description: The subject of the email
+        text:
+          type: string
+          description: The text body of the email
+    MockResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: The status of the mock operation
+    MockManifestResponse:
+      type: object
+      properties:
+        manifestId:
+          type: string
+          example: "ec7679b0-7401-49c2-9d5e-c5b36ce35a7e"
+          description: The ID of the manifest
+        buerokrattVersion:
+          type: string
+          example: "1.0"
+          description: The version of Buerokratt
+        components:
+          type: string
+          example: "{\"tim\": \"1.0\", \"resql\": \"1.0\", \"ruuter\": \"1.0\", \"database\": \"1.0\", \"users_db\": \"1.0\", \"centops_db\": \"1.0\", \"data_mapper\": \"1.0\", \"services_db\": \"1.0\"}"
+          description: The versions of various components in the system
+        extraConfigs:
+          type: string
+          example: "{\"automatic_updates\": \"false\"}"
+          description: Additional configuration options for the system
+        securityConfigs:
+          type: string
+          example: "{\"key\": \"customKey\", \"decryption_method\": \"aes\", \"encryption_method\": \"aes\"}"
+          description: The security configuration for the system
+        status:
+          type: string
+          example: "pending_approval"
+          description: The status of the manifest
+    MockManifestUpdateResponse:
+      type: object
+      properties:
+        parentManifestId:
+          type: string
+          example: "ec7679b0-7401-49c2-9d5e-c5b36ce35a7e"
+          description: The ID of the parent manifest
+        updateId:
+          type: string
+          example: "34618ff3-e9aa-4fa1-9e83-f9d41751e4cb"
+          description: The ID of the update
+        buerokrattVersion:
+          type: string
+          example: "2.0"
+          description: The updated version of Buerokratt
+        components:
+          type: string
+          example: "{\"tim\": \"1.0\", \"resql\": \"1.0\", \"ruuter\": \"1.0\", \"database\": \"1.0\", \"users_db\": \"1.0\", \"centops_db\": \"1.0\", \"data_mapper\": \"1.0\", \"services_db\": \"1.0\"}"
+          description: The updated versions of various components in the system
+        extraConfigs:
+          type: string
+          example: "{\"automatic_updates\": \"false\"}"
+          description: Additional updated configuration options for the system
+        securityConfigs:
+          type: string
+          example: "{\"key\": \"customKey\", \"decryption_method\": \"aes\", \"encryption_method\": \"aes\"}"
+          description: The updated security configuration for the system
+        status:
+          type: string
+          example: "pending_approval"
+          description: The status of the manifest update
+    MockTimAdminResponse:
+      type: object
+      properties:
+        sub:
+          type: string
+          example: ""
+          description: The subject claim identifying the principal that is the subject of the JWT
+        firstName:
+          type: string
+          example: "MARY ÄNN"
+          description: The first name of the user
+        idCode:
+          type: string
+          example: "EE60001019906"
+          description: The ID code of the user
+        displayName:
+          type: string
+          example: "MARY ÄNN"
+          description: The display name of the user
+        iss:
+          type: string
+          example: "test.buerokratt.ee"
+          description: The issuer of the JWT
+        exp:
+          type: integer
+          format: int64
+          example: 1670250948
+          description: The expiration time of the JWT
+        login:
+          type: string
+          example: "EE60001019906"
+          description: The login of the user
+        iat:
+          type: integer
+          format: int64
+          example: 1670243748
+          description: The time at which the JWT was issued
+        jti:
+          type: string
+          example: "e14a5084-3b30-4a55-8720-c2ee22f43c2c"
+          description: The unique identifier for the JWT
+        authorities:
+          type: array
+          items:
+            type: string
+          example:
+            - "ROLE_ADMINISTRATOR"
+          description: The roles assigned to the user
+    AesDecryptionRequest:
+      type: object
+      properties:
+        cipher:
+          type: string
+          example: "hjgahjshgjsa=="
+          description: The cipher text to be decrypted
+        key:
+          type: string
+          example: "aesEncryptionKey"
+          description: The key used for AES decryption
+        isObject:
+          type: boolean
+          example: false
+          description: Flag to indicate whether the cipher text is an object or not
+    AesDecryptionResponse:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "decrypted content"
+          description: The decrypted content
+    Base64DecryptionRequest:
+      type: object
+      properties:
+        cipher:
+          type: string
+          example: "SGVsbG8gd29ybGQ="
+          description: The cipher text to be decrypted
+        isObject:
+          type: boolean
+          example: false
+          description: Flag to indicate whether the cipher text is an object or not
+    Base64DecryptionResponse:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "Hello world"
+          description: The decrypted content
+    RSADecryptionRequest:
+      type: object
+      properties:
+        cipher:
+          type: string
+          example: "SGVsbG8gd29ybGQ="
+          description: The cipher text to be decrypted
+    RSADecryptionResponse:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "Hello world"
+          description: The decrypted content
+    TripleDesDecryptionRequest:
+      type: object
+      properties:
+        cipher:
+          type: string
+          example: "SGVsbG8gd29ybGQ="
+          description: The cipher text to be decrypted
+        key:
+          type: string
+          example: "my3desKey"
+          description: The decryption key
+        isObject:
+          type: boolean
+          example: false
+          description: Whether the cipher text is a JSON object
+    TripleDesDecryptionResponse:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "Hello world"
+          description: The decrypted content
+    AesEncryptionRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "Hello world"
+          description: The content to be encrypted
+        key:
+          type: string
+          example: "myaesKey"
+          description: The encryption key
+    AesEncryptionResponse:
+      type: object
+      properties:
+        cipher:
+          type: string
+          example: "SGVsbG8gd29ybGQ="
+          description: The encrypted cipher text
+    Base64EncryptionRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "Hello world"
+          description: The content to be encrypted
+    Base64EncryptionResponse:
+      type: object
+      properties:
+        cipher:
+          type: string
+          example: "SGVsbG8gd29ybGQ="
+          description: The encrypted cipher text
+    RsaEncryptionRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "Hello world"
+          description: The content to be encrypted
+    RsaEncryptionResponse:
+      type: object
+      properties:
+        cipher:
+          type: string
+          example: "S2FIZ0xH..."
+          description: The encrypted cipher text
+    TripleDesEncryptionRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "Hello world"
+          description: The content to be encrypted
+        key:
+          type: string
+          example: "3ll0WorLd"
+          description: The key to be used for encryption
+    TripleDesEncryptionResponse:
+      type: object
+      properties:
+        cipher:
+          type: string
+          example: "WnE9ZlRTQk..."
+          description: The encrypted cipher text
+    PermissionResponse:
+      type: object
+      properties:
+        isAdmin:
+          type: boolean
+          example: true
+          description: Boolean indicating if the user has admin permissions
+    Message:
+      type: object
+      properties:
+        sender:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "Alice"
+            nameAbbreviated:
+              type: string
+              example: "A"
+            ipAddress:
+              type: string
+              format: ipv4
+              example: "192.168.1.1"
+            token:
+              type: string
+              example: "abc123"
+            uuid:
+              type: string
+              format: uuid
+              example: "123e4567-e89b-12d3-a456-426614174000"
+          required:
+            - name
+            - nameAbbreviated
+            - ipAddress
+            - token
+            - uuid
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+    DecryptedMessages:
+      type: array
+      items:
+        type: object
+        properties:
+          message:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+    InvitationEmail:
+      type: object
+      properties:
+        user_email:
+          type: string
+          format: email
+          example: "user@example.com"
+    Invitation:
+      type: object
+      properties:
+        invitationId:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+    SendMessage:
+      type: object
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+        reply_to_message_id:
+          type: string
+        receiver_id:
+          type: string
+        sender_id:
+          type: string
+          description: extracted from JWT
+      required:
+        - message
+        - type
+        - receiver_id
+        - sender_id
+    SendReplyMessage:
+      type: object
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+        reply_to_message_id:
+          type: string
+        receiver_id:
+          type: string
+        sender_id:
+          type: string
+          description: extracted from JWT
+      required:
+        - message
+        - type
+        - receiver_id
+        - sender_id
+        - reply_to_message_id
+    ParticipantStatus:
+      type: object
+      properties:
+        participantStatus:
+          type: string
+      required:
+        - participantStatus
+    Participant:
+      type: object
+      properties:
+        id:
+          type: string
+        institutionId:
+          type: string
+        participantType:
+          type: string
+        info:
+          type: object
+      required:
+        - id
+        - institutionId
+        - participantType
+        - info
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: header
+      name: Cookie
+    CookieAuth2:
+      type: apiKey
+      in: cookie
+      name: session_id
