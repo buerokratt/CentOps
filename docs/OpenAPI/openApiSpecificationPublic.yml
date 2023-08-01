@@ -5,7 +5,7 @@ info:
   description: public API endpoints for Buerokratt CentOps
 servers:
   - url: 'http://localhost:8051'
-  - url: 'https://admin.play.buerokratt.ee/centops/'
+  - url: 'https://admin.play.buerokratt.ee/centops'
 tags:
   - name: Manifest
     description: Endpoints related to manifest operations including historical and future updates
