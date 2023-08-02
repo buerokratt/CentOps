@@ -178,13 +178,13 @@ const InstitutionsPages: React.FC = () => {
             <FormInput
               label="name"
               name="name"
-              value={newInstitute.name}
+              value={newInstitute.name || ''}
               onChange={(e) => setNewInstitute({ ...newInstitute, name: e.target.value, })}
             />
             <FormInput
               label="email"
               name="email"
-              value={newInstitute.contactEmail}
+              value={newInstitute.contactEmail || ''}
               onChange={(e) => setNewInstitute({ ...newInstitute, contactEmail: e.target.value, })}
             />
           </Track>
