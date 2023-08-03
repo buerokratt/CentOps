@@ -56,9 +56,11 @@ const InstitutionsPages: React.FC = () => {
   };
 
   const handleAddEditNewInstitute = () => {
-    const { guiStatus, name, contactEmail } = newInstitute;
+    const { id, guiStatus, name, contactEmail } = newInstitute;
     const url = guiStatus === 'edit' ? editInstitute() : addInstitute();
+    const title  = guiStatus === 'edit' ? 'Edit Institute' : 'New Institute';
     axios.post(url, {
+      id,
       name,
       email: contactEmail
     })
@@ -66,15 +68,15 @@ const InstitutionsPages: React.FC = () => {
         refetch();
         toast.open({
           type: 'success',
-          title: 'New Institute',
-          message: 'Institution was added successfuly'
+          title,
+          message: `Institution was ${guiStatus}ed successfuly`
         });
         setNewInstitute({ guiStatus: 'none' });
       })
       .catch(() => toast.open({
         type: 'error',
-        title: 'New Institute',
-        message: 'Failed to add institution'
+        title,
+        message: `Failed to ${guiStatus} institution`
       }));
   }
 
@@ -171,7 +173,7 @@ const InstitutionsPages: React.FC = () => {
       {
         newInstitute.guiStatus !== 'none' &&
         <Modal
-          title='New Institution'
+          title={newInstitute.guiStatus === 'add' ? 'New Institution' : 'Edit Institution'}
           onClose={() => setNewInstitute({ guiStatus: 'none' })}
         >
           <Track direction='vertical' gap={12} style={{ marginBottom: '2rem' }}>
