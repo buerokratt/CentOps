@@ -20,7 +20,7 @@ validate_permission:
 get_participants:
   call: http.post
   args:
-    url: http://resql:8052/get-participants
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-participants"
   result: participants_result
 
 return_ok:

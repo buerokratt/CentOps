@@ -20,7 +20,7 @@ validate_permission:
 get_participants_requests:
   call: http.post
   args:
-    url: http://resql:8052/get-participants-by-status
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-participants-by-status"
     body: 
       participant_status: 'unprocessed'
   result: participants_result

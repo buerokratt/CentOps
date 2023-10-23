@@ -25,7 +25,7 @@ check_for_parameters:
 update_institute:
   call: http.post
   args:
-    url: http://resql:8052/update-institute
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/update-institute"
     body:
       id: ${incoming.body.id}
       name: ${incoming.body.name}

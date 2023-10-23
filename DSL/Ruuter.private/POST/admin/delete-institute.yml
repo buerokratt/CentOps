@@ -25,7 +25,7 @@ check_for_parameters:
 delete_institute:
   call: http.post
   args:
-    url: http://resql:8052/delete-institute
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/delete-institute"
     body:
       id: ${incoming.params.id}
   result: delete_result

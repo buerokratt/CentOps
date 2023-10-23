@@ -1,7 +1,7 @@
 get_approved_manifests:
   call: http.post
   args:
-    url: http://resql:8052/get-manifests-pending-approval
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifests-pending-approval"
   result: results
 
 return_value:

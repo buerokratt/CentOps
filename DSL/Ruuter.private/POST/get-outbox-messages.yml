@@ -10,7 +10,7 @@ assign_info:
 get_outbox_messages:
   call: http.post
   args:
-    url: http://resql:8052/get-outbox-messages
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-outbox-messages"
     body: 
       user_id: ${user_id}
   result: messagesResult
@@ -19,7 +19,7 @@ get_outbox_messages:
 decrpyt_messages:
   call: http.post
   args:
-    url: http://ruuter-private:8050/templates/decryption/aes
+    url: "[#CENTOPS_RUUTER_PRIVATE]:[#CENTOPS_RUUTER_PRIVATE_PORT]/templates/decryption/aes"
     body:
       cipher: ${messagesResult.response.body}
       key: 'test'

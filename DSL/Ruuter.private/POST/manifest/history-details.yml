@@ -12,7 +12,7 @@ extract_request_data:
 get_history_details:
   call: http.post
   args:
-    url: http://resql:8052/get-manifest-history-by-id
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifest-history-by-id"
     body:
       history_id: ${history_id}
   result: history_details_results
@@ -38,7 +38,7 @@ return_manifest_history:
 get_parent_manifest:
   call: http.post
   args:
-    url: http://resql:8052/get-manifest-by-id
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifest-by-id"
     body:
       manifest_id: ${history_details_results.response.body[0].parentManifestId}
   result: parent_manifest_result

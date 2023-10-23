@@ -23,7 +23,7 @@ check_body:
 toggle_institution_status:
   call: http.post
   args:
-    url: http://resql:8052/toggle-institute-active-status
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/toggle-institute-active-status"
     body:
       id: ${incoming.params.id}
   result: institution

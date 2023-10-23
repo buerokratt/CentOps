@@ -17,7 +17,7 @@ extract_request_data:
 update_manifest_update:
   call: http.post
   args:
-    url: http://resql:8052/update-manifest-update
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/update-manifest-update"
     body:
       update_id: ${update_id}
       parent_manifest_id: ${parent_manifest_id}
@@ -37,7 +37,7 @@ check_result:
 log_history:
   call: http.post
   args:
-    url: http://resql:8052/update-manifest-update-history
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/update-manifest-update-history"
     body:
       parent_manifest_id: ${parent_manifest_id}
       update_id: ${update_id}

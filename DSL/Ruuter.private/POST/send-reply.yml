@@ -21,7 +21,7 @@ assign_info:
 encrpyt_reply_message:
   call: http.post
   args:
-    url: http://ruuter-private:8050/templates/encryption/aes
+    url: "[#CENTOPS_RUUTER_PRIVATE]:[#CENTOPS_RUUTER_PRIVATE_PORT]/templates/encryption/aes"
     body:
       content: ${message}
       key: 'test'
@@ -31,7 +31,7 @@ encrpyt_reply_message:
 send_reply_message:
   call: http.post
   args:
-    url: http://resql:8052/send-reply-message
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/send-reply-message"
     body: 
       message: ${message}
       type: ${type}

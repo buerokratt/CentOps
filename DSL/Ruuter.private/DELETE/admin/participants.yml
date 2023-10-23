@@ -25,7 +25,7 @@ check_for_parameters:
 get_participant:
   call: http.post
   args:
-    url: http://resql:8052/get-participant-by-id
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-participant-by-id"
     body:
       unique_identifier: ${incoming.params.uuid}
   result: participant_result
@@ -42,7 +42,7 @@ assign_variables:
 delete_participant:
   call: http.post
   args:
-    url: http://resql:8052/update-participant
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/update-participant"
     body:
       id: ${id}
       institution_id: ${institution_id}

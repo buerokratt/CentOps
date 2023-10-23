@@ -12,7 +12,7 @@ extract_request_data:
 get_manifest_details:
   call: http.post
   args:
-    url: http://resql:8052/get-manifest-by-id
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifest-by-id"
     body:
       manifest_id: ${manifest_id}
   result: manifest_details_results

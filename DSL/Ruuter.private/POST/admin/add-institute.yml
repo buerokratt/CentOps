@@ -28,7 +28,7 @@ set_values:
 create_institution:
   call: http.post
   args:
-    url: http://resql:8052/create-institution
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/create-institution"
     body:
       contact_email: ${email}
       name: ${name}

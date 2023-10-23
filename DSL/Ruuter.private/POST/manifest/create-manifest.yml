@@ -15,7 +15,7 @@ extract_request_data:
 create_manifest:
   call: http.post
   args:
-    url: http://resql:8052/create-manifest
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/create-manifest"
     body:
       buerokratt_version: ${buerokratt_version}
       components: ${components}
@@ -33,7 +33,7 @@ check_result:
 log_history:
   call: http.post
   args:
-    url: http://resql:8052/update-manifest-history
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/update-manifest-history"
     body:
       parent_manifest_id: ${results.response.body[0].manifestId}
       buerokratt_version: ${results.response.body[0].buerokrattVersion}

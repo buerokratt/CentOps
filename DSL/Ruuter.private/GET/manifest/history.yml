@@ -1,7 +1,7 @@
 get_manifests_history:
   call: http.post
   args:
-    url: http://resql:8052/get-manifests-all-history
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifests-all-history"
   result: results
 
 return_value:

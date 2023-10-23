@@ -12,7 +12,7 @@ extract_request_data:
 get_update_details:
   call: http.post
   args:
-    url: http://resql:8052/get-manifest-update-by-id
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifest-update-by-id"
     body:
       update_id: ${update_id}
   result: update_details_results
@@ -27,7 +27,7 @@ check_update_details_result:
 get_parent_manifest:
   call: http.post
   args:
-    url: http://resql:8052/get-manifest-by-id
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifest-by-id"
     body:
       manifest_id: ${update_details_results.response.body[0].parentManifestId}
   result: parent_manifest_result
