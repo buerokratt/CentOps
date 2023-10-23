@@ -1,8 +1,34 @@
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: check_if_authorized 
+
+check_if_authorized:
+  template: templates/permissions/check-user-authority
+  requestType: post
+  headers:
+    cookie: ${cookie}
+  result: authority_result
+  next: check_authority_result
+
+check_authority_result:
+  switch:
+    - condition: ${authority_result !== "false"}
+      next: get_manifests
+  next: return_unauthorized
+
 get_manifests:
   call: http.post
   args:
     url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifests"
   result: results
+  next: return_value
 
 return_value:
    return: ${results.response.body}
+   next: end
+
+return_unauthorized:
+  return: "error: unauthorized"
+  status: 401
+  next: end

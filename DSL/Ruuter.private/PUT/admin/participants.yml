@@ -1,19 +1,19 @@
-# TODO uncomment lines 2-5, use actual cookie from header for authentication.
-# check_for_cookie:
-#   switch:
-#     - condition: ${incoming.headers == null || incoming.headers.cookie == null}
-#       next: return_unauthorized
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: check_if_authorized 
 
-authenticate:
-  template: templates/permissions/admin
+check_if_authorized:
+  template: templates/permissions/check-user-authority
   requestType: post
   headers:
-    cookie: cookie #${incoming.headers.cookie}
-  result: permission
+    cookie: ${cookie}
+  result: authority_result
+  next: check_authority_result
 
-validate_permission:
+check_authority_result:
   switch:
-    - condition: ${permission}
+    - condition: ${authority_result !== "false"}
       next: check_for_body_parameters
   next: return_unauthorized
 
