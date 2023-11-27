@@ -33,7 +33,6 @@ else
        mkdir TechStack 
     fi
     (cd TechStack && git clone https://github.com/buerokratt/Ruuter.git)
-    sed -i '' 's/FROM openjdk:17-jdk-alpine/FROM --platform=linux\/amd64 openjdk:17-jdk-alpine/' TechStack/Ruuter/Dockerfile # For Apple Silicon Devices
     sed -i '' 's/.allowedMethods(allowedMethods);/.allowedMethods(allowedMethods)\n.allowCredentials(true);/' TechStack/Ruuter/src/main/java/ee/buerokratt/ruuter/configuration/CORSConfiguration.java
     (cd TechStack/Ruuter && docker build -t ruuter .)
 fi
@@ -86,5 +85,5 @@ else
     (cd TechStack && git clone https://github.com/buerokratt/DataMapper.git)
     sed -i '' 's/FROM node:19/FROM --platform=linux\/amd64 node:19/' TechStack/DataMapper/Dockerfile # For Apple Silicon Devices
     sed -i '' "s/const PORT = 3000;/const PORT = $DATA_MAPPER_PORT;/" TechStack/DataMapper/server.js
-    (cd TechStack/DataMapper && docker build -t datamapper .)
+    (cd TechStack/DataMapper && docker build -t datamapper-node .)
 fi

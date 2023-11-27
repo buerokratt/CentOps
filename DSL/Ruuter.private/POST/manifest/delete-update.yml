@@ -1,3 +1,22 @@
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: check_if_authorized 
+
+check_if_authorized:
+  template: templates/permissions/check-user-authority
+  requestType: post
+  headers:
+    cookie: ${cookie}
+  result: authority_result
+  next: check_authority_result
+
+check_authority_result:
+  switch:
+    - condition: ${authority_result !== "false"}
+      next: check_for_required_parameters
+  next: return_unauthorized
+
 check_for_required_parameters:
   switch:
     - condition: ${incoming.body.update_id == null}
@@ -12,7 +31,7 @@ extract_request_data:
 delete_manifest_update:
   call: http.post
   args:
-    url: http://resql:8052/delete-manifest-update
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/delete-manifest-update"
     body:
       update_id: ${update_id}
   result: results
@@ -27,7 +46,7 @@ check_result:
 check_if_manifest_has_other_updates:
   call: http.post
   args:
-    url: http://resql:8052/get-manifest-updates-count
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-manifest-updates-count"
     body:
       parent_manifest_id: ${results.response.body[0].parentManifestId}
   result: count_result
@@ -58,7 +77,7 @@ assign_approved:
 change_manifest_status:
   call: http.post
   args:
-    url: http://resql:8052/update-manifest-status
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/update-manifest-status"
     body:
       manifest_id: ${results.response.body[0].parentManifestId}
       status: ${status}
@@ -74,7 +93,7 @@ check_status_result:
 log_history:
   call: http.post
   args:
-    url: http://resql:8052/update-manifest-update-history
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/update-manifest-update-history"
     body:
       parent_manifest_id: ${results.response.body[0].parentManifestId}
       update_id: ${update_id}
@@ -106,4 +125,9 @@ return_bad_request:
 return_incorrect_request:
   status: 400
   return: "Required parameter(s) missing"
+  next: end
+
+return_unauthorized:
+  return: "error: unauthorized"
+  status: 401
   next: end

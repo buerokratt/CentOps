@@ -1,19 +1,21 @@
-# check_for_cookie:
-#   switch:
-#     - condition: ${incoming.headers == null || incoming.headers.cookie == null}
-#       next: return_unauthorized
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: check_if_authorized 
 
-authenticate:
-  template: templates/permissions/admin
+check_if_authorized:
+  template: templates/permissions/check-user-authority
   requestType: post
   headers:
-    cookie: cookie #${incoming.headers.cookie}
-  result: permission
+    cookie: ${cookie}
+  result: authority_result
+  next: check_authority_result
 
-validate_permission:
+check_authority_result:
   switch:
-    - condition: ${permission == null}
-      next: return_unauthorized
+    - condition: ${authority_result !== "false"}
+      next: check_body
+  next: return_unauthorized
 
 check_body:
   switch:
@@ -28,7 +30,7 @@ set_values:
 create_institution:
   call: http.post
   args:
-    url: http://resql:8052/create-institution
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/create-institution"
     body:
       contact_email: ${email}
       name: ${name}

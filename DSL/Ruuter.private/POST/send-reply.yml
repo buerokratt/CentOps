@@ -2,6 +2,24 @@
 #
 # TODO later: use validate-message template to validate the sender
 #
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: check_if_authorized 
+
+check_if_authorized:
+  template: templates/permissions/check-user-authority
+  requestType: post
+  headers:
+    cookie: ${cookie}
+  result: authority_result
+  next: check_authority_result
+
+check_authority_result:
+  switch:
+    - condition: ${authority_result !== "false"}
+      next: check_for_body
+  next: return_unauthorized
 
 check_for_body:
   switch:
@@ -15,13 +33,13 @@ assign_info:
     type: ${incoming.body.type}
     reply_to_message_id: ${incoming.body.reply_to_message_id}
     receiver_id: ${incoming.body.receiver_id}
-    sender_id: ${incoming.body.sender_id}  # TODO later: extract this from jwt
+    sender_id: ${authority_result.idCode}
   next: encrpyt_reply_message
 
 encrpyt_reply_message:
   call: http.post
   args:
-    url: http://ruuter-private:8050/templates/encryption/aes
+    url: "[#CENTOPS_RUUTER_PRIVATE]:[#CENTOPS_RUUTER_PRIVATE_PORT]/templates/encryption/aes"
     body:
       content: ${message}
       key: 'test'
@@ -31,7 +49,7 @@ encrpyt_reply_message:
 send_reply_message:
   call: http.post
   args:
-    url: http://resql:8052/send-reply-message
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/send-reply-message"
     body: 
       message: ${message}
       type: ${type}

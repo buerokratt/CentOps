@@ -1,19 +1,19 @@
-# TODO uncomment lines 2-5, use actual cookie from header for authentication.
-# check_for_cookie:
-#   switch:
-#     - condition: ${incoming.headers == null || incoming.headers.cookie == null}
-#       next: return_unauthorized
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: check_if_authorized 
 
-authenticate:
-  template: templates/permissions/admin
+check_if_authorized:
+  template: templates/permissions/check-user-authority
   requestType: post
   headers:
-    cookie: cookie #${incoming.headers.cookie}
-  result: permission
+    cookie: ${cookie}
+  result: authority_result
+  next: check_authority_result
 
-validate_permission:
+check_authority_result:
   switch:
-    - condition: ${permission}
+    - condition: ${authority_result !== "false"}
       next: check_for_email
   next: return_unauthorized
 
@@ -30,7 +30,7 @@ assign_variables:
 create_invitation:
   call: http.post
   args:
-    url: http://resql:8052/create-invitation
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/create-invitation"
     body: 
       contact_email: ${email}
       institution_id: ${institution_id}
@@ -39,7 +39,7 @@ create_invitation:
 get_invitation_code:
   call: http.post
   args:
-    url: http://resql:8052/get-invitation-code
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-invitation-code"
     body:
       contact_email: ${email}
   result: invitationCodes
@@ -62,7 +62,7 @@ assign_email_content:
 send_email:
   call: http.post
   args:
-    url: http://ruuter-private:8050/mocks/mock-email-service
+    url: "[#CENTOPS_RUUTER_PRIVATE]:[#CENTOPS_RUUTER_PRIVATE_PORT]/mocks/mock-email-service"
     body:
       to: ${email}
       subject: "Your invitation to start using Bürokratt"

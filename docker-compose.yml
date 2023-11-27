@@ -12,6 +12,7 @@ services:
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
     volumes:
       - ./DSL/Ruuter.private:/DSL
+      - ./constants.ini:/app/constants.ini
     ports:
       - 8050:8050
     networks:
@@ -29,6 +30,7 @@ services:
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
     volumes:
       - ./DSL/Ruuter.public:/DSL
+      - ./constants.ini:/app/constants.ini
     ports:
       - 8051:8051
     networks:
@@ -89,7 +91,7 @@ services:
 
   data_mapper:
     container_name: data_mapper
-    image: datamapper
+    image: datamapper-node
     environment:
       - PORT=8054
       - CONTENT_FOLDER=/data

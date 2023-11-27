@@ -1,16 +1,30 @@
-check_for_body:
+extractRequestData:
+  assign:
+    cookie: ${incoming.headers.cookie}
+  next: check_if_authorized 
+
+check_if_authorized:
+  template: templates/permissions/check-user-authority
+  requestType: post
+  headers:
+    cookie: ${cookie}
+  result: authority_result
+  next: check_authority_result
+
+check_authority_result:
   switch:
-    - condition: ${incoming.body == null}
-      next: return_incorrect_request
+    - condition: ${authority_result !== "false"}
+      next: assign_info
+  next: return_unauthorized
 
 assign_info:
   assign:
-    user_id: ${incoming.body.user_id} # todo: extract this from jwt
+    user_id: ${authority_result.idCode}
 
 fetch_inbox_messages:
   call: http.post
   args:
-    url: http://resql:8052/get-inbox-messages
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/get-inbox-messages"
     body: 
       user_id: ${user_id}
   result: decryptedMessagesResult
@@ -18,7 +32,7 @@ fetch_inbox_messages:
 mark_inbox_as_received:
   call: http.post
   args:
-    url: http://resql:8052/mark-inbox-messages-as-received
+    url: "[#CENTOPS_RESQL]:[#CENTOPS_RESQL_PORT]/mark-inbox-messages-as-received"
     body: 
       user_id: ${user_id}
   result: receivedMessagesResult
@@ -26,7 +40,7 @@ mark_inbox_as_received:
 decrpyt_messages:
   call: http.post
   args:
-    url: http://data_mapper:3005/hbs/decrypt-messages
+    url: "[#CENTOPS_DMAPPER]:[#CENTOPS_DMAPPER_PORT]/hbs/decrypt-messages"
     headers:
       type: "json"
     body:

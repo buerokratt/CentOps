@@ -1,6 +1,6 @@
 #!/bin/bash
 docker exec database psql users_db byk -c "INSERT INTO public."user" (login,password_hash,first_name,last_name,id_code,display_name,status,created) VALUES
-         ('EE30303039914','password','David','Shawn','EE30303039914','David','online','2023-06-10 10:30:14.266 +0200');
+         ('EE30303039914','','David','Shawn','EE30303039914','David','online','2023-06-10 10:30:14.266 +0200');
 INSERT INTO public."user_authority" (user_id,authority_name,created) VALUES
          ('EE30303039914','{ROLE_ADMINISTRATOR}','2023-06-10 10:30:14.266 +0200');"
 
