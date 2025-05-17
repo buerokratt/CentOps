@@ -8,15 +8,16 @@ import { Button, Icon } from '../..'
 import './FormSelect.scss'
 
 type FormSelectMultipleProps = SelectHTMLAttributes<HTMLSelectElement> & {
-  label: string
-  name: string
-  defaultValue?: string[]
+  label: string;
+  name: string;
+  placeholder?: string;
+  defaultValue?: string[];
   options: {
-    label: string
-    value: string
-  }[]
-  onSelectionChange?: (selection: { label: string; value: string }[]) => void
-}
+    label: string;
+    value: string;
+  }[];
+  onSelectionChange?: (selection: { label: string; value: string }[]) => void;
+};
 
 const FormSelectMultiple: FC<FormSelectMultipleProps> = ({
   label,

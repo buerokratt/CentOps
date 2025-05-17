@@ -1,0 +1,29 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'aes'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: content
+        type: string
+        description: "Body field 'content'"
+      - field: key
+        type: string
+        description: "Body field 'key'"
+
+aes_encryption:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER]/encryption/aes"
+    body:
+      content: ${incoming.body.content}
+      key: ${incoming.body.key}
+  result: result
+
+return_value:
+  return: ${result.response.body.cipher}
+  next: end

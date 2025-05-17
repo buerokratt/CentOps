@@ -1,0 +1,79 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'participants'"
+  method: put
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: uuid
+        type: string
+        description: "Param field 'uuid'"
+    body:   
+      - field: contactEmail
+        type: string
+        description: "Body field 'contactEmail'"
+      - field: name
+        type: string
+        description: "Body field 'name'"
+      - field: host
+        type: string
+        description: "Body field 'host'" 
+      - field: participantType
+        type: string
+        description: "Body field 'participantType'" 
+      - field: nameAbbreviated
+        type: string
+        description: "Body field 'nameAbbreviated'" 
+      - field: ipAddress
+        type: string
+        description: "Body field 'ipAddress'"            
+
+check_for_body_parameters:
+  switch:
+    - condition: ${incoming.params.uuid == null || incoming.body == null || incoming.body.contactEmail == null || incoming.body.name == null || incoming.body.host == null || incoming.body.participantType == null || incoming.body.nameAbbreviated == null || incoming.body.ipAddress == null}
+      next: return_incorrect_request
+  next: assign_variables
+
+assign_variables:
+  assign:
+    id: ${incoming.body.id}
+    institution_id: ${incoming.body.institutionId}
+    participant_type: ${incoming.body.participantType}
+    unique_identifier: ${incoming.params.uuid}
+    info: ${incoming.body.info}
+
+get_participant:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-participant-by-id"
+    body:
+      unique_identifier: ${unique_identifier}
+  result: participant_result
+
+update_participant:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/update-participant"
+    body:
+      id: ${id}
+      institution_id: ${institution_id}
+      participant_type: ${participant_type}
+      unique_identifier: ${unique_identifier}
+      participant_status: ${participant_result.response.body[0].participantStatus}
+      security_token: ${participant_result.response.body[0].securityToken}
+      info: ${info}
+  result: update_result
+
+return_ok:
+  wrapper: false
+  status: 200
+  return: ${update_result.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "error: incorrect request"
+  next: end

@@ -1,0 +1,79 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'invitation'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: contactEmail
+        type: string
+        description: "Body field 'contactEmail'"
+      - field: institutionId
+        type: string
+        description: "Body field 'institutionId'"
+
+check_for_email:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.contactEmail == null || incoming.body.institutionId == null}
+      next: return_incorrect_request
+
+assign_variables:
+  assign:
+    email: ${incoming.body.contactEmail}
+    institution_id: ${incoming.body.institutionId}
+
+create_invitation:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-invitation"
+    body: 
+      contact_email: ${email}
+      institution_id: ${institution_id}
+  result: post_result
+
+get_invitation_code:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-invitation-code"
+    body:
+      contact_email: ${email}
+  result: invitationCodes
+
+assign_email_content:
+  assign:
+    invitation_code: ${invitationCodes.response.body[0].invitationId}
+    email_content: >
+        Hello!
+
+
+        Thank you for your interest in Bürokratt!
+        Please use this link to start filling in your application: http://localhost:3007/centops/application/${invitation_code}
+
+
+        Best regards,
+
+        Bürokratt team
+
+send_email:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RUUTER_PRIVATE]/mocks/mock-email-service"
+    body:
+      to: ${email}
+      subject: "Your invitation to start using Bürokratt"
+      text: ${email_content}
+  result: emailResponseData
+
+return_ok:
+  wrapper: false
+  status: 201
+  return: ${invitationCodes.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "User email is required"
+  next: end

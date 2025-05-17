@@ -10,6 +10,7 @@ import './FormSelect.scss';
 type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
   name: string;
+  placeholder?: string;
   hideLabel?: boolean;
   options: {
     label: string;

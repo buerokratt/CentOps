@@ -1,0 +1,20 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'institutions'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops 
+
+get_institutions:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-institutions"
+  result: institutions_result
+
+return_ok:
+  wrapper: false
+  status: 200
+  return: ${institutions_result.response.body}
+  next: end

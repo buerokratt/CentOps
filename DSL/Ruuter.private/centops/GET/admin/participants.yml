@@ -1,0 +1,20 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'participants'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+get_participants:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-participants"
+  result: participants_result
+
+return_ok:
+  wrapper: false
+  status: 200
+  return: ${participants_result.response.body}
+  next: end

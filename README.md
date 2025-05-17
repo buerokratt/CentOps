@@ -8,8 +8,6 @@ Bürokratt Central Operations
 
 - Run `docker compose up -d`
 
-- To create the DB tables, run `bash init-databases.sh` in `./`
-
 ##### Notes
 
 - If you made changes to ruuter, rebuild the image again using `docker build -t ruuter .`
@@ -18,7 +16,7 @@ Bürokratt Central Operations
 
 - If you made changes to tim, rebuild the image again using `docker build -t tim .`
 
-- If you made changes to data mapper, rebuild the image again using `docker build -t datamapper .`
+- If you made changes to data mapper, rebuild the image again using `docker build -t data-mapper .`
 
 - Ruuter configuration should be changed for all the endpoints to work. PUT and DELETE should be added to the allowedMethodTypes array. See more information https://github.com/buerokratt/Ruuter/blob/65889552329249665e48656ed866cdf99cda391f/samples/CONFIGURATION.md
 
@@ -43,11 +41,11 @@ Bürokratt Central Operations
 
 ### TIM
 
-- if you are running `Locally` then you need to curl the login request or run it on postman first to create and store the cookie in TIM and then on the browser create the cookie manully in the browser with name `customJwtCookie` and the value return from the curl
+- If you are running `Locally` then you need to curl the login request or run it on postman first to create and store the cookie in TIM and then on the browser create the cookie manully in the browser with name `customJwtCookie` and the value return from the curl
 the curl request is as follows:
 ```
 curl -X POST -H "Content-Type: application/json" -d '{
   "login": "EE30303039914",
-  "password": ""
-}' http://localhost:8050/login-user
+  "password": "OK"
+}' http://localhost:8050/centops/login-user
 ```

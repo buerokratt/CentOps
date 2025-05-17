@@ -1,0 +1,32 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'session-length'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: login
+        type: string
+        description: "Param field 'login'"
+      - field: password
+        type: string
+        description: "Param field 'password'"
+
+extract_request_data:
+  assign:
+    login: ${incoming.params.login}
+    password: ${incoming.params.password}
+
+check_for_request_data:
+  switch:
+    - condition: ${login == null || password == null}
+      next: missing_params
+  next: end 
+
+missing_params:
+  status: 400
+  return: 'Missing required parameters'
+  next: end
