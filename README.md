@@ -23,7 +23,7 @@ Bürokratt Central Operations
 ##### Public Acccessed Pages
 
 - Application: `{YOUR URL}/centops/application`
-- Application With ID: `/centops/application/{APPLICATION ID}`
+- Application With ID: `{YOUR URL}/centops/application/{APPLICATION ID}`
 - Overview: `{YOUR URL}/centops/overview`
 - Form: `{YOUR URL}/centops/form`
 - Past Updates: `{YOUR URL}/centops/manifests/past_updates`
