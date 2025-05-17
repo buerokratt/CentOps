@@ -7,8 +7,8 @@ SELECT
     m.sender_id, 
     m.receiver_id, 
     ms.status, 
-    s.name AS sender, 
-    r.name AS receiver
+    s.institution_id AS sender, 
+    r.institution_id AS receiver
 FROM messages AS m
 JOIN participants AS s ON m.sender_id = s.id
 JOIN participants AS r ON m.receiver_id = r.id
@@ -21,5 +21,5 @@ JOIN (
     GROUP BY message_id
   )
 ) AS ms ON m.id = ms.message_id
-WHERE m.sender_id = :user_id
+WHERE CAST(m.sender_id AS TEXT) = :user_id
 ORDER BY m.timestamp;

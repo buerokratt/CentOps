@@ -44,13 +44,12 @@ get_outbox_messages:
   next: decrpyt_messages
 
 decrpyt_messages:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RUUTER_PRIVATE]/templates/decryption/aes"
-    body:
-      cipher: ${messagesResult.response.body}
-      key: 'test'
-      isObject: false
+  template: "[#CENTOPS_PROJECT_LAYER]/decryption/aes"
+  requestType: templates
+  body:
+    cipher: ${messagesResult.response.body}
+    key: 'test'
+    isObject: false
   result: decryptedMessagesResult
   next: return_ok
 

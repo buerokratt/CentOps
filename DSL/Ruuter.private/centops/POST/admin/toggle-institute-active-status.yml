@@ -10,11 +10,11 @@ declaration:
     body:
       - field: id
         type: string
-        description: "Body field 'id'"
+        description: "Params field 'id'"
 
 check_body:
   switch:
-    - condition: ${incoming.body == null || incoming.body.id == null}
+    - condition: ${incoming.params == null || incoming.params.id == null}
       next: return_incorrect_request
 
 toggle_institution_status:
@@ -22,7 +22,7 @@ toggle_institution_status:
   args:
     url: "[#CENTOPS_RESQL]/toggle-institute-active-status"
     body:
-      id: ${incoming.body.id}
+      id: ${incoming.params.id}
   result: institution
 
 return_success:

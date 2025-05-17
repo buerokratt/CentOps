@@ -10,11 +10,11 @@ declaration:
     body:
       - field: id
         type: string
-        description: "Body field 'id'"
+        description: "Params field 'id'"
 
 check_for_body:
   switch:
-    - condition: ${incoming.body.id == null}
+    - condition: ${incoming.params.id == null}
       next: return_incorrect_request
 
 delete_institute:

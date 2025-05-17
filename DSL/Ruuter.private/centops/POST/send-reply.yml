@@ -67,12 +67,11 @@ assign_info:
   next: encrpyt_reply_message
 
 encrpyt_reply_message:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RUUTER_PRIVATE]/templates/encryption/aes"
-    body:
-      content: ${message}
-      key: 'test'
+  template: "[#CENTOPS_PROJECT_LAYER]/encryption/aes"
+  requestType: templates
+  body:
+    content: ${message}
+    key: 'test'
   result: encryptedMessageResult
   next: send_reply_message
 
