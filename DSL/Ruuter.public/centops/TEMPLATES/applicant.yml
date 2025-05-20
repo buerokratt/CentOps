@@ -1,0 +1,28 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'applicant'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+extract_token_data:
+  call: http.post
+  args:
+    # TODO: Use real TIM endpoint
+    url: "[#CENTOPS_RUUTER_PUBLIC]/mocks/mock-tim-applicant-response"
+    headers:
+      cookie: ${incoming.headers.cookie}
+    body:
+      cookieName: "customJwtCookie"
+  result: tokenResult
+
+validate_permission:
+  return: ${tokenResult.response.body.response.authorities.includes("ROLE_APPLICANT")}
+  next: end

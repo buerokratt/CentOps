@@ -103,7 +103,7 @@ const PastUpdatesPage: React.FC = () => {
       {history && history.length === 0 && (
         <Track direction="vertical">
           <Lottie options={lottieDefaultOptions} height={270} width={350} />
-          <label>{t('manifest.noHistoryLogs')}</label>
+          <label>{t('manifests.noHistoryLogs')}</label>
         </Track>
       )}
     </>

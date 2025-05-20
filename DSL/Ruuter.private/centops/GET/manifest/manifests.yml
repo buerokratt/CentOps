@@ -1,0 +1,19 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'manifests'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+get_manifests:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-manifests"
+  result: results
+  next: return_value
+
+return_value:
+   return: ${results.response.body}
+   next: end

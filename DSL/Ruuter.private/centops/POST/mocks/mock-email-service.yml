@@ -1,0 +1,47 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'mock-email-service'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: to
+        type: string
+        description: "Body field 'to'"
+      - field: subject
+        type: string
+        description: "Body field 'subject'"
+      - field: text
+        type: string
+        description: "Body field 'text'"  
+
+check_for_data:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.to == null || incoming.body.subject == null || incoming.body.text == null}
+      next: return_invalid
+
+mock_value:
+  call: reflect.mock
+  args:
+    request:
+      body:
+        from: byrokratt@email.here # ToDo add correct e-mail
+        to: ${incoming.body.to}
+        subject: ${incoming.body.subject}
+        text: ${incoming.body.text}
+    response:
+      success: true
+  result: reflectedRequest
+
+return_mock_value:
+  status: 200
+  return: ${reflectedRequest.response.body}
+  next: end
+
+return_invalid:
+  status: 400
+  return: "Invalid request"
+  next: end

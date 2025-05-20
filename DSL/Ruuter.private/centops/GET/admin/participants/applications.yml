@@ -1,0 +1,22 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'applications'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+get_participants_requests:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-participants-by-status"
+    body: 
+      participant_status: 'unprocessed'
+  result: participants_result
+
+return_ok:
+  wrapper: false
+  status: 200
+  return: ${participants_result.response.body}
+  next: end

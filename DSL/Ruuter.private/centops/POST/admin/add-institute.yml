@@ -1,0 +1,45 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'add-institute'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: email
+        type: string
+        description: "Body field 'email'"
+      - field: name
+        type: string
+        description: "Body field 'name'"
+
+check_body:
+  switch:
+    - condition: ${incoming.body == null || incoming.body.email == null || incoming.body.name == null}
+      next: return_incorrect_request
+
+set_values:
+  assign:
+    email: ${incoming.body.email}
+    name: ${incoming.body.name}
+
+create_institution:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-institution"
+    body:
+      contact_email: ${email}
+      name: ${name}
+  result: institution
+
+return_success:
+  status: 200
+  return: "Institution saved successfully"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Missing required parameters"
+  next: end

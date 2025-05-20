@@ -10,13 +10,16 @@ import './FormSelect.scss';
 type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
   name: string;
+  placeholder?: string;
   hideLabel?: boolean;
   options: {
     label: string;
     value: string;
   }[];
-  onSelectionChange?: (selection: { label: string, value: string } | null) => void;
-}
+  onSelectionChange?: (
+    selection: { label: string; value: string } | null
+  ) => void;
+};
 
 const itemToString = (item: ({ label: string, value: string } | null)) => {
   return item ? item.value : '';

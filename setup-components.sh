@@ -77,7 +77,7 @@ if [ -d "TechStack/Datamapper" ]; then
     git fetch
     git pull
     if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ];then
-     docker build -t datamapper .
+     docker build -t data-mapper .
     fi
     cd ../..
 else
@@ -85,5 +85,5 @@ else
     (cd TechStack && git clone https://github.com/buerokratt/DataMapper.git)
     sed -i '' 's/FROM node:19/FROM --platform=linux\/amd64 node:19/' TechStack/DataMapper/Dockerfile # For Apple Silicon Devices
     sed -i '' "s/const PORT = 3000;/const PORT = $DATA_MAPPER_PORT;/" TechStack/DataMapper/server.js
-    (cd TechStack/DataMapper && docker build -t datamapper-node .)
+    (cd TechStack/DataMapper && docker build -t data-mapper .)
 fi

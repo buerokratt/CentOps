@@ -1,0 +1,18 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'future-updates'"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+get_manifests_updates:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-manifests-approved-updates"
+  result: results
+
+return_value:
+   wrapper: false
+   return: ${results.response.body}

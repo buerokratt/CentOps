@@ -1,0 +1,60 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'participants'"
+  method: delete
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: uuid
+        type: string
+        description: "Param field 'uuid'"
+
+check_for_parameters:
+  switch:
+    - condition: ${incoming.params.uuid == null}
+      next: return_incorrect_request
+  next: get_participant
+
+get_participant:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-participant-by-id"
+    body:
+      unique_identifier: ${incoming.params.uuid}
+  result: participant_result
+
+assign_variables:
+  assign:
+    id: ${participant_result.response.body[0].id}
+    institution_id: ${participant_result.response.body[0].institutionId}
+    unique_identifier: ${incoming.params.uuid}
+    participant_status: 'deleted'
+    participant_type: ${participant_result.response.body[0].participantType}
+    info: ${participant_result.response.body[0].info}
+
+delete_participant:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/update-participant"
+    body:
+      id: ${id}
+      institution_id: ${institution_id}
+      participant_type: ${participant_type}
+      participant_status: ${participant_status}
+      unique_identifier: ${unique_identifier}
+      info: ${info}
+  result: delete_result
+
+return_ok:
+  wrapper: false
+  status: 204
+  return: "deleted successfully"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "error: incorrect request"
+  next: end

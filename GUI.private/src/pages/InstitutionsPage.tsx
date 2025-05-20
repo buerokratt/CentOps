@@ -19,7 +19,7 @@ const InstitutionsPages: React.FC = () => {
     if (!institutionToDelete) {
       return;
     }
-    axios.post(deleteInstitute(institutionToDelete.id))
+    axios.post(deleteInstitute(institutionToDelete.id), { withCredentials: true })
       .then(() => {
         refetch();
         toast.open({
@@ -39,7 +39,7 @@ const InstitutionsPages: React.FC = () => {
   const showConfirmDeleteModal = (inst: Institution) => selectInstitutionIdToDelete(inst);
   const closeConfirmDeleteModal = () => selectInstitutionIdToDelete(null);
   const toggleActiveStatus = (id: number) => {
-    axios.post(toggleInstituteActiveStatus(id))
+    axios.post(toggleInstituteActiveStatus(id), { withCredentials: true })
       .then(() => {
         refetch();
         toast.open({
