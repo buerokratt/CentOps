@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Track } from '../../components';
+import { Card, Track } from '@centopsmodule/shared';
 import { useLocation } from 'react-router-dom';
-import { Manifest } from '../../types/manifest';
 import axios from 'axios';
+import ReactDiffViewer from 'react-diff-viewer';
+
+import type { Manifest } from 'types/manifest';
 import {
   manifestDetailsById,
   manifestHistoryDetails,
   manifestUpdateDetails,
-} from '../../resources/api-constants';
-import ReactDiffViewer from 'react-diff-viewer';
+} from 'resources/api-constants';
 
-const ManifestsDetailsPage: React.FC = () => {
+const ManifestsDetailsPage: FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const details = location.state as Manifest;

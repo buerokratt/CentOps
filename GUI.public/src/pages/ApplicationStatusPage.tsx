@@ -1,13 +1,14 @@
+import type { FC } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { getStatus } from '../services/status';
-import { Track } from '../components';
-import { ApplicationStatus } from '../types/applicationStatus';
+import { getStatus } from 'services/status';
+import { Track } from '@centopsmodule/shared';
+import { ApplicationStatus } from 'types/applicationStatus';
 
-const ApplicationStatusPage: React.FC = () => {
+const ApplicationStatusPage: FC = () => {
   const { uuid } = useParams();
   const { t } = useTranslation();
 

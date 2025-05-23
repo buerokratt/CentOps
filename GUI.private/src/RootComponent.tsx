@@ -1,29 +1,29 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-
-import { Layout } from './components';
+import { Layout } from '@centopsmodule/shared';
 import {
   CreateInvitationPage,
   EditParticipantPage,
   NotFoundPage,
   OverviewPage,
   ParticipantsPage,
-} from './pages';
-import { ROUTES } from './resources/routes-constants';
-import './styles/main.scss';
-import InstitutionsPages from './pages/InstitutionsPage';
-import MessagesPage from './pages/MessagesPage';
-import ManifestsOverviewPage from './pages/manifests/ManifestsOverviewPage';
-import NewManifestsPage from './pages/manifests/NewManifestsPage';
-import ManifestsUpdatesPage from './pages/manifests/ManifestsUpdatesPage';
-import ManifestsHistoryPage from './pages/manifests/ManifestsHistoryPage';
-import ManifestsHistoryDetailsPage from './pages/manifests/ManifestsDetailsPage';
-import CreateEditManifestPage from './pages/manifests/CreateEditManifestPage';
+} from 'pages';
+import { ROUTES } from 'resources/routes-constants';
+import '@centopsmodule/shared/styles/main.scss';
+import InstitutionsPages from 'pages/InstitutionsPage';
+import MessagesPage from 'pages/MessagesPage';
+import ManifestsOverviewPage from 'pages/manifests/ManifestsOverviewPage';
+import NewManifestsPage from 'pages/manifests/NewManifestsPage';
+import ManifestsUpdatesPage from 'pages/manifests/ManifestsUpdatesPage';
+import ManifestsHistoryPage from 'pages/manifests/ManifestsHistoryPage';
+import ManifestsHistoryDetailsPage from 'pages/manifests/ManifestsDetailsPage';
+import CreateEditManifestPage from 'pages/manifests/CreateEditManifestPage';
+import { MainNavigation } from 'components';
 
-const RootComponent: React.FC = () => {
+const RootComponent: FC = () => {
   return (
     <Routes>
-      <Route element={<Layout />}>
+      <Route element={<Layout navigation={<MainNavigation />} />}>
         <Route
           path={ROUTES.INVITATION_ROUTE}
           element={<CreateInvitationPage />}
@@ -45,10 +45,7 @@ const RootComponent: React.FC = () => {
           path={ROUTES.PARTICIPANTS_REQUESTS_EDIT_ROUTE}
           element={<EditParticipantPage />}
         />
-        <Route
-          path={ROUTES.MESSAGES_PAGE_ROUTE}
-          element={<MessagesPage />}
-        />
+        <Route path={ROUTES.MESSAGES_PAGE_ROUTE} element={<MessagesPage />} />
         <Route
           path={ROUTES.INSTITUTIONS_ROUTE}
           element={<InstitutionsPages />}
