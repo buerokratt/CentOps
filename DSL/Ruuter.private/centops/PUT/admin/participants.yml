@@ -33,7 +33,7 @@ declaration:
 
 check_for_body_parameters:
   switch:
-    - condition: ${incoming.params.uuid == null || incoming.body == null || incoming.body.contactEmail == null || incoming.body.name == null || incoming.body.host == null || incoming.body.participantType == null || incoming.body.nameAbbreviated == null || incoming.body.ipAddress == null}
+    - condition: ${incoming.params.uuid == null || incoming.body == null}
       next: return_incorrect_request
   next: assign_variables
 

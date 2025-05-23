@@ -34,19 +34,50 @@ get_invitation_id_valid:
     - condition: ${invitation.response.body[0] == null || invitation.response.body[0].invitationId == null}
       next: return_invitation_invalid
 
-generate_jwt:
+get_session_length:
   call: http.post
   args:
-    url: "[#CENTOPS_RUUTER_PUBLIC]/mocks/mock-tim-token-response"
-  result: cookie
+    url: "[#CENTOPS_RESQL_USERS]/get-configuration"
+    body:
+      key: "session_length"
+  result: session_result
+  next: generate_cookie
+
+generate_cookie:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-generate"
+    body:
+      JWTName: "customJwtCookie"
+      expirationInMinutes: ${session_result.response.body[0]?.value ?? '120'}
+      content: {
+        "personalCode": "EE30303039914",
+        "displayName": "Test User",
+        "firstName": "Test",
+        "lastName": "User",
+        "authMethod": "smartId",
+        "fullName": "Test User",
+        "idCode": "EE30303039914",
+        "login": "EE30303039914",
+        "authorities": [
+          "ROLE_ADMINISTRATOR",
+          "ROLE_APPLICANT"
+        ]
+      }
+  result: cookie_result
 
 assign_cookie:
   assign:
-      customJwtCookie: ${cookie.response.body.response.jwt}
+    setCookie:
+      customJwtCookie: ${cookie_result.response.body.token}
+      Domain: "[#DOMAIN]"
+      Secure: true
+      HttpOnly: true
+      SameSite: "[#COOKIE_SAME_SITE]"
 
 return_ok:
   headers:
-    Set-Cookie: "customJwtCookie=${customJwtCookie}; Domain=localhost; Max-Age=36000; HttpOnly"
+    Set-Cookie: ${setCookie}
   status: 200
   return: ""
   next: end
