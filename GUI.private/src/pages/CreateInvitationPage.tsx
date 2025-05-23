@@ -1,14 +1,15 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import type { FC } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { Button, FormInput, FormSelect, Track } from '../components';
-import { createInvitation } from '../resources/api-constants';
-import { ROUTES } from '../resources/routes-constants';
-import { Institution } from '../types/institution';
+import { Button, FormInput, FormSelect, Track } from '@centopsmodule/shared';
 import { useQuery } from '@tanstack/react-query';
 
-const CreateInvitationPage: React.FC = () => {
+import { createInvitation } from 'resources/api-constants';
+import { ROUTES } from 'resources/routes-constants';
+import type { Institution } from 'types/institution';
+
+const CreateInvitationPage: FC = () => {
   const { t } = useTranslation();
   const [invitationResult, setInvResult] = useState('');
   const [invitationResultLink, setInvResultLink] = useState('');

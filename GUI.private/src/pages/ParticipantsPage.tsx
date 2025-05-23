@@ -1,14 +1,14 @@
+import type { FC } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-
-import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, DataTable, Track } from '@centopsmodule/shared';
 
-import { Button, DataTable, Track } from '../components';
-import { Participant } from '../types';
+import type { Participant } from 'types';
 
-const ParticipantsPage: React.FC = () => {
+const ParticipantsPage: FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const isRequestPage = location.pathname.includes('requests');

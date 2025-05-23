@@ -1,16 +1,16 @@
-import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { ToastProvider } from './components/Toast/ToastContext'
-import RootComponent from './RootComponent'
+import type { FC } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { ToastProvider } from '@centopsmodule/shared/context/ToastContext';
+import RootComponent from 'RootComponent';
 
-const App: React.FC = () => {
+const App: FC = () => {
   return (
     <BrowserRouter basename={'/'}>
       <ToastProvider>
         <RootComponent />
       </ToastProvider>
     </BrowserRouter>
-  )
-}
+  );
+};
 
-export default App
+export default App;

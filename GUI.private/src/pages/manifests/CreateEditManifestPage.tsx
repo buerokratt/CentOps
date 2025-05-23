@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Card, FormInput, Icon, Track } from '../../components';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+import { Button, Card, FormInput, Icon, Track } from '@centopsmodule/shared';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Manifest } from '../../types';
+import type { Manifest } from 'types';
 import { AiFillMinusCircle } from 'react-icons/ai';
 import { useMutation } from '@tanstack/react-query';
-import api from '../../services/api';
-import { useToast } from '../../hooks/useToast';
-import { AxiosError } from 'axios';
+import api from 'services/api';
+import { useToast } from '@centopsmodule/shared/hooks';
+import type { AxiosError } from 'axios';
 
-const CreateEditManifestPage: React.FC = () => {
+const CreateEditManifestPage: FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const details = location.state as Manifest;
   const toast = useToast();
-  let [manifest, setManifest] = useState<any>({
+  const [manifest, setManifest] = useState<any>({
     buerokratt_version: '1.0',
     components: {
       ruuter: '1.0',
@@ -120,8 +121,8 @@ const CreateEditManifestPage: React.FC = () => {
         {details && details.manifestId
           ? 'Create New Update'
           : details && details.updateId != null
-          ? 'Edit Update'
-          : 'Create New Manifest'}
+            ? 'Edit Update'
+            : 'Create New Manifest'}
       </h2>
 
       <Card>
@@ -400,8 +401,8 @@ const CreateEditManifestPage: React.FC = () => {
             {details && details.manifestId
               ? 'Create Update'
               : details && details.updateId != null
-              ? 'Edit Update'
-              : 'Create Manifest'}
+                ? 'Edit Update'
+                : 'Create Manifest'}
           </Button>
         </Track>
       </Card>

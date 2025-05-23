@@ -1,0 +1,35 @@
+// Settings - Sass variables and mixins
+@use 'settings/variables/colors' as *;
+@use 'settings/variables/typography' as *;
+@use 'settings/variables/breakpoints' as *;
+@use 'settings/variables/grid' as *;
+@use 'settings/variables/spacing' as *;
+@use 'settings/variables/other' as *;
+@use 'settings/mixins' as *;
+@use 'settings/utility-classes' as *;
+
+// Tools - Sass functions
+@use 'tools/color' as *;
+@use 'tools/spacing' as *;
+
+// Generic - global CSS styling and CSS at-rules
+@use 'generic/reset';
+@use 'generic/fonts' as *;
+@use 'generic/base' as *;
+
+// Components
+@use 'components/vertical-tabs';
+@use 'components/tab-group';
+
+.spinner {
+  animation: spin infinite 2s linear;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

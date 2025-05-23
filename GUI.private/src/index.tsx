@@ -1,15 +1,14 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import * as serviceWorker from './serviceWorker';
 import {
   QueryClient,
   QueryClientProvider,
-  QueryFunction,
+  type QueryFunction,
 } from '@tanstack/react-query';
-import App from './App';
-import api from './services/api';
-import { ToastProvider } from '../src/context/ToastContext';
-import './i18n';
+import App from 'App';
+import api from 'services/api';
+import { ToastProvider } from '@centopsmodule/shared/context/ToastContext';
+import 'i18n';
 
 const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
   const { data } = await api.get(queryKey[0] as string);
@@ -27,16 +26,11 @@ const queryClient = new QueryClient({
 const root = createRoot(document.getElementById('root')!);
 
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
         <App />
       </ToastProvider>
     </QueryClientProvider>
-  </React.StrictMode>
+  </StrictMode>
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

@@ -1,5 +1,5 @@
-import { ParticipantStatus, ParticipantType } from '.';
-import { KeyValueMap } from './keyValueMap';
+import type { ParticipantStatus, ParticipantType } from '.';
+import type { KeyValueMap } from 'types/keyValueMap';
 
 export interface Participant {
   readonly id: number;
