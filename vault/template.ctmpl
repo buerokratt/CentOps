@@ -1,0 +1,3 @@
+# Secrets from secret/data/app/config
+APP_USERNAME={{ with secret "secret/app/config" }}{{ .Data.username }}{{ end }}
+APP_PASSWORD={{ with secret "secret/app/config" }}{{ .Data.password }}{{ end }}
