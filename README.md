@@ -40,3 +40,7 @@ Bürokratt Central Operations
 - To seed users with dummy users, run `./seed-users.sh`
 - When creating centops new migrations, use the helper `./create-migration.sh name-of-migration` which will create a timestamped file in the correct directory and add the required headers
 - When creating users new migrations, use the helper `./create-migration-users.sh name-of-migration` which will create a timestamped file in the correct directory and add the required headers
+
+### Vault Setup 
+
+- see ./vault/VAULT-README.md file

@@ -12,7 +12,7 @@ Windows:
 - Initialize Vault (need only for the 1st run) `docker exec vault vault operator init -key-shares=1 -key-threshold=1`
 - Output: ``Root Token``, ``Unseal Key`` must be saved
 
-###Export credentials
+### Export credentials
 ---
 Windows: 
 - `"{Root Token}" | Set-Content "$env:USERPROFILE\.vault\.vault-token"`
@@ -28,16 +28,42 @@ Linux
 - Unseal Vault  `docker exec -it vault vault operator unseal {Unseal Key}`
 - Login to Vault `docker exec -it vault vault login {Root Token}`
 - Enable secret storage `docker exec -it vault vault secrets enable -path=secret kv`
-- Dont know if it necessary : `docker exec vault vault policy write app-policy /path/to/agnet-policy.hcl`
 
-#### Check Secrets
-- Add secret to the storage: `docker exec vault vault kv put secret/app/credentials username="admin" password="mypassword"`
-- Check or add secrets viu GUI: `http://localhost:8200`, `{Root Token}`  or inside vault-agent in `vault/secrets`
+### Add secrets into vault: 
+```shell
+docker exec -it vault vault kv put secret/resql `
+  sqlms_datasources_0_name="centops" `
+  sqlms_datasources_0_jdbcUrl="jdbc:postgresql://database:5432/centops_db" `
+  sqlms_datasources_0_username="byk" `
+  sqlms_datasources_0_password="01234" 
+```
 
-run docker compose up -> the main goal is to check that test app container is read secrets from shared folder
+```shell
+ docker exec -it vault vault kv put secret/resql-users `
+  sqlms_datasources_0_name="users" `
+  sqlms_datasources_0_jdbcUrl="jdbc:postgresql://database:5432/users_db" `
+  sqlms_datasources_0_username="byk" `
+  sqlms_datasources_0_password="01234"
+```
 
-### Testing:
-requirements: 
- vault container - is logged in and unsealed -> [INFO]  core: vault is unsealed 
- vault unseal container - Vault Unseal done 
- vault agent - [INFO]  agent: (runner) rendered "/vault/templates/template.ctmpl" => "/vault/secrets/app.env"
+```shell
+docker exec -it vault vault kv put secret/database `
+  POSTGRES_USER="byk" `
+  POSTGRES_PASSWORD="01234" `
+  POSTGRES_MULTIPLE_DATABASES="users_db,centops_db
+```
+
+```shell
+docker exec -it vault vault kv put secret/tim-postgresql `
+  POSTGRES_USER="tim" `
+  POSTGRES_PASSWORD="123" `
+  POSTGRES_DB="tim" `
+  POSTGRES_HOST_AUTH_METHOD="trust"
+```
+
+#### Add and Check Secrets
+- Add secret to the storage: `docker exec vault vault kv put secret/{app} username="admin" password="password"`
+- Check or add secrets viu GUI: `http://localhost:8200`, `{Root Token}`  or  `docker exec -it vault vault kv get secret/resql`
+-  if you are adding secret for existing app - edit *.ctmpl file in the /vault/templates/
+- otherwive create new file in the templates directory and add this template into
+`vault\vault-agent.hcl` as new template 
