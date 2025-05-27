@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: secret-manager
+  cloud:
+    vault:
+      host: localhost
+      port: 8200
+      scheme: http
+      authentication: token
+      token: your-vault-token
+      kv:
+        enabled: true
+        backend: secret
+        profile-separator: '/'
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.example.vaultsecrets: DEBUG
+    org.springframework.vault: DEBUG
