@@ -176,9 +176,9 @@ services:
       - bykstack
 
   vault:
-    image: hashicorp/vault:latest
+    image: hashicorp/vault:1.18
     container_name: vault
-    restart: always
+    restart: on-failure
     ports:
       - "8200:8200"
     environment:
@@ -209,7 +209,7 @@ services:
     command: vault agent -config=/vault/vault-agent.hcl
 
   vault-unseal:
-    image: curlimages/curl:latest
+    image: curlimages/curl:8.1.0
     container_name: vault-unseal-tool
     depends_on:
       - vault
