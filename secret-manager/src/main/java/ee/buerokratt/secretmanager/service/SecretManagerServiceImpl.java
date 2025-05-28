@@ -28,20 +28,11 @@ public class SecretManagerServiceImpl implements SecretManagerService {
     private final VaultTemplate vaultTemplate;
 
     @Override
-    public SecretResponse createSecret(SecretRequest request) {
+    public void createSecret(SecretRequest request) {
         log.info("Creating secret with key: {}", request.getKey());
-
         Map<String, Object> secretData = createSecretDataWithMetadata(request.getData());
         vaultTemplate.write(buildVaultPath(request.getKey()), secretData);
-
-        return buildSuccessResponse(
-                request.getKey(),
-                request.getData(),
-                secretData.get(CREATED_AT_FIELD).toString(),
-                secretData.get(UPDATED_AT_FIELD).toString(),
-                secretData.get(VERSION_FIELD).toString(),
-                "Secret created successfully"
-        );
+        log.info("Secret created successfully with key: {}", request.getKey());
     }
 
     @Override
@@ -58,41 +49,33 @@ public class SecretManagerServiceImpl implements SecretManagerService {
     }
 
     @Override
-    public SecretResponse updateSecret(String key, SecretRequest request) {
+    public boolean updateSecret(String key, SecretRequest request) {
         log.info("Updating secret with key: {}", key);
 
-        return Optional.of(vaultTemplate.read(buildVaultPath(key)))
+        return Optional.ofNullable(vaultTemplate.read(buildVaultPath(key)))
                 .map(VaultResponse::getData)
-                .map(existingData -> processSecretUpdate(key, request, existingData))
-                .orElseGet(() -> {
-                    log.warn("Secret not found for update: {}", key);
-                    return createErrorResponse();
-                });
-    }
-
-    @Override
-    public boolean deleteSecret(String key) {
-        log.info("Deleting secret with key: {}", key);
-
-        return Optional.of(vaultTemplate.read(buildVaultPath(key)))
-                .map(VaultResponse::getData)
-                .map(data -> {
-                    vaultTemplate.delete(buildVaultPath(key));
-                    log.info("Secret deleted successfully: {}", key);
+                .map(existingData -> {
+                    processSecretUpdate(key, request, existingData);
                     return true;
                 })
                 .orElse(false);
     }
 
     @Override
+    public void deleteSecret(String key) {
+        log.info("Deleting secret with key: {}", key);
+        vaultTemplate.delete(buildVaultPath(key));
+        log.info("Secret deleted successfully with key: {}", key);
+    }
+
+    @Override
     public List<SecretResponse> getAllSecrets() {
-        log.info("Retrieving all secrets from cubbyhole");
+        log.info("Retrieving all secrets from {}", CUBBYHOLE_PATH_PREFIX);
 
         return Optional.ofNullable(vaultTemplate.list(CUBBYHOLE_PATH_PREFIX))
                 .orElseGet(Collections::emptyList)
                 .parallelStream()
                 .map(this::getSecret)
-                .filter(SecretResponse::isSuccess)
                 .toList();
     }
 
@@ -101,50 +84,40 @@ public class SecretManagerServiceImpl implements SecretManagerService {
 
         String createdAt = (String) userData.remove(CREATED_AT_FIELD);
         String updatedAt = (String) userData.remove(UPDATED_AT_FIELD);
-        String version = (String) userData.remove(VERSION_FIELD);
+        long version = Long.parseLong(String.valueOf(userData.remove(VERSION_FIELD)));
 
         return buildSuccessResponse(
                 key,
                 userData,
                 createdAt,
                 updatedAt,
-                version,
-                "Secret retrieved successfully"
+                version
         );
     }
 
-    private SecretResponse processSecretUpdate(String key, SecretRequest request, Map<String, Object> existingData) {
+    private void processSecretUpdate(String key, SecretRequest request, Map<String, Object> existingData) {
         String createdAt = Optional.ofNullable((String) existingData.get(CREATED_AT_FIELD))
                 .orElseGet(() -> LocalDateTime.now().toString());
 
-        int newVersion = Optional.ofNullable((String) existingData.get(VERSION_FIELD))
-                .map(version -> Integer.parseInt(version) + 1)
-                .orElse(2);
+        long newVersion = Optional.ofNullable(String.valueOf(existingData.get(VERSION_FIELD)))
+                .map(version -> Long.parseLong(version) + 1)
+                .orElse(2L);
 
         Map<String, Object> secretData = createSecretDataWithMetadata(
                 request.getData(),
                 createdAt,
-                String.valueOf(newVersion)
+                newVersion
         );
 
         vaultTemplate.write(buildVaultPath(key), secretData);
         log.info("Secret updated successfully: {}", key);
-
-        return buildSuccessResponse(
-                key,
-                request.getData(),
-                createdAt,
-                secretData.get(UPDATED_AT_FIELD).toString(),
-                String.valueOf(newVersion),
-                "Secret updated successfully"
-        );
     }
 
     private Map<String, Object> createSecretDataWithMetadata(Map<String, Object> userData) {
-        return createSecretDataWithMetadata(userData, LocalDateTime.now().toString(), "1");
+        return createSecretDataWithMetadata(userData, LocalDateTime.now().toString(), 1);
     }
 
-    private Map<String, Object> createSecretDataWithMetadata(Map<String, Object> userData, String createdAt, String version) {
+    private Map<String, Object> createSecretDataWithMetadata(Map<String, Object> userData, String createdAt, long version) {
         Map<String, Object> secretData = new HashMap<>(userData);
         secretData.put(CREATED_AT_FIELD, createdAt);
         secretData.put(UPDATED_AT_FIELD, LocalDateTime.now().toString());
@@ -157,22 +130,19 @@ public class SecretManagerServiceImpl implements SecretManagerService {
             Map<String, Object> data,
             String createdAt,
             String updatedAt,
-            String version,
-            String message
+            long version
     ) {
         return new SecretResponse(
                 key,
                 data,
                 parseDateTime(createdAt),
                 parseDateTime(updatedAt),
-                version,
-                true,
-                message
+                version
         );
     }
 
     private SecretResponse createErrorResponse() {
-        return new SecretResponse(null, null, null, null, null, false, "Secret not found");
+        return new SecretResponse(null, null, null, null, null);
     }
 
     private LocalDateTime parseDateTime(String dateTimeStr) {

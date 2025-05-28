@@ -11,12 +11,11 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SecretResponse {
+
     private String key;
     private Map<String, Object> data;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String version;
-    private boolean success;
-    private String message;
+    private Long version;
 
 }

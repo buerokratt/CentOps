@@ -7,17 +7,16 @@ import lombok.Data;
 @AllArgsConstructor
 public class ApiResponse {
     private Object data;
-    private String message;
 
     public static ApiResponse success(Object data) {
-        return new ApiResponse(data, null);
+        return new ApiResponse(data);
     }
 
     public static ApiResponse success() {
-        return new ApiResponse(null, null);
+        return new ApiResponse(null);
     }
 
     public static ApiResponse error(String message) {
-        return new ApiResponse(null, message);
+        return new ApiResponse(null);
     }
 }
