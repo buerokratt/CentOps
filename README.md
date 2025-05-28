@@ -39,7 +39,6 @@ Bürokratt Central Operations
 - When creating centops new migrations, use the helper `./create-migration.sh name-of-migration` which will create a timestamped file in the correct directory and add the required headers
 - When creating users new migrations, use the helper `./create-migration-users.sh name-of-migration` which will create a timestamped file in the correct directory and add the required headers
 
-=======
 ### TIM
 
 - If you are running `Locally` then you need to curl the login request or run it on postman first to create and store the cookie in TIM and then on the browser create the cookie manully in the browser with name `customJwtCookie` and the value return from the curl
@@ -52,4 +51,5 @@ curl -X POST -H "Content-Type: application/json" -d '{
 ```
 
 ### Vault Setup 
+
 - see ./vault/VAULT-README.md file

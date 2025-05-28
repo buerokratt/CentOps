@@ -41,7 +41,7 @@ docker exec -it vault vault kv put secret/resql `
 ```shell
  docker exec -it vault vault kv put secret/resql-users `
   sqlms_datasources_0_name="users" `
-  sqlms_datasources_0_jdbcUrl="jdbc:postgresql://database:5432/users_db" `
+  sqlms_datasources_0_jdbcUrl="jdbc:postgresql://database:5432/users_db" ` or //jdbc:postgresql://171.22.247.13:5433/byk
   sqlms_datasources_0_username="byk" `
   sqlms_datasources_0_password="01234"
 ```
