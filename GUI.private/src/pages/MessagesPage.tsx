@@ -30,9 +30,10 @@ const MessagesPage: React.FC = () => {
   const fetchMessages = async (tab: 'inbox' | 'outbox') => {
     try {
       const url = tab === 'inbox' ? getInboxMessages() : getOutboxMessages();
-      const response = await axios.post(url, { user_id: 1 });
+      const response = await axios.post(url, { user_id: 1 }, { withCredentials: true });
       setMessages(response.data);
     } catch (error) {
+      console.error(error);
       setMessages([]);
     }
   };

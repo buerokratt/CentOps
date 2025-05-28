@@ -1,0 +1,33 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'triple-des'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: cipher
+        type: string
+        description: "Body field 'cipher'"
+      - field: key
+        type: string
+        description: "Body field 'key'"
+      - field: isObject
+        type: string
+        description: "Body field 'isObject'"
+
+triple_des_decryption:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER]/decryption/triple-des"
+    body:
+      cipher: ${incoming.body.cipher}
+      key: ${incoming.body.key}
+      isObject: ${incoming.body.isObject}
+  result: result
+
+return_value:
+  return: ${result.response.body.content}
+  next: end

@@ -1,0 +1,25 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'rsa'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: content
+        type: string
+        description: "Body field 'content'"
+
+rsa_encryption:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER]/encryption/rsa"
+    body:
+      content: ${incoming.body.content}
+  result: result
+
+return_value:
+  return: ${result.response.body.cipher}
+  next: end

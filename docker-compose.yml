@@ -12,8 +12,10 @@ services:
       - application.logging.displayResponseContent=true
       - server.port=8050
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
+      - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
     volumes:
       - ./DSL/Ruuter.private:/DSL
+      - ./constants.ini:/app/constants.ini
     ports:
       - 8050:8050
     networks:
@@ -29,8 +31,10 @@ services:
       - application.logging.displayResponseContent=true
       - server.port=8051
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
+      - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
     volumes:
       - ./DSL/Ruuter.public:/DSL
+      - ./constants.ini:/app/constants.ini
     ports:
       - 8051:8051
     networks:
@@ -50,9 +54,9 @@ services:
     ports:
       - 8052:8052
     volumes:
-      - ./DSL/Resql/centops:/workspace/app/templates/centops
+     - ./DSL/Resql:/DSL
     networks:
-      - bykstack
+      - bykstack 
 
   resql-users:
     container_name: resql-users
@@ -68,7 +72,7 @@ services:
     ports:
       - 8059:8059
     volumes:
-      - ./DSL/Resql/users:/workspace/app/templates/users
+      - ./DSL/Resql:/DSL
     networks:
       - bykstack    
 
@@ -87,16 +91,15 @@ services:
     networks:
       - bykstack
 
-  data_mapper:
-    container_name: data_mapper
-    image: datamapper
+  data-mapper:
+    container_name: data-mapper
+    image: data-mapper
     environment:
       - PORT=8054
       - CONTENT_FOLDER=/data
     volumes:
-      - ./DSL/DMapper/hbs:/workspace/app/views/centops
-      - ./DSL/DMapper/js:/workspace/app/js/centops
-      - ./DSL/DMapper/lib:/workspace/app/lib
+      - ./DSL/DMapper/centops/hbs:/workspace/app/views/centops
+      - ./DSL/DMapper/centops/js:/workspace/app/js/centops
       - ./DSL/Data/Forms:/data/forms
       - ./DSL/Data/Validation:/data/validators
     ports:
@@ -109,12 +112,17 @@ services:
     image: tim
     depends_on:
       - tim-postgresql
+    environment:
+      - SECURITY_ALLOWLIST_JWT=resql,tim,tim-postgresql,ruuter-private,ruuter-public,data-mapper,gui_dev_private,gui_dev_public,127.0.0.1,::1
+      - JWT_INTEGRATION_SIGNATURE_KEY_STORE_PASSWORD=defaultpassword
     ports:
-      - 8055:8055
+      - 8085:8085
     networks:
       - bykstack
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    cpus: "0.5" #(Example CPU limit)
+    mem_limit: "512M" #(Example memory limit)    
 
   tim-postgresql:
     container_name: tim-postgresql
@@ -126,7 +134,7 @@ services:
     volumes:
       - ./tim-db:/var/lib/postgresql/data
     ports:
-      - 8056:5432
+      - 9876:5432
     networks:
       - bykstack
 
@@ -135,8 +143,8 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:8050
-      - REACT_APP_PUBLIC_URL=http://localhost:8058
+      - REACT_APP_API_URL=http://localhost:8050/centops
+      - REACT_APP_PUBLIC_URL=http://localhost:8058/centops
       - PORT=8057
     build:
       context: ./GUI.private
@@ -154,7 +162,7 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:8051
+      - REACT_APP_API_URL=http://localhost:8051/centops
       - PORT=8058
     build:
       context: ./GUI.public
@@ -222,7 +230,6 @@ services:
 volumes:
   opensearch-data1:
   vault-data:
-
 
 networks:
   bykstack:

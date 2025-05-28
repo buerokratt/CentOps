@@ -1,0 +1,36 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'delete-institute'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: id
+        type: string
+        description: "Params field 'id'"
+
+check_for_body:
+  switch:
+    - condition: ${incoming.params.id == null}
+      next: return_incorrect_request
+
+delete_institute:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/delete-institute"
+    body:
+      id: ${incoming.params.id}
+  result: delete_result
+
+return_ok:
+  status: 204
+  return: "deleted successfully"
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "error: incorrect request"
+  next: end

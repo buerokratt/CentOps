@@ -30,7 +30,8 @@
     "updateManifest": "Update Manifest",
     "details": "Details",
     "futureUpdates": "Future Updates",
-    "noFutureUpdates": "No Future Updates"
+    "noFutureUpdates": "No Future Updates",
+    "noHistoryLogs": "No History Logs"
   },
   "application": {
     "contact-email": "Contact email address",

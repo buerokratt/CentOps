@@ -1,0 +1,25 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'base64'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: content
+        type: string
+        description: "Body field 'content'"
+
+base64_encryption:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER]/encryption/base64"
+    body:
+      content: ${incoming.body.content}
+  result: result
+
+return_value:
+  return: ${result.response.body.cipher}
+  next: end
