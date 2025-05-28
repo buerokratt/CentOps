@@ -1,0 +1,50 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Decription placeholder for 'applicant'"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+get_cookie_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: ${incoming.headers.cookie}
+    plaintext: "customJwtCookie"
+  result: res
+  next: check_cookie_info_response
+
+check_cookie_info_response:
+  switch:
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: check_applicant_authority
+  next: return_bad_request
+
+check_applicant_authority:
+  switch:
+    - condition: ${res.response.body.authorities.includes("ROLE_APPLICANT")}
+      next: return_authorized
+  next: return_unauthorized
+
+return_authorized:
+  return: ${res.response.body}
+  next: end
+
+return_unauthorized:
+  status: 200
+  return: false
+  next: end
+
+return_bad_request:
+  status: 400
+  return: false
+  next: end

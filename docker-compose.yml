@@ -10,6 +10,7 @@ services:
       - application.logging.displayResponseContent=true
       - server.port=8050
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
+      - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
     volumes:
       - ./DSL/Ruuter.private:/DSL
       - ./constants.ini:/app/constants.ini
@@ -28,6 +29,7 @@ services:
       - application.logging.displayResponseContent=true
       - server.port=8051
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
+      - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
     volumes:
       - ./DSL/Ruuter.public:/DSL
       - ./constants.ini:/app/constants.ini
