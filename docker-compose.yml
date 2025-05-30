@@ -121,7 +121,7 @@ services:
       - bykstack
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    cpus: "0.5" #(Example CPU limit)
+    cpus: 0.5 #(Example CPU limit)
     mem_limit: "512M" #(Example memory limit)    
 
   tim-postgresql:
