@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import type { FC } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import axios, { AxiosError } from 'axios';
-import { Button, FormInput, Track } from '../components';
-import { validateInvitation } from '../resources/api-constants';
-import DynamicForm from '../components/DynamicForm';
-import { KeyValueMap } from '../components/DynamicForm/types';
-import { formIds } from '../constants/forms';
-import postApplication from '../services/application';
+import type { AxiosError } from 'axios';
+import axios from 'axios';
+import { Button, DynamicForm, FormInput, Track } from '@centopsmodule/shared';
+import { validateInvitation } from 'resources/api-constants';
+import type { KeyValueMap } from '@centopsmodule/shared/components/DynamicForm/types';
+import { formIds } from 'constants/forms';
+import postApplication from 'services/application';
 
-const ApplicationPage: React.FC = () => {
+const ApplicationPage: FC = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const [invitationId, setId] = useState(id ?? '');
@@ -30,8 +31,8 @@ const ApplicationPage: React.FC = () => {
         { withCredentials: true }
       );
       setInvitationValid(true);
-    } catch (err: any) {
-      handleError(err);
+    } catch (err) {
+      handleError(err as AxiosError);
     }
   };
 
@@ -43,8 +44,8 @@ const ApplicationPage: React.FC = () => {
         info: formValues,
       });
       setInvitationSent(true);
-    } catch (err: any) {
-      handleError(err);
+    } catch (err) {
+      handleError(err as AxiosError);
     }
   };
 
@@ -99,7 +100,7 @@ const ApplicationPage: React.FC = () => {
             formId={formIds.INVITATION_FORM}
             hideSubmitButton
             hideTitle
-            onChange={(values: any, isValid: boolean) => {
+            onChange={(values: KeyValueMap, isValid: boolean) => {
               setFormValues(values);
               setFormValid(isValid);
             }}

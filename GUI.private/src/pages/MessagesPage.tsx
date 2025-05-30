@@ -1,13 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import { Button, DataTable, Track } from '../components';
-import {
-  getInboxMessages,
-  getOutboxMessages,
-} from '../resources/api-constants';
+import { Button, DataTable, Track } from '@centopsmodule/shared';
 import { createColumnHelper } from '@tanstack/react-table';
-import SendMessage from '../components/SendMessage';
-import ReplyMessage from '../components/ReplyMessage';
+
+import { getInboxMessages, getOutboxMessages } from 'resources/api-constants';
+import { ReplyMessage, SendMessage } from 'components';
 
 interface Message {
   id: number;
@@ -19,7 +16,7 @@ interface Message {
   timestamp: string;
 }
 
-const MessagesPage: React.FC = () => {
+const MessagesPage: FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [activeTab, setActiveTab] = useState<'inbox' | 'outbox'>('inbox');
 
@@ -30,7 +27,11 @@ const MessagesPage: React.FC = () => {
   const fetchMessages = async (tab: 'inbox' | 'outbox') => {
     try {
       const url = tab === 'inbox' ? getInboxMessages() : getOutboxMessages();
-      const response = await axios.post(url, { user_id: 1 }, { withCredentials: true });
+      const response = await axios.post(
+        url,
+        { user_id: 1 },
+        { withCredentials: true }
+      );
       setMessages(response.data);
     } catch (error) {
       console.error(error);
@@ -63,7 +64,7 @@ const MessagesPage: React.FC = () => {
       }),
       appRequestColumnHelper.display({
         header: '',
-        cell: (_) =>
+        cell: () =>
           activeTab === 'outbox' && (
             <ReplyMessage onSendMessage={() => fetchMessages(activeTab)} />
           ),

@@ -1,12 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import type { FC } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Manifest } from '../../types/manifest';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, DataTable, Dialog, Icon, Track } from '../../components';
+import { Button, DataTable, Dialog, Icon, Track } from '@centopsmodule/shared';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { capitalizeFirst } from '../../utils/capatalizeFirst';
 import {
   AiFillCheckCircle,
   AiFillCloseCircle,
@@ -14,14 +13,17 @@ import {
   AiFillEdit,
   AiFillEye,
 } from 'react-icons/ai';
-import api from '../../services/api';
-import { useToast } from '../../hooks/useToast';
-import { AxiosError } from 'axios';
+import api from 'services/api';
+import { useToast } from '@centopsmodule/shared/hooks';
+import type { AxiosError } from 'axios';
 import { MdPublish } from 'react-icons/md';
-import animationData from '../../lottie/noUpdates.json';
 import Lottie from 'react-lottie';
 
-const ManifestsUpdatesPage: React.FC = () => {
+import animationData from 'lottie/noUpdates.json';
+import { capitalizeFirst } from 'utils/capatalizeFirst';
+import type { Manifest } from 'types/manifest';
+
+const ManifestsUpdatesPage: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -130,8 +132,6 @@ const ManifestsUpdatesPage: React.FC = () => {
       });
     },
   });
-
-  const publishUpdate = async () => {};
 
   const appRequestColumnHelper = createColumnHelper<Manifest>();
   const appRequestColumns = useMemo(

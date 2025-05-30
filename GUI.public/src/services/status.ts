@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getApplicationStatus } from '../resources/api-constants';
+import { getApplicationStatus } from 'resources/api-constants';
 
 export const getStatus = async (uuid?: string) => {
   if (!uuid) {

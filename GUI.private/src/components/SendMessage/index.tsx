@@ -1,10 +1,10 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { getParticipants, sendMessageApi } from '../../resources/api-constants';
-import Button from '../Button';
-import Modal from '../Modal';
-import Track from '../Track';
-import { useToast } from '../../hooks/useToast';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+import { Button, Modal, Track } from '@centopsmodule/shared';
+import { useToast } from '@centopsmodule/shared/hooks';
+
+import { getParticipants, sendMessageApi } from 'resources/api-constants';
 
 interface Participant {
   id: number;
@@ -15,7 +15,7 @@ interface SendMessageProps {
   onSendMessage: () => void;
 }
 
-const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
+export const SendMessage: FC<SendMessageProps> = ({ onSendMessage }) => {
   const [showModal, setShowModal] = useState(false);
   const [message, setMessageContent] = useState('');
   const [selectedReceiver, setSelectedReceiver] = useState<number | null>(null);
@@ -52,7 +52,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
         onSendMessage();
         resetForm();
       })
-      .catch((error) => {
+      .catch(() => {
         toast.open({
           type: 'error',
           title: 'Messages',
@@ -65,7 +65,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
     try {
       const response = await axios.get(getParticipants());
       setParticipants(response.data);
-    } catch (error) {
+    } catch {
       setParticipants([]);
     }
   };
@@ -113,5 +113,3 @@ const SendMessage: React.FC<SendMessageProps> = ({ onSendMessage }) => {
     </>
   );
 };
-
-export default SendMessage;

@@ -1,20 +1,22 @@
-import React, { useMemo, useState } from 'react';
+import type { FC } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Manifest } from '../../types/manifest';
+import type { Manifest } from 'types/manifest';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, DataTable, Dialog, Icon, Track } from '../../components';
+import { Button, DataTable, Dialog, Icon, Track } from '@centopsmodule/shared';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { capitalizeFirst } from '../../utils/capatalizeFirst';
+import { capitalizeFirst } from 'utils/capatalizeFirst';
 import { AiFillDelete, AiFillEdit, AiFillEye } from 'react-icons/ai';
-import { useToast } from '../../hooks/useToast';
-import api from '../../services/api';
-import { AxiosError } from 'axios';
-import animationData from '../../lottie/noData.json';
+import { useToast } from '@centopsmodule/shared/hooks';
+import api from 'services/api';
+import type { AxiosError } from 'axios';
 import Lottie from 'react-lottie';
 
-const ManifestsOverviewPage: React.FC = () => {
+import animationData from 'lottie/noData.json';
+
+const ManifestsOverviewPage: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();

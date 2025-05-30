@@ -1,8 +1,8 @@
-import React from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Track } from '../components';
+import { Track } from '@centopsmodule/shared';
 
-const OverviewPage: React.FC = () => {
+const OverviewPage: FC = () => {
   const { t } = useTranslation();
 
   return (
