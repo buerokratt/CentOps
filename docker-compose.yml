@@ -3,6 +3,8 @@ services:
   ruuter-private:
     container_name: ruuter-private
     image: ruuter
+    depends_on:
+      - vault-agent
     environment:
       - application.cors.allowedOrigins=http://localhost:8057,https://tim.buerokratt.ee
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
@@ -10,6 +12,7 @@ services:
       - application.logging.displayResponseContent=true
       - server.port=8050
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
+      - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
     volumes:
       - ./DSL/Ruuter.private:/DSL
       - ./constants.ini:/app/constants.ini
@@ -28,6 +31,7 @@ services:
       - application.logging.displayResponseContent=true
       - server.port=8051
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
+      - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
     volumes:
       - ./DSL/Ruuter.public:/DSL
       - ./constants.ini:/app/constants.ini
@@ -41,13 +45,12 @@ services:
     image: resql
     depends_on:
       - database
+      - vault-agent
     environment:
-      - sqlms.datasources.[0].name=byk
-      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/centops_db
-      - sqlms.datasources.[0].username=byk
-      - sqlms.datasources.[0].password=01234
       - logging.level.org.springframework.boot=INFO
       - server.port=8052
+    env_file:
+      - "${VAULT_DATA_PATH}/resql.env"
     ports:
       - 8052:8052
     volumes:
@@ -60,13 +63,11 @@ services:
     image: resql
     depends_on:
       - database
+      - vault-agent
+    env_file:
+      - "${VAULT_DATA_PATH}/resql-users.env"
     environment:
       - server.port=8059
-      - sqlms.datasources.[0].name=byk
-      # - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database:5432/users_db
-      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://171.22.247.13:5433/byk
-      - sqlms.datasources.[0].username=byk
-      - sqlms.datasources.[0].password=2nH09n6Gly
       - logging.level.org.springframework.boot=INFO
     ports:
       - 8059:8059
@@ -78,10 +79,10 @@ services:
   database:
     container_name: database
     image: postgres:14.1
-    environment:
-      - POSTGRES_USER=byk
-      - POSTGRES_PASSWORD=01234
-      - POSTGRES_MULTIPLE_DATABASES=users_db,centops_db
+    depends_on:
+      - vault-agent
+    env_file:
+      - "${VAULT_DATA_PATH}/database.env"
     ports:
       - 8053:5432
     volumes:
@@ -126,11 +127,10 @@ services:
   tim-postgresql:
     container_name: tim-postgresql
     image: postgres:14.1
-    environment:
-      - POSTGRES_USER=tim
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_DB=tim
-      - POSTGRES_HOST_AUTH_METHOD=trust
+    depends_on:
+      - vault-agent
+    env_file:
+      - "${VAULT_DATA_PATH}/tim-postgresql.env"
     volumes:
       - ./tim-db:/var/lib/postgresql/data
     ports:
@@ -175,8 +175,61 @@ services:
     networks:
       - bykstack
 
+  vault:
+    image: hashicorp/vault:1.18
+    container_name: vault
+    restart: on-failure
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+    volumes:
+      - ./vault/config.hcl:/vault/config/config.hcl
+      - "${VAULT_DATA_PATH}/data:/vault/data"
+    entrypoint: >
+      vault server -config=/vault/config/config.hcl
+    cap_add:
+      - IPC_LOCK
+
+  vault-agent:
+    image: hashicorp/vault:1.18
+    container_name: vault-agent
+    depends_on:
+      - vault
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./vault/vault-agent.hcl:/vault/vault-agent.hcl
+      - ./vault/templates/resql-template.ctmpl:/vault/templates/resql-template.ctmpl
+      - ./vault/templates/resql-users-template.ctmpl:/vault/templates/resql-users-template.ctmpl
+      - ./vault/templates/database-template.ctmpl:/vault/templates/database-template.ctmpl
+      - ./vault/templates/tim-postgresql-template.ctmpl:/vault/templates/tim-postgresql-template.ctmpl
+      - "${VAULT_DATA_PATH}/.vault-token:/vault/secrets/.vault-token:ro"
+      - "${VAULT_DATA_PATH}:/vault/secrets"
+    command: vault agent -config=/vault/vault-agent.hcl
+
+  vault-unseal:
+    image: curlimages/curl:8.1.0
+    container_name: vault-unseal-tool
+    depends_on:
+      - vault
+    environment:
+      VAULT_UNSEAL_KEY: ${VAULT_UNSEAL_KEY}
+    entrypoint: sh
+    command: -c '
+      echo "Waiting for Vault to be started...";
+      until curl --silent http://vault:8200/v1/sys/health | grep -q "\"initialized\":true"; do
+      sleep 2;
+      done;
+      echo "Sending unseal key...";
+      curl --silent --request PUT --data "{\"key\":\"$VAULT_UNSEAL_KEY\"}" http://vault:8200/v1/sys/unseal;
+      echo "Vault Unseal done.";'
+
+    restart: "no"
+
 volumes:
   opensearch-data1:
+  vault-data:
 
 networks:
   bykstack:
