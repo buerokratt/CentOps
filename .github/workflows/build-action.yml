@@ -1,9 +1,8 @@
-name: Lint, Format, Build, Check Version
+name: Code Check, Build
 
 on:
   push:
-    #branches: ["test", "stage", "main"]
-    branches: ["add-github-action"]
+    branches: ["test", "stage", "main", "dev"]
   workflow_dispatch:
 
 env:
@@ -12,59 +11,85 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-      - uses: actions/setup-node@v4
-      - with:
-      - node-version: '18'
-
-      - name: Install dependencies
-      - run: npm install
-
-      - name: Run ESLint
-      - run: npm run lint
-
-      - name: Check Prettier formatting
-      - run: npm run format
-
-      - name: Build the project
-      - run: npm run build
-      - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: "[GUI Private] Run ESLint"
+        run: |
+          cd GUI.private
+          npm run lint
+
+      - name: "[GUI Private] Check Prettier formatting"
+        run: |
+          cd GUI.private
+          npm run format
+
+      - name: "[GUI Private] Build"
+        run: |
+          cd GUI.private
+          npm run build
+
+      - name: "[GUI Public] Run ESLint"
+        run: |
+          cd GUI.public
+          npm run lint
+
+      - name: "[GUI Public] Check Prettier formatting"
+        run: |
+          cd GUI.public
+          npm run format
+
+      - name: "[GUI Public] Build"
+        run: |
+          cd GUI.public
+          npm run build
+
       - name: Bump Patch Version
-        run: npm run bump-patch
         if: ${{ env.BRANCH == 'test' }}
+        run: npm run bump-patch
 
       - name: Sync Version
-        run: npm run sync-version
         if: ${{ env.BRANCH != 'test' }}
-
-      - name: Generate Changelog
-        run: npm run changelog
-        if: ${{ env.BRANCH == 'main' }}
-
-      - name: Push changes to repo
-        run: |
-          git config --global user.name ${{ secrets.ADMIN_NAME }}
-          git config --global user.email ${{ secrets.ADMIN_EMAIL }}
-          git add .
-          git commit -m "docs: update version [skip ci]"
-          git push
+        run: npm run sync-version
 
       - name: Load environment variables
         run: |
-          awk -v branch="${{ env.BRANCH }}" ' /^[0-9a-zA-Z]+$/ { current_branch = $0; } current_branch == branch && /^[A-Z_]+=/{ print $0; }' release.env >> $GITHUB_ENV
+          awk -v branch="${{ env.BRANCH }}" '
+            /^[0-9a-zA-Z_-]+$/ { current_branch = $0; next }
+            current_branch == branch && /^[A-Z_]+=/{ print $0 }
+          ' release.env >> $GITHUB_ENV
+
+      - name: Compose VERSION
+        run: echo "VERSION=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_ENV
+
+      - name: Generate Changelog
+        if: ${{ env.BRANCH == 'main' }}
+        run: npm run changelog
+
+      - name: Push changes to repo
+        run: |
+          git config --global user.name "${{ secrets.ADMIN_NAME }}"
+          git config --global user.email "${{ secrets.ADMIN_EMAIL }}"
+          git add .
+          git commit -m "docs(0): update version [skip ci]" --no-verify
+          git push
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
         if: ${{ env.BRANCH == 'main' }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}
+          tag_name: v${{ env.VERSION }}
           generate_release_notes: true
           body_path: ${{ github.workspace }}/CHANGELOG.md
