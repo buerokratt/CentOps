@@ -1,4 +1,4 @@
-import { KeyValueMap } from "../components/DynamicForm/types";
+import type { KeyValueMap } from '@centopsmodule/shared/components/DynamicForm/types';
 
 export interface Application {
   invitationId: string;

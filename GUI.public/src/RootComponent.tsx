@@ -1,24 +1,24 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import { Layout } from './components';
+import { Layout } from '@centopsmodule/shared';
 import {
   ApplicationPage,
   ApplicationStatusPage,
+  FormPage,
   NotFoundPage,
   OverviewPage,
-  FormPage,
-} from './pages';
-import { ROUTES } from './resources/routes-constants';
-import './styles/main.scss';
-import ManifestsDetailsPage from './pages/manifests/ManifestsDetailsPage';
-import PastUpdatesPage from './pages/manifests/PastUpdatesPage';
-import FutureUpdatesPage from './pages/manifests/FutureUpdatesPage';
+} from 'pages';
+import { ROUTES } from 'resources/routes-constants';
+import '@centopsmodule/shared/styles/main.scss';
+import ManifestsDetailsPage from 'pages/manifests/ManifestsDetailsPage';
+import PastUpdatesPage from 'pages/manifests/PastUpdatesPage';
+import FutureUpdatesPage from 'pages/manifests/FutureUpdatesPage';
 
-const RootComponent: React.FC = () => {
+const RootComponent: FC = () => {
   return (
     <Routes>
-      <Route element={<Layout disableMenu={true} />}>
+      <Route element={<Layout navigation={null} />}>
         <Route path={ROUTES.APPLICATION_ROUTE} element={<ApplicationPage />} />
         <Route
           path={ROUTES.APPLICATION_ROUTE_WITH_ID}

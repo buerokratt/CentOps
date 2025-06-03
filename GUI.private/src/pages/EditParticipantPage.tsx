@@ -1,19 +1,21 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import type { FC } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, DynamicForm, FormSelect, Track } from '@centopsmodule/shared';
+import { useToast } from '@centopsmodule/shared/hooks';
 
-import { Button, DynamicForm, FormInput, FormSelect, Track } from '../components';
 import {
   deleteParticipant,
   updateParticipantDetails,
   updateParticipantStatus,
-} from '../resources/api-constants';
-import { Participant, ParticipantStatus, ParticipantType, KeyValueMap } from '../types';
-import { formIds } from '../constants/formIds';
-import { useToast } from '../hooks/useToast';
+} from 'resources/api-constants';
+import type { KeyValueMap, Participant } from 'types';
+import { ParticipantStatus, ParticipantType } from 'types';
+import { formIds } from 'constants/formIds';
 
-const EditParticipantPage: React.FC = () => {
+const EditParticipantPage: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,7 +26,9 @@ const EditParticipantPage: React.FC = () => {
     const value = input.toLowerCase();
     return value.charAt(0).toUpperCase() + value.slice(1);
   };
-  const [formValues, setFormValues] = useState<KeyValueMap>(participant.info ?? {});
+  const [formValues, setFormValues] = useState<KeyValueMap>(
+    participant.info ?? {}
+  );
   const [formValid, setFormValid] = useState(false);
   const [applicationStatus, setApplicationStatus] = useState(
     capitalize(participant.participantStatus) ?? ParticipantStatus.Inactive
@@ -59,7 +63,7 @@ const EditParticipantPage: React.FC = () => {
         type: 'error',
         title: 'Invalid',
         message: 'Form contains invalid values',
-      })
+      });
     }
     await axios.put(
       updateParticipantDetails(participant.uniqueIdentifier),
@@ -124,7 +128,7 @@ const EditParticipantPage: React.FC = () => {
             formId={formIds.INVITATION_FORM}
             hideSubmitButton
             hideTitle
-            onChange={(values: any, isValid: boolean) => {
+            onChange={(values: KeyValueMap, isValid: boolean) => {
               setFormValues(values);
               setFormValid(isValid);
             }}
