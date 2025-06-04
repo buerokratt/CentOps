@@ -27,10 +27,10 @@ jobs:
 
       - name: "Run ESLint"
         run: |
-          cd GUI.private
+          cd GUI
           npm run lint
 
       - name: "Check Prettier formatting"
         run: |
-          cd GUI.private
+          cd GUI
           npm run format

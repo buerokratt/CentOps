@@ -8,6 +8,7 @@ import { resolve } from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/',
   server: {
     port: 8057,
   },
