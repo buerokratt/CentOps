@@ -113,7 +113,7 @@ services:
     depends_on:
       - tim-postgresql
     environment:
-      - SECURITY_ALLOWLIST_JWT=resql,tim,tim-postgresql,ruuter-private,ruuter-public,data-mapper,gui_dev_private,gui_dev_public,127.0.0.1,::1
+      - SECURITY_ALLOWLIST_JWT=resql,tim,tim-postgresql,ruuter-private,ruuter-public,data-mapper,gui_dev,localhost,127.0.0.1,::1
       - JWT_INTEGRATION_SIGNATURE_KEY_STORE_PASSWORD=defaultpassword
     ports:
       - 8085:8085
@@ -138,8 +138,8 @@ services:
     networks:
       - bykstack
 
-  gui_dev_private:
-    container_name: gui_dev_private
+  gui_dev:
+    container_name: gui_dev
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
@@ -147,31 +147,13 @@ services:
       - REACT_APP_PUBLIC_URL=http://localhost:8058/centops
       - PORT=8057
     build:
-      context: ./GUI.private
+      context: GUI
       dockerfile: Dockerfile.dev
     ports:
       - 8057:8057
     volumes:
       - /app/node_modules
-      - ./GUI.private:/app
-    networks:
-      - bykstack
-
-  gui_dev_public:
-    container_name: gui_dev_public
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:8051/centops
-      - PORT=8058
-    build:
-      context: ./GUI.public
-      dockerfile: Dockerfile.dev
-    ports:
-      - 8058:8058
-    volumes:
-      - /app/node_modules
-      - ./GUI.public:/app
+      - ./GUI:/app
     networks:
       - bykstack
 
