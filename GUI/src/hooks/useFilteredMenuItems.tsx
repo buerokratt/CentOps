@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { type MenuItem } from '../types/menuItem';
-import useMenuItems from './useMenuItems';
-import { type CountConf } from '../types/countConf';
+import { type MenuItem } from 'types/menuItem';
+import useMenuItems from 'hooks/useMenuItems';
+import { type CountConf } from 'types/countConf';
 
 const rolePermissions = {
   ROLE_ADMINISTRATOR: ['clients'],
