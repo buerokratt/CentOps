@@ -1,0 +1,11 @@
+@use 'styles/tools/spacing' as *;
+@use 'styles/tools/color' as *;
+@use 'styles/settings/variables/typography' as *;
+
+.section {
+  padding: get-spacing(haapsalu);
+
+  &:not(:last-child) {
+    border-bottom: 1px solid get-color(black-coral-2);
+  }
+}

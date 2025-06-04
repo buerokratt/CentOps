@@ -49,3 +49,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
   "password": "OK"
 }' http://localhost:8050/centops/login-user
 ```
+
+### Vault Setup 
+
+see the [README](./vault/README.md) file.

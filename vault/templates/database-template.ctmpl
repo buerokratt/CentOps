@@ -1,0 +1,4 @@
+# secrets/data/database
+POSTGRES_USER={{ with secret "secret/database" }}{{ .Data.POSTGRES_USER }}{{ end }}
+POSTGRES_PASSWORD={{ with secret "secret/database" }}{{ .Data.POSTGRES_PASSWORD }}{{ end }}
+POSTGRES_MULTIPLE_DATABASES={{ with secret "secret/database" }}{{ .Data.POSTGRES_MULTIPLE_DATABASES }}{{ end }}
