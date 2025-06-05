@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Card, DataTable, Track } from 'components';
+import { Button, Card, DataTable, Icon, Track } from 'components';
 import { useMemo, useState } from 'react';
 import type { Client } from 'types/client';
 import {
@@ -57,9 +57,18 @@ export const ClientsListPage = () => {
         },
         cell: () => (
           <Track gap={8}>
-            <Button appearance="text">Pods</Button>
-            <Button appearance="text">Edit</Button>
-            <Button appearance="text">Delete</Button>
+            <Button appearance="text">
+              <Icon name="pods" />
+              Pods
+            </Button>
+            <Button appearance="text">
+              <Icon name="edit" />
+              Edit
+            </Button>
+            <Button appearance="text">
+              <Icon name="delete" />
+              Delete
+            </Button>
           </Track>
         ),
       }),
