@@ -37,12 +37,28 @@ docker exec -it vault vault kv put secret/resql `
   sqlms_datasources_0_username="byk" `
   sqlms_datasources_0_password="01234" 
 ```
+### Add secrets into vault - for Mac: 
+```shell
+docker exec -it vault vault kv put secret/resql \
+  sqlms_datasources_0_name="centops" \
+  sqlms_datasources_0_jdbcUrl="jdbc:postgresql://database:5432/centops_db" \
+  sqlms_datasources_0_username="byk" \
+  sqlms_datasources_0_password="01234"
+```
 
 ```shell
  docker exec -it vault vault kv put secret/resql-users `
   sqlms_datasources_0_name="users" `
   sqlms_datasources_0_jdbcUrl="jdbc:postgresql://database:5432/users_db" ` or //jdbc:postgresql://171.22.247.13:5433/byk
   sqlms_datasources_0_username="byk" `
+  sqlms_datasources_0_password="01234"
+```
+### Mac
+```shell
+docker exec -it vault vault kv put secret/resql-users \
+  sqlms_datasources_0_name="users" \
+  sqlms_datasources_0_jdbcUrl="jdbc:postgresql://database:5432/users_db" \
+  sqlms_datasources_0_username="byk" \
   sqlms_datasources_0_password="01234"
 ```
 
@@ -52,12 +68,27 @@ docker exec -it vault vault kv put secret/database `
   POSTGRES_PASSWORD="01234" `
   POSTGRES_MULTIPLE_DATABASES="users_db,centops_db
 ```
+### Mac
+```shell
+docker exec -it vault vault kv put secret/database \
+  POSTGRES_USER="byk" \
+  POSTGRES_PASSWORD="01234" \
+  POSTGRES_MULTIPLE_DATABASES="users_db,centops_db"
+```
 
 ```shell
 docker exec -it vault vault kv put secret/tim-postgresql `
   POSTGRES_USER="tim" `
   POSTGRES_PASSWORD="123" `
   POSTGRES_DB="tim" `
+  POSTGRES_HOST_AUTH_METHOD="trust"
+```
+### Mac
+```shell
+docker exec -it vault vault kv put secret/tim-postgresql \
+  POSTGRES_USER="tim" \
+  POSTGRES_PASSWORD="123" \
+  POSTGRES_DB="tim" \
   POSTGRES_HOST_AUTH_METHOD="trust"
 ```
 
