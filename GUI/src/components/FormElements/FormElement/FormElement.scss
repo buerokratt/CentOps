@@ -3,7 +3,7 @@
 @use 'styles/settings/variables/other' as *;
 @use 'styles/settings/variables/typography' as *;
 
-.input {
+.form-element {
   $self: &;
   display: flex;
   align-items: center;
@@ -22,12 +22,6 @@
     flex-direction: column;
     gap: 7px;
     position: relative;
-
-    .icon {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
   }
 
   &__error {
@@ -53,32 +47,12 @@
     }
   }
 
-  input {
+  .element {
     width: 100%;
     display: block;
     appearance: none;
-    background-color: get-color(white);
-    border: 1px solid get-color(black-coral-6);
-    border-radius: $veera-radius-s;
-    color: var(--color-black);
-    font-size: $veera-font-size-100;
-    height: 40px;
+    min-height: 40px;
     line-height: 24px;
-    padding: get-spacing(paldiski);
-
-    &:read-only {
-      border-color: transparent;
-      font-weight: 500;
-    }
-
-    &::placeholder {
-      color: get-color(black-coral-6);
-    }
-
-    &:focus {
-      outline: none;
-      border-color: get-color(sapphire-blue-10);
-    }
   }
 
   &--disabled input {

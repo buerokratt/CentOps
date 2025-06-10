@@ -6,13 +6,15 @@
 .label {
   $self: &;
   display: flex;
-  padding: 1.5px 16px;
+  align-items: center;
+  padding: 1.5px 8px;
   font-size: $veera-font-size-80;
-  font-weight: $veera-font-weight-delta;
+  font-weight: $veera-font-weight-beta;
   border: 2px solid;
   background-color: get-color(white);
   border-radius: $veera-radius-s;
   position: relative;
+  gap: 4px;
 
   &--info {
     color: get-color(sapphire-blue-10);
@@ -26,12 +28,12 @@
   }
 
   &--warning {
-    color: get-color(dark-tangerine-10);
-    border-color: get-color(dark-tangerine-10);
+    color: get-color(dark-tangerine-13);
+    border-color: get-color(dark-tangerine-13);
 
     #{$self} {
       &__icon {
-        border-color: get-color(dark-tangerine-10);
+        border-color: get-color(dark-tangerine-13);
       }
     }
   }

@@ -1,4 +1,9 @@
 {
+  "button": {
+    "addClient": "Add client",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
   "edit-participants": {
     "active": "Active",
     "applicant-type": "Applicant type",

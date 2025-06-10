@@ -3,6 +3,7 @@ const publicAppUrl = import.meta.env.REACT_APP_PUBLIC_URL;
 export const ROUTES = {
   APPLICATION_ROUTE: `${publicAppUrl}/centops/application`,
   CLIENTS_ROUTE: '/centops/clients',
+  CLIENTS_CREATE_EDIT_ROUTE: '/centops/clients/:id?',
   INVITATION_ROUTE: '/centops/invitation',
   OVERVIEW_ROUTE: '/centops/overview',
   PARTICIPANTS_ROUTE: '/centops/participants',

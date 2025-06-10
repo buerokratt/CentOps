@@ -8,7 +8,7 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 
-export const ClientsListPage = () => {
+export const ClientListPage = () => {
   const [clients] = useState<Client[]>([
     {
       id: '1',
@@ -80,9 +80,9 @@ export const ClientsListPage = () => {
 
   return (
     <>
-      <Track direction="horizontal" justify="between">
+      <Track justify="between">
         <h2>{t('menu.clients')}</h2>
-        <Button appearance="primary">Add client</Button>
+        <Button appearance="primary">{t('button.addClient')}</Button>
       </Track>
 
       <Card>

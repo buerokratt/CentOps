@@ -1,13 +1,14 @@
-import type { InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes, ReactNode } from 'react';
 import { forwardRef, useId } from 'react';
 import clsx from 'clsx';
 import { MdOutlinePalette } from 'react-icons/md';
+import { renderToString } from 'react-dom/server';
 
 import { Icon } from 'components';
 import './FormInput.scss';
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
+  label: ReactNode;
   name: string;
   defaultValue?: string;
   hideLabel?: boolean;
@@ -37,7 +38,7 @@ export const FormInput = forwardRef<HTMLInputElement, InputProps>(
             value={defaultValue}
             id={id}
             ref={ref}
-            aria-label={hideLabel ? label : undefined}
+            aria-label={renderToString(label)}
             pattern={colorInput ? '^#([a-fA-F0-9]{3}){1,2}$' : undefined}
             {...rest}
           />

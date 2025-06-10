@@ -18,13 +18,18 @@ import ManifestsUpdatesPage from 'pages/manifests/ManifestsUpdatesPage';
 import ManifestsHistoryPage from 'pages/manifests/ManifestsHistoryPage';
 import ManifestsHistoryDetailsPage from 'pages/manifests/ManifestsDetailsPage';
 import CreateEditManifestPage from 'pages/manifests/CreateEditManifestPage';
-import { ClientsListPage } from 'pages/clients/ClientsListPage.tsx';
+import { ClientListPage } from 'pages/clients/ClientListPage';
+import { ClientDetailsPage } from 'pages/clients/ClientDetailsPage';
 
 const RootComponent: FC = () => {
   return (
     <Routes>
       <Route element={<Layout navigation={<MainNavigation />} />}>
-        <Route path={ROUTES.CLIENTS_ROUTE} element={<ClientsListPage />} />
+        <Route path={ROUTES.CLIENTS_ROUTE} element={<ClientListPage />} />
+        <Route
+          path={ROUTES.CLIENTS_CREATE_EDIT_ROUTE}
+          element={<ClientDetailsPage />}
+        />
         <Route
           path={ROUTES.INVITATION_ROUTE}
           element={<CreateInvitationPage />}

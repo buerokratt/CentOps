@@ -9,7 +9,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --check ."
+    "format": "prettier --check .",
+    "i18n:extract": "i18next"
   },
   "dependencies": {
     "@fontsource/roboto": "^4.5.8",
@@ -64,11 +65,13 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "husky": "^9.1.6",
+    "i18next-parser": "^9.3.0",
     "prettier": "^3.5.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.32.1",
     "vite": "^6.3.5",
     "vite-plugin-checker": "^0.9.3",
+    "vite-plugin-svg-sprite": "^0.6.2",
     "vite-plugin-svg-spritemap": "^1.0.12",
     "vite-tsconfig-paths": "^5.1.4"
   },

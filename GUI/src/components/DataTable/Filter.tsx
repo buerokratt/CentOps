@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { MdOutlineSearch } from 'react-icons/md';
 
 import { Icon } from 'components';
-import DebouncedInput from 'components/DataTable/DebouncedInput.tsx';
+import DebouncedInput from 'components/DataTable/DebouncedInput';
 
 type FilterProps = {
   column: Column<any, unknown>;
