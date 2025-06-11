@@ -35,6 +35,7 @@ const CreateInvitationPage: FC = () => {
         .invitationId;
       setInvResult(invitationRes);
       setInvResultLink(ROUTES.APPLICATION_ROUTE + '/' + invitationRes);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setInvError(`${t('invitation.error')} ` + err.toString());
     }

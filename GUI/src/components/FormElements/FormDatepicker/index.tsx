@@ -31,7 +31,6 @@ export const FormDatepicker = forwardRef<HTMLDivElement, FormDatepickerProps>(
   (
     {
       label,
-      name,
       hideLabel,
       disabled,
       placeholder,

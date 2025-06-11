@@ -17,7 +17,6 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   (
     {
       label,
-      name,
       maxLength = 2000,
       minRows = 3,
       maxRows = 3,

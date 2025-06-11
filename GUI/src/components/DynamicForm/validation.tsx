@@ -26,7 +26,7 @@ export const validateForm = (
   const errors: KeyValuesMap = {};
 
   for (const key in validator) {
-    if (!validator.hasOwnProperty(key)) {
+    if (!Object.prototype.hasOwnProperty.call(validator, key)) {
       continue;
     }
     const targetField = formFields?.find(

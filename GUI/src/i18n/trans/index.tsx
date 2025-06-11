@@ -1,7 +1,7 @@
 import type { FC, ReactElement } from 'react';
 import { cloneElement } from 'react';
 import {
-  Trans,
+  type Trans,
   type TransProps as I18nTransProps,
   useTranslation,
 } from 'react-i18next';

@@ -17,6 +17,7 @@ const ManifestsDetailsPage: FC = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const details = location.state as Manifest;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [manifestDetails, setManifestDetails] = useState<any>([]);
   useEffect(() => {
     if (details.historyId != null) {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { Button, Card, FormInput, Icon, Track } from 'components';

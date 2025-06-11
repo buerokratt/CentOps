@@ -7,7 +7,7 @@ import checker from 'vite-plugin-checker';
 // import { svgSpritemap } from 'vite-plugin-svg-spritemap';
 import * as path from 'path';
 import * as fs from 'node:fs';
-import chokidar, { FSWatcher } from 'chokidar';
+import chokidar, { type FSWatcher } from 'chokidar';
 import createSvgSpritePlugin from 'vite-plugin-svg-sprite';
 
 const iconsDir = 'src/icons';
@@ -69,8 +69,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
-          const extType = assetInfo.name.split('.').at(1);
-          if (/woff|woff2|eot|ttf/.test(extType)) {
+          const extType = assetInfo.name?.split('.').at(1);
+          if (extType && /woff|woff2|eot|ttf/.test(extType)) {
             return 'assets/fonts/[name][extname]';
           }
           return 'assets/[name]-[hash][extname]';

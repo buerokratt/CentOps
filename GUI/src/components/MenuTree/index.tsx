@@ -42,7 +42,7 @@ export const MenuTree: FC<MenuTreeProps> = ({
     .filter((x) => !x.hidden)
     .map((menuItem) => (
       <li key={menuItem.label[currentlySelectedLanguage]}>
-        {!!menuItem.children ? (
+        {menuItem.children ? (
           <>
             <button
               className={clsx('nav__toggle', {

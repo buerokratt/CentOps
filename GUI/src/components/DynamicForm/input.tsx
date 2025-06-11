@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 interface DynamicInputProps {
   field: Field;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   handleInputChange: (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>

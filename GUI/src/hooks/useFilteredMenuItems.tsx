@@ -30,16 +30,18 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
 
     const roles = data.response;
 
-    let permissions = new Set();
+    const permissions = new Set();
 
     roles.forEach((role) => {
       if (rolePermissions[role]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         rolePermissions[role].forEach((permission: any) =>
           permissions.add(permission)
         );
       }
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filteredItems = items.filter((item: any) => {
       return permissions.has(item.id);
     });

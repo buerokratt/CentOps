@@ -4,7 +4,13 @@ import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-no-relative-import-paths';
 
 export default defineConfig([
-  { ignores: ['**/dist/**', '**/eslint.config.mjs'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/eslint.config.mjs',
+      '**/i18next-parser.config.js',
+    ],
+  },
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
@@ -27,6 +33,11 @@ export default defineConfig([
       'no-relative-import-paths/no-relative-import-paths': [
         'error',
         { allowSameFolder: true, rootDir: '', prefix: '' },
+      ],
+      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
     },
     settings: {

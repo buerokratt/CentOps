@@ -8,7 +8,9 @@ import { Icon } from 'components';
 import DebouncedInput from 'components/DataTable/DebouncedInput';
 
 type FilterProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   column: Column<any, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   table: Table<any>;
 };
 

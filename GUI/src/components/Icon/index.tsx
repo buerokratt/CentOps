@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode, StyleHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import * as AccessibleIcon from '@radix-ui/react-accessible-icon';
 import clsx from 'clsx';
-import icons from 'icons/index.json';
+import type icons from 'icons/index.json';
 import 'components/Icon/Icon.scss';
 
 export type IconName = keyof typeof icons;
