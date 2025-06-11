@@ -56,7 +56,7 @@ services:
     volumes:
      - ./DSL/Resql:/DSL
     networks:
-      - bykstack 
+      - bykstack
 
   resql-users:
     container_name: resql-users
@@ -74,7 +74,7 @@ services:
     volumes:
       - ./DSL/Resql:/DSL
     networks:
-      - bykstack    
+      - bykstack
 
   database:
     container_name: database
@@ -122,7 +122,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     cpus: 0.5 #(Example CPU limit)
-    mem_limit: "512M" #(Example memory limit)    
+    mem_limit: "512M" #(Example memory limit)
 
   tim-postgresql:
     container_name: tim-postgresql
@@ -190,6 +190,8 @@ services:
       vault server -config=/vault/config/config.hcl
     cap_add:
       - IPC_LOCK
+    networks:
+      - bykstack
 
   vault-agent:
     image: hashicorp/vault:1.18
