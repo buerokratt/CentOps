@@ -2,6 +2,7 @@
 const config = {
   defaultNamespace: 'translation',
   createOldCatalogs: false, // save previous translation catalogs to the \_old folder
+  resetDefaultValueLocale: 'en',
 
   lexers: {
     ts: ['JavascriptLexer'],
@@ -12,7 +13,7 @@ const config = {
   locales: ['en', 'et'],
   // An array of the locales in your applications
 
-  keepRemoved: true,
+  keepRemoved: false,
   // Keep keys from the catalog that are no longer in code
 
   keySeparator: false,

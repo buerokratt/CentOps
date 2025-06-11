@@ -1,5 +1,5 @@
 {
-  "button.addClient": "",
+  "button.addClient": "Add Client",
   "button.cancel": "Cancel",
   "button.delete": "Delete",
   "button.deployment": "Deployment",
@@ -10,6 +10,7 @@
   "button.secrets": "Secrets",
   "common.off": "Off",
   "common.on": "On",
+  "dialog.confirmChanges.description": "Are you sure you want to save changes?",
   "dialog.confirmChanges.title": "Confirm changes",
   "dialog.deleteCertificate.description": "Are you sure you want to delete the certificate?",
   "dialog.deleteCertificate.title": "Delete certificate",
@@ -103,7 +104,6 @@
   "manifest.updateManifest": "",
   "manifest.updatePublishSuccess": "",
   "manifest.updateRejectSuccess": "",
-  "menu.clients": "",
   "menu.history": "",
   "menu.manifest": "",
   "menu.newManifests": "",

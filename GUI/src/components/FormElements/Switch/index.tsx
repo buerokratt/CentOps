@@ -23,8 +23,8 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
   ) => {
     const id = useId();
     const { t } = useTranslation();
-    const onValueLabel = onLabel || t('common.on');
-    const offValueLabel = offLabel || t('common.off');
+    const onValueLabel = onLabel || t('common.on', { defaultValue: 'On' });
+    const offValueLabel = offLabel || t('common.off', { defaultValue: 'Off' });
 
     return (
       <div

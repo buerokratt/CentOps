@@ -4,11 +4,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
-// import { svgSpritemap } from 'vite-plugin-svg-spritemap';
+import VitePluginSvgSpritemap from '@spiriit/vite-plugin-svg-spritemap';
 import * as path from 'path';
 import * as fs from 'node:fs';
 import chokidar, { type FSWatcher } from 'chokidar';
-import createSvgSpritePlugin from 'vite-plugin-svg-sprite';
 
 const iconsDir = 'src/icons';
 
@@ -24,14 +23,20 @@ export default defineConfig({
       typescript: true,
     }),
     tsconfigPaths(),
-    /*svgSpritemap({
-      pattern: `${iconsDir}/!*.svg`,
-      filename: 'icons.svg',
-      currentColor: true,
-      emit: true,
-    }),*/
-    createSvgSpritePlugin({
-      include: `${iconsDir}/*.svg`,
+    VitePluginSvgSpritemap(`${iconsDir}/*.svg`, {
+      route: 'icons',
+      prefix: false,
+      injectSvgOnDev: true,
+      svgo: {
+        plugins: [
+          {
+            name: 'convertColors',
+            params: {
+              currentColor: true,
+            },
+          },
+        ],
+      },
     }),
     iconsJsonList(),
   ],

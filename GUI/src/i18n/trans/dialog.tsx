@@ -7,7 +7,7 @@ export const TransDialog = createTrans({
   ),
   confirmChangesDescription: (
     <Trans
-      i18nKey="dialog.deleteCertificate.description"
+      i18nKey="dialog.confirmChanges.description"
       defaults="Are you sure you want to save changes?"
     />
   ),
