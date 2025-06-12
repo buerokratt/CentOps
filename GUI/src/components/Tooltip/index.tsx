@@ -5,19 +5,20 @@ import './Tooltip.scss';
 
 type TooltipProps = {
   content: ReactNode;
-}
+};
 
-export const Tooltip: FC<PropsWithChildren<TooltipProps>> = ({ content, children }) => {
+export const Tooltip: FC<PropsWithChildren<TooltipProps>> = ({
+  content,
+  children,
+}) => {
   return (
     <RadixTooltip.Provider delayDuration={100}>
       <RadixTooltip.Root>
-        <RadixTooltip.Trigger asChild>
-          {children}
-        </RadixTooltip.Trigger>
+        <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
         <RadixTooltip.Portal>
-          <RadixTooltip.Content className='tooltip'>
+          <RadixTooltip.Content className="tooltip">
             {content}
-            <RadixTooltip.Arrow className='tooltip__arrow' />
+            <RadixTooltip.Arrow className="tooltip__arrow" />
           </RadixTooltip.Content>
         </RadixTooltip.Portal>
       </RadixTooltip.Root>

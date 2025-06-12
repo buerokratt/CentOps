@@ -1,21 +1,27 @@
 import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import tsEslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-no-relative-import-paths';
 
 export default defineConfig([
-  { ignores: ['**/dist/**', '**/eslint.config.mjs'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/eslint.config.mjs',
+      '**/i18next-parser.config.js',
+    ],
+  },
   eslint.configs.recommended,
-  tseslint.configs.recommended,
+  tsEslint.configs.recommended,
   {
     plugins: {
-      '@typescript-eslint': tseslint.plugin,
+      '@typescript-eslint': tsEslint.plugin,
       'no-relative-import-paths': importPlugin,
     },
     languageOptions: {
-      parser: tseslint.parser,
+      parser: tsEslint.parser,
       parserOptions: {
-        project: ['./tsconfig.json', './GUI.*/tsconfig.json'],
+        project: ['./tsconfig.json'],
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
@@ -27,6 +33,11 @@ export default defineConfig([
       'no-relative-import-paths/no-relative-import-paths': [
         'error',
         { allowSameFolder: true, rootDir: '', prefix: '' },
+      ],
+      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
     },
     settings: {

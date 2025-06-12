@@ -4,10 +4,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
-import { svgSpritemap } from 'vite-plugin-svg-spritemap';
+import VitePluginSvgSpritemap from '@spiriit/vite-plugin-svg-spritemap';
 import * as path from 'path';
 import * as fs from 'node:fs';
-import chokidar, { FSWatcher } from 'chokidar';
+import chokidar, { type FSWatcher } from 'chokidar';
 
 const iconsDir = 'src/icons';
 
@@ -23,11 +23,20 @@ export default defineConfig({
       typescript: true,
     }),
     tsconfigPaths(),
-    svgSpritemap({
-      pattern: `${iconsDir}/*.svg`,
-      filename: 'icons.svg',
-      currentColor: true,
-      emit: true,
+    VitePluginSvgSpritemap(`${iconsDir}/*.svg`, {
+      route: 'icons',
+      prefix: false,
+      injectSvgOnDev: true,
+      svgo: {
+        plugins: [
+          {
+            name: 'convertColors',
+            params: {
+              currentColor: true,
+            },
+          },
+        ],
+      },
     }),
     iconsJsonList(),
   ],
@@ -47,7 +56,30 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: '',
-        loadPaths: [path.resolve(__dirname, 'src')],
+        loadPaths: [path.resolve(__dirname, 'src'), 'node_modules'],
+      },
+    },
+  },
+  optimizeDeps: {
+    include: ['@fontsource/roboto'],
+  },
+  resolve: {
+    alias: {
+      // Create alias for @fontsource to resolve font files correctly
+      '~@fontsource': path.resolve(__dirname, 'node_modules/@fontsource'),
+    },
+  },
+
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          const extType = assetInfo.name?.split('.').at(1);
+          if (extType && /woff|woff2|eot|ttf/.test(extType)) {
+            return 'assets/fonts/[name][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        },
       },
     },
   },
@@ -63,8 +95,6 @@ function iconsJsonList() {
 
   function generateJson(filename?: string) {
     if (filename && path.extname(filename) !== '.svg') return;
-
-    if (filename) console.log(path.extname(filename));
 
     if (!fs.existsSync(absoluteInputPath)) return;
 

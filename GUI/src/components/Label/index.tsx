@@ -7,7 +7,7 @@ import { Tooltip } from 'components';
 import './Label.scss';
 
 type LabelProps = {
-  type?: 'waring' | 'error' | 'info' | 'success' | 'warning-dark' | 'disabled';
+  type?: 'warning' | 'error' | 'info' | 'success' | 'warning-dark' | 'disabled';
   tooltip?: ReactNode;
 };
 

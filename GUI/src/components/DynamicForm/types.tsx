@@ -1,4 +1,3 @@
-
 export interface DynamicFormConfig {
   title: string;
   vaildatorSource: string;

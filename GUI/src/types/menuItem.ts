@@ -1,6 +1,5 @@
-
-export  interface TranslatedLabel {
-  [lang: string] : string;
+export interface TranslatedLabel {
+  [lang: string]: string;
 }
 
 export interface MenuItem {
@@ -10,5 +9,5 @@ export interface MenuItem {
   target?: '_blank' | '_self';
   children?: MenuItem[];
   hidden?: boolean;
-  count?: number
+  count?: number;
 }

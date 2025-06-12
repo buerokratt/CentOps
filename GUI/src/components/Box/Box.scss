@@ -16,6 +16,11 @@
   }
 
   &--default {
+    background-color: get-color(white);
+    border-color: get-color(black-coral-3);
+  }
+
+  &--default {
     background-color: get-color(black-coral-1);
     border-color: get-color(black-coral-3);
   }
@@ -43,5 +48,10 @@
   &--gray {
     background-color: get-color(black-coral-1);
     border-color: get-color(black-coral-3);
+  }
+
+  &.shadow {
+    border: none;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   }
 }

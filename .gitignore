@@ -3,6 +3,7 @@
 /TechStack
 /tim-db
 /docker
+.idea
 .DS_Store
 .vscode
 .env

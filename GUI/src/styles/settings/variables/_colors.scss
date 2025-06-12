@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 
 // Color codes
 $veera-colors: (
@@ -6,11 +6,11 @@ $veera-colors: (
   black-coral-0: #f0f0f2,
   black-coral-1: #e1e2e5,
   black-coral-2: #d2d3d8,
-  black-coral-3: #C0C2C9,
+  black-coral-3: #c0c2c9,
   black-coral-4: #b5b6be,
   black-coral-5: #a6a8b1,
   black-coral-6: #9799a4,
-  black-coral-7: #878A97,
+  black-coral-7: #878a97,
   black-coral-8: #7a7c8a,
   black-coral-9: #6b6e7d,
   black-coral-10: #5d6071,
@@ -152,8 +152,8 @@ $veera-colors: (
     --veera-color-#{'' + $name}: #{$color};
   }
   @each $name, $color in $veera-colors {
-    --veera-color-rgb-#{'' + $name}: #{color.channel($color, "red", $space: rgb)
-                                       color.channel($color, "green", $space: rgb)
-                                       color.channel($color, "blue", $space: rgb)};
+    --veera-color-rgb-#{'' + $name}: #{color.channel($color, 'red', $space: rgb)
+      color.channel($color, 'green', $space: rgb)
+      color.channel($color, 'blue', $space: rgb)};
   }
 }

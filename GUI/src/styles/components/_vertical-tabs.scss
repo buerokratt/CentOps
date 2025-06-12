@@ -6,7 +6,7 @@
   border-radius: 4px;
   border: 1px solid get-color(black-coral-2);
   background-color: get-color(white);
-  
+
   &__column {
     background-color: get-color(black-coral-0);
     flex-direction: column;
@@ -33,7 +33,7 @@
     flex-direction: column;
     background-color: get-color(white);
 
-    &[data-state="inactive"] {
+    &[data-state='inactive'] {
       display: none;
     }
   }
@@ -77,7 +77,7 @@
     line-height: 24px;
     color: get-color(sapphire-blue-20);
 
-    &[aria-selected=true] {
+    &[aria-selected='true'] {
       color: get-color(sapphire-blue-10);
       background-color: get-color(white);
     }

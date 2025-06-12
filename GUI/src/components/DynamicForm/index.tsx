@@ -72,7 +72,7 @@ export const DynamicForm: FC<DynamicFormProps> = ({
           setValidator(validator.data);
         }
       }
-    } catch (e) {
+    } catch {
       setError(true);
     }
   };
@@ -80,11 +80,12 @@ export const DynamicForm: FC<DynamicFormProps> = ({
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    let { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
     if (e.target.type === 'checkbox') {
       value = formValues[name] === 'on' ? 'off' : 'on';
     }
-    setFormValues((prevState: any) => ({
+    setFormValues((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -161,7 +162,7 @@ export const DynamicForm: FC<DynamicFormProps> = ({
       <Track direction="vertical" align="stretch" justify="center" gap={16}>
         {!hideTitle && <h5>{t(formConfig.title)}</h5>}
         <Track direction="vertical" align="stretch" gap={8}>
-          {formConfig.fields.map((field: any) => (
+          {formConfig.fields.map((field) => (
             <Track key={field.id} direction="vertical" align="right" gap={8}>
               <DynamicInput
                 field={field}

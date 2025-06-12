@@ -10,7 +10,7 @@
     list-style-type: none;
   }
   &__tab-btn {
-    padding: get-spacing("haapsalu");
+    padding: get-spacing('haapsalu');
     font-size: 16px;
     color: get-color(sapphire-blue-10);
     border: 1px solid transparent;
@@ -28,7 +28,7 @@
 
   &__tab-content {
     background-color: get-color(white);
-    padding: get-spacing("haapsalu");
+    padding: get-spacing('haapsalu');
     border: 1px solid get-color(black-coral-2);
     border-radius: 4px;
   }

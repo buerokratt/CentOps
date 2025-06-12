@@ -1,24 +1,26 @@
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 import * as RadixDialog from '@radix-ui/react-dialog';
+import { type DialogProps as RadixDialogProps } from '@radix-ui/react-dialog';
 import { MdOutlineClose } from 'react-icons/md';
 
 import { Icon, Track } from 'components';
 import './Dialog.scss';
 
 type DialogProps = {
-  title: string;
+  title: ReactNode;
   footer?: ReactNode;
   onClose: () => void;
-};
+} & RadixDialogProps;
 
 export const Dialog: FC<PropsWithChildren<DialogProps>> = ({
   title,
   footer,
   onClose,
   children,
+  ...rest
 }) => {
   return (
-    <RadixDialog.Root defaultOpen={true} onOpenChange={onClose}>
+    <RadixDialog.Root defaultOpen={true} onOpenChange={onClose} {...rest}>
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="dialog__overlay" />
         <RadixDialog.Content className="dialog">

@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { Button, Card, DataTable, Icon, Track } from 'components';
 import { useMemo, useState } from 'react';
 import type { Client } from 'types/client';
@@ -7,8 +6,10 @@ import {
   type PaginationState,
   type SortingState,
 } from '@tanstack/react-table';
+import { TransButton } from 'i18n/trans/button';
+import { TransNav } from 'i18n/trans/nav';
 
-export const ClientsListPage = () => {
+export const ClientListPage = () => {
   const [clients] = useState<Client[]>([
     {
       id: '1',
@@ -76,13 +77,15 @@ export const ClientsListPage = () => {
     []
   );
 
-  const { t } = useTranslation();
-
   return (
     <>
-      <Track direction="horizontal" justify="between">
-        <h2>{t('menu.clients')}</h2>
-        <Button appearance="primary">Add client</Button>
+      <Track justify="between">
+        <h2>
+          <TransNav i18nKey="clients" />
+        </h2>
+        <Button appearance="primary">
+          <TransButton i18nKey="addClient" />
+        </Button>
       </Track>
 
       <Card>

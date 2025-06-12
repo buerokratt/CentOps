@@ -44,7 +44,9 @@ import { Filter } from 'components/DataTable/Filter';
 import 'components/DataTable/DataTable.scss';
 
 type DataTableProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<any, any>[];
   tableBodyPrefix?: ReactNode;
   isClientSide?: boolean;
@@ -63,7 +65,9 @@ type DataTableProps = {
   setColumnVisibility?: Dispatch<SetStateAction<VisibilityState>>;
   disableHead?: boolean;
   pagesCount?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meta?: TableMeta<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selectedRow?: (row: Row<any>) => boolean;
 };
 
@@ -74,7 +78,7 @@ type ColumnMeta = {
   };
 };
 
-type CustomColumnDef = ColumnDef<any> & ColumnMeta;
+type CustomColumnDef<TData extends RowData> = ColumnDef<TData> & ColumnMeta;
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -91,10 +95,11 @@ declare module '@tanstack/react-table' {
     getRowStyles: (row: Row<TData>) => CSSProperties;
   }
   class Column<TData extends RowData> {
-    columnDef: CustomColumnDef;
+    columnDef: CustomColumnDef<TData>;
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
   addMeta({

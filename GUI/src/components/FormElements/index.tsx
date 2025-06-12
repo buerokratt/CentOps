@@ -1,3 +1,4 @@
+export { FormElement } from 'components/FormElements/FormElement';
 export { FormAutocomplete } from 'components/FormElements/FormAutocomplete';
 export { FormInput } from 'components/FormElements/FormInput';
 export { FormTextarea } from 'components/FormElements/FormTextarea';

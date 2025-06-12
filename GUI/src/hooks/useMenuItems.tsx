@@ -64,17 +64,20 @@ const useMenuItems = (count?: CountConf) => {
   return items;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getMenuCache(): any {
   const cached = getCache();
   if (Array.isArray(cached) && cached.length > 0) return cached;
   return null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getCache(): any {
   const cache = localStorage.getItem('mainmenu-cache') ?? '[]';
   return JSON.parse(cache);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setCache(res: any) {
   localStorage.setItem('mainmenu-cache', JSON.stringify(res));
 }

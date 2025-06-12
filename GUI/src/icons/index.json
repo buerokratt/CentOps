@@ -1,7 +1,13 @@
 {
   "certificate-add": "certificate-add.svg",
+  "check": "check.svg",
+  "close": "close.svg",
+  "danger": "danger.svg",
   "delete": "delete.svg",
   "edit": "edit.svg",
+  "flag": "flag.svg",
   "key": "key.svg",
-  "pods": "pods.svg"
+  "manifest": "manifest.svg",
+  "pods": "pods.svg",
+  "warning": "warning.svg"
 }
