@@ -10,7 +10,7 @@ export const Section = forwardRef<HTMLElement, PropsWithChildren>(
         {children}
       </section>
     );
-  },
+  }
 );
 
 Section.displayName = 'section';

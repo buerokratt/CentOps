@@ -1,3 +1,3 @@
 export interface CountConf {
-   [key: string]: number
+  [key: string]: number;
 }
