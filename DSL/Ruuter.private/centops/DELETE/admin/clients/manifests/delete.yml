@@ -1,0 +1,43 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Delete manifest"
+  method: delete
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: clientId
+        type: string
+        description: "Unique identifier of the client"
+      - field: manifestId
+        type: string
+        description: "Manifest Id as 'uuid'"
+
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.params.manifestId == null || incoming.params.clientId == null}
+      next: return_incorrect_request
+  next: delete_manifest
+
+delete_manifest:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/delete-manifest"
+    body:
+      manifest_id: ${incoming.params.manifestId}
+      client_id: ${incoming.params.clientId}
+  result: results
+  next: return_result
+
+return_result:
+  wrapper: false
+  status: 200
+  return: ${results.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter missing: manifestId, clientId"
+  next: end

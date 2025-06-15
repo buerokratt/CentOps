@@ -1,8 +1,7 @@
 UPDATE manifests
-SET buerokratt_version = :buerokratt_version,
-    components = :components::jsonb,
-    extra_configs = :extra_configs::jsonb,
-    security_configs = :security_configs::jsonb,
-    updated_at = now(),
-    status = :status::manifest_status
-WHERE manifest_id = :manifest_id::uuid
+SET
+    name = :name,
+    helm_version = :helm_version,
+    helm_values = :helm_values,
+    updated_at = NOW()
+WHERE client_id = :client_id AND manifest_id = :manifest_id::uuid
