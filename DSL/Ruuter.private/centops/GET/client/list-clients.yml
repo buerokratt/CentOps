@@ -1,0 +1,20 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "List all clients"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+get_clients:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-client-list"
+  result: clients_result
+  next: return_clients
+
+return_clients:
+  status: 200
+  return: ${clients_result.response.body}
+  next: end
