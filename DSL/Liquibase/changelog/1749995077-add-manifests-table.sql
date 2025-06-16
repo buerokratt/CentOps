@@ -8,15 +8,15 @@ DROP TABLE IF EXISTS
     CASCADE;
 
 CREATE TABLE manifests (
-                           manifest_id uuid UNIQUE NOT NULL DEFAULT uuid_generate_v4 (),
+                           manifest_id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
                            name VARCHAR (100) NOT NULL,
                            client_id TEXT NOT NULL,
                            helm_version TEXT NOT NULL,
                            helm_values TEXT NOT NULL,
                            created_at TIMESTAMP DEFAULT NOW(),
                            updated_at TIMESTAMP,
-                           deleted BOOLEAN NOT NULL DEFAULT FALSE,
-                           PRIMARY KEY (manifest_id),
-                           UNIQUE (client_id, manifest_id, helm_version)
+                           deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 CREATE INDEX idx_manifests_client_id ON manifests(client_id);
+CREATE INDEX idx_manifests_not_deleted ON manifests(deleted) WHERE deleted = false;
+CREATE UNIQUE INDEX uniq_client_helm_version_active ON manifests(client_id, helm_version) WHERE deleted = false;
