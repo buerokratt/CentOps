@@ -16,13 +16,13 @@ import { CardFooter, CardHeader } from 'components/Card';
 import { formatDate } from 'utils/date';
 import { FormElement } from 'components/FormElements';
 import { TransLabel } from 'i18n/trans/label';
-import { GenerateCertificateDialog } from 'pages/clients/ClientDetails/GenerateCertificateDialog';
-import { DeleteCertificateDialog } from 'pages/clients/ClientDetails/DeleteCertificateDialog';
-import { ConfirmChangesDialog } from 'pages/clients/ClientDetails/ConfirmChangesDialog';
+import { GenerateCertificateDialog } from 'pages/client/details/GenerateCertificateDialog';
+import { DeleteCertificateDialog } from 'pages/client/details/DeleteCertificateDialog';
+import { ConfirmChangesDialog } from 'pages/client/details/ConfirmChangesDialog';
 
 export const ClientDetailsPage = () => {
-  const { id } = useParams<{ id: 'create' | string }>();
-  const isCreateMode = id === 'create';
+  const { clientId } = useParams<{ clientId: 'create' | string }>();
+  const isCreateMode = clientId === 'create';
   const { register, control } = useForm({
     defaultValues: {
       name: '',
@@ -49,7 +49,11 @@ export const ClientDetailsPage = () => {
       <ConfirmChangesDialog />
       <Track justify="between">
         <h2>
-          <TransTitle i18nKey="client" values={{ client: 'A' }} />
+          {isCreateMode ? (
+            <TransTitle i18nKey="clientAdd" />
+          ) : (
+            <TransTitle i18nKey="client" values={{ client: 'A' }} />
+          )}
         </h2>
       </Track>
 

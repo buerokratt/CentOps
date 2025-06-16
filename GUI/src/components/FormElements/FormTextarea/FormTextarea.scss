@@ -6,7 +6,7 @@
 .textarea {
   $self: &;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: get-spacing(paldiski);
   width: 100%;
 

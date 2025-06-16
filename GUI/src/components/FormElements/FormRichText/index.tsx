@@ -1,16 +1,17 @@
 import type { FC } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill, { type ReactQuillProps } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './FormRichText.scss';
 
-type FormRichTextProps = {
+interface FormRichTextProps extends ReactQuillProps {
   readonly defaultValue?: string;
   onChange(value: string | null): void;
-};
+}
 
 export const FormRichText: FC<FormRichTextProps> = ({
   defaultValue,
   onChange,
+  ...rest
 }) => {
   const modules = {
     toolbar: [
@@ -36,6 +37,7 @@ export const FormRichText: FC<FormRichTextProps> = ({
         }}
         modules={modules}
         style={{ width: '100%' }}
+        {...rest}
       />
     </>
   );

@@ -18,18 +18,34 @@ import ManifestsUpdatesPage from 'pages/manifests/ManifestsUpdatesPage';
 import ManifestsHistoryPage from 'pages/manifests/ManifestsHistoryPage';
 import ManifestsHistoryDetailsPage from 'pages/manifests/ManifestsDetailsPage';
 import CreateEditManifestPage from 'pages/manifests/CreateEditManifestPage';
-import { ClientListPage } from 'pages/clients/ClientListPage';
-import { ClientDetailsPage } from 'pages/clients/ClientDetailsPage';
+import { ClientListPage } from 'pages/client/ClientListPage';
+import { ClientDetailsPage } from 'pages/client/ClientDetailsPage';
+import { ClientSecretListPage } from 'pages/client/ClientSecretListPage';
+import { ClientSecretDetailsPage } from 'pages/client/ClientSecretDetailsPage';
+import { ClientSecretDiffPage } from 'pages/client/ClientSecretDiffPage';
 
 const RootComponent: FC = () => {
   return (
     <Routes>
       <Route element={<Layout navigation={<MainNavigation />} />}>
-        <Route path={ROUTES.CLIENTS_ROUTE} element={<ClientListPage />} />
+        <Route path={ROUTES.CLIENTS_ROUTE} Component={ClientListPage} />
         <Route
           path={ROUTES.CLIENTS_CREATE_EDIT_ROUTE}
-          element={<ClientDetailsPage />}
+          Component={ClientDetailsPage}
         />
+        <Route
+          path={ROUTES.CLIENTS_SECRETS_ROUTE}
+          Component={ClientSecretListPage}
+        />
+        <Route
+          path={ROUTES.CLIENTS_SECRETS_EDIT_ROUTE}
+          Component={ClientSecretDetailsPage}
+        />
+        <Route
+          path={ROUTES.CLIENTS_SECRETS_DIFF_ROUTE}
+          Component={ClientSecretDiffPage}
+        />
+
         <Route
           path={ROUTES.INVITATION_ROUTE}
           element={<CreateInvitationPage />}
