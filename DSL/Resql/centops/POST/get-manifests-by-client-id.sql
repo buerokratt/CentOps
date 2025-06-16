@@ -4,4 +4,4 @@ SELECT manifest_id,
        created_at,
        updated_at
 FROM manifests
-WHERE client_id = :client_id
+WHERE client_id = :client_id AND deleted = false

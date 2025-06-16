@@ -15,7 +15,8 @@ CREATE TABLE manifests (
                            helm_values TEXT NOT NULL,
                            created_at TIMESTAMP DEFAULT NOW(),
                            updated_at TIMESTAMP,
+                           deleted BOOLEAN NOT NULL DEFAULT FALSE,
                            PRIMARY KEY (manifest_id),
-                           UNIQUE (client_id, helm_version)
+                           UNIQUE (client_id, manifest_id, helm_version)
 );
 CREATE INDEX idx_manifests_client_id ON manifests(client_id);

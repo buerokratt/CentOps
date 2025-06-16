@@ -37,9 +37,9 @@ extract_request_params:
     name: ${incoming.body.name}
     helm_version: ${incoming.body.helmVersion}
     helm_values: ${incoming.body.helmValues}
-  next: create_manifest
+  next: update_manifest
 
-create_manifest:
+update_manifest:
   call: http.post
   args:
     url: "[#CENTOPS_RESQL]/update-manifest"
