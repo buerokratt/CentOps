@@ -20,23 +20,6 @@ declaration:
       - field: authentication_certificate
         type: string
 
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
-    headers:
-      cookie: ${incoming.headers.cookie}
-    plaintext: "customJwtCookie"
-  result: res
-  next: check_user_info_response
-
-check_user_info_response:
-  switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
-      next: validate_input
-  next: return_incorrect_request
-
 validate_input:
   switch:
     - condition: ${incoming.body.name == null || incoming.body.kubernetes_cluster_address == null || incoming.body.kubernetes_cluster_namespace == null || incoming.body.hashicorp_vault_token == null || incoming.body.authentication_certificate == null}
@@ -46,14 +29,14 @@ validate_input:
 create_client:
   call: http.post
   args:
-    url: "[#CENTOPS_RESQL]/create-client"
+    url: "[#CENTOPS_RESQL]/create-or-update-client"
     body:
       name: ${incoming.body.name}
       kubernetes_cluster_address: ${incoming.body.kubernetes_cluster_address}
       kubernetes_cluster_namespace: ${incoming.body.kubernetes_cluster_namespace}
       hashicorp_vault_token: ${incoming.body.hashicorp_vault_token}
       authentication_certificate: ${incoming.body.authentication_certificate}
-      created: ${now()}
+      created: ${new Date().toISOString()}
   result: create_result
   next: return_created_client
 
@@ -65,9 +48,4 @@ return_created_client:
 return_bad_request:
   status: 400
   return: "All fields are required"
-  next: end
-
-return_incorrect_request:
-  status: 400
-  return: "Incorrect request"
   next: end

@@ -8,23 +8,6 @@ declaration:
   namespace: centops
   endpoint: /clients/{name}
 
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
-    headers:
-      cookie: ${incoming.headers.cookie}
-    plaintext: "customJwtCookie"
-  result: res
-  next: check_user_info_response
-
-check_user_info_response:
-  switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
-      next: validate_name
-  next: return_incorrect_request
-
 validate_name:
   switch:
     - condition: ${incoming.params.name == null}
@@ -37,7 +20,7 @@ delete_client:
     url: "[#CENTOPS_RESQL]/delete-client"
     body:
       name: ${incoming.params.name}
-      created: ${now()}
+      created: ${new Date().toISOString()}
   result: delete_result
   next: return_deleted_client
 
@@ -49,9 +32,4 @@ return_deleted_client:
 return_bad_request:
   status: 400
   return: "Client name is required"
-  next: end
-
-return_incorrect_request:
-  status: 400
-  return: "Incorrect request"
   next: end

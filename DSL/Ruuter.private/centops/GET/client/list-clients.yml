@@ -12,7 +12,6 @@ get_clients:
   args:
     url: "[#CENTOPS_RESQL]/get-client-list"
   result: clients_result
-  next: return_clients
 
 return_clients:
   status: 200

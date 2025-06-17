@@ -2,7 +2,6 @@ SELECT id,
        name,
        kubernetes_cluster_address,
        kubernetes_cluster_namespace,
-       hashicorp_vault_token,
        authentication_certificate,
        created
 FROM clients

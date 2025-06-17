@@ -27,7 +27,9 @@ assign_parameters:
 send_request:
   call: http.get
   args:
-    url: "[#CENTOPS_RESQL]/get-client?name=${name}"
+    url: "[#CENTOPS_RESQL]/get-client"
+    query:
+      name: ${name}
   result: client_result
   next: return_client
 
