@@ -23,27 +23,38 @@ import { ClientDetailsPage } from 'pages/client/ClientDetailsPage';
 import { ClientSecretListPage } from 'pages/client/ClientSecretListPage';
 import { ClientSecretDetailsPage } from 'pages/client/ClientSecretDetailsPage';
 import { ClientSecretDiffPage } from 'pages/client/ClientSecretDiffPage';
+import { UserListPage } from 'pages/user/UserListPage';
+import { UserDetailsPage } from 'pages/user/UserDetailsPage';
+import { ClusterListPage } from 'pages/cluster/ClusterListPage';
+import { ClusterDetailsPage } from 'pages/cluster/ClusterDetailsPage';
 
 const RootComponent: FC = () => {
   return (
     <Routes>
       <Route element={<Layout navigation={<MainNavigation />} />}>
-        <Route path={ROUTES.CLIENTS_ROUTE} Component={ClientListPage} />
+        <Route path={ROUTES.CLIENT_LIST_ROUTE} Component={ClientListPage} />
         <Route
-          path={ROUTES.CLIENTS_CREATE_EDIT_ROUTE}
+          path={ROUTES.CLIENT_DETAILS_ROUTE}
           Component={ClientDetailsPage}
         />
         <Route
-          path={ROUTES.CLIENTS_SECRETS_ROUTE}
+          path={ROUTES.CLIENT_SECRETS_ROUTE}
           Component={ClientSecretListPage}
         />
         <Route
-          path={ROUTES.CLIENTS_SECRETS_EDIT_ROUTE}
+          path={ROUTES.CLIENT_SECRETS_DETAILS_ROUTE}
           Component={ClientSecretDetailsPage}
         />
         <Route
           path={ROUTES.CLIENTS_SECRETS_DIFF_ROUTE}
           Component={ClientSecretDiffPage}
+        />
+        <Route path={ROUTES.USER_LIST_ROUTE} Component={UserListPage} />
+        <Route path={ROUTES.USER_DETAILS_ROUTE} Component={UserDetailsPage} />
+        <Route path={ROUTES.CLUSTER_LIST_ROUTE} Component={ClusterListPage} />
+        <Route
+          path={ROUTES.CLUSTER_DETAILS_ROUTE}
+          Component={ClusterDetailsPage}
         />
 
         <Route

@@ -20,7 +20,7 @@ export const ClientSecretDiffPage = () => {
       <Card
         footer={
           <Track justify="between">
-            <Link to={ROUTES.CLIENTS_SECRETS_EDIT_ROUTE}>
+            <Link to={ROUTES.CLIENT_SECRETS_DETAILS_ROUTE}>
               <Button appearance="primary" outlined>
                 <TransButton i18nKey="backToSecrets" />
               </Button>

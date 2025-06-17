@@ -3,7 +3,9 @@ import { Trans } from 'react-i18next';
 
 export const TransButton = createTrans({
   addClient: <Trans i18nKey="button.addClient" defaults="Add Client" />,
+  addCluster: <Trans i18nKey="button.addCluster" defaults="Add cluster" />,
   addSecret: <Trans i18nKey="button.addSecret" defaults="Add Secret" />,
+  addUser: <Trans i18nKey="button.addUser" defaults="Add User" />,
   cancel: <Trans i18nKey="button.cancel" defaults="Cancel" />,
   backToSecrets: (
     <Trans i18nKey="button.backToSecrets" defaults="Back to secrets" />
@@ -23,4 +25,7 @@ export const TransButton = createTrans({
   pods: <Trans i18nKey="button.pods" defaults="Pods" />,
   save: <Trans i18nKey="button.save" defaults="Save" />,
   secrets: <Trans i18nKey="button.secrets" defaults="Secrets" />,
+  testConnection: (
+    <Trans i18nKey="button.testConnection" defaults="Test connection" />
+  ),
 });
