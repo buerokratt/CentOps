@@ -34,7 +34,12 @@ export const Icon = forwardRef<HTMLSpanElement, IconProps>(
               xmlns="http://www.w3.org/2000/svg"
               xmlnsXlink="http://www.w3.org/1999/xlink"
             >
-              <use xlinkHref={`/icons#${name}`} />
+              <use
+                xlinkHref={clsx({
+                  '/__spritemap': process.env.NODE_ENV === 'production',
+                  [`#${name}`]: true,
+                }).replace(/\s/g, '')}
+              />
             </svg>
           ) : (
             icon

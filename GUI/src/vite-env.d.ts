@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+import 'virtual:svg-spritemap';
 
 declare namespace NodeJS {
   interface ProcessEnv {

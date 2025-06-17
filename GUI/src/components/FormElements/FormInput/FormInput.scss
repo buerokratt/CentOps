@@ -69,6 +69,10 @@
     &:read-only {
       border-color: transparent;
       font-weight: 500;
+      cursor: default;
+      &:focus {
+        border-color: transparent;
+      }
     }
 
     &::placeholder {

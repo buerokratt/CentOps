@@ -3,5 +3,9 @@ import { Trans } from 'react-i18next';
 
 export const TransTitle = createTrans({
   client: <Trans i18nKey="title.client" defaults="Client {{client}}" />,
+  clientAdd: <Trans i18nKey="title.clientAdd" defaults="Add client" />,
   certificate: <Trans i18nKey="title.certificate" defaults="Certificate" />,
+  secretAdd: <Trans i18nKey="title.secretAdd" defaults="Add secret" />,
+  secretEdit: <Trans i18nKey="title.secretEdit" defaults="Edit secret" />,
+  secretDiff: <Trans i18nKey="title.secretDiff" defaults="Diff vaade" />,
 });

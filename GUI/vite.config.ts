@@ -24,7 +24,6 @@ export default defineConfig({
     }),
     tsconfigPaths(),
     VitePluginSvgSpritemap(`${iconsDir}/*.svg`, {
-      route: 'icons',
       prefix: false,
       injectSvgOnDev: true,
       svgo: {

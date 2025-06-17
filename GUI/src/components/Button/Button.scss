@@ -31,7 +31,7 @@
   }
 
   &--primary {
-    background-color: get-color(sapphire-blue-10);
+    background-color: get-color(primary);
 
     &:hover,
     &:active {
@@ -115,7 +115,7 @@
   }
 
   &--error {
-    background-color: get-color(jasper-10);
+    background-color: get-color(error);
 
     &:hover,
     &:active {

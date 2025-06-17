@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { TransNav } from 'i18n/trans/nav';
+import { TransTableHead } from 'i18n/trans/table';
 
 export const ClientListPage = () => {
   const [clients] = useState<Client[]>([
@@ -31,22 +32,22 @@ export const ClientListPage = () => {
     () => [
       clientColumnHelper.accessor('name', {
         id: 'name',
-        header: 'Client',
+        header: () => <TransTableHead i18nKey="client" />,
         cell: (message) => message.getValue(),
       }),
       clientColumnHelper.accessor('name', {
         id: 'nameSpace',
-        header: 'Name space',
+        header: () => <TransTableHead i18nKey="nameSpace" />,
         cell: (message) => message.getValue(),
       }),
       clientColumnHelper.accessor('name', {
         id: 'clusterIp',
-        header: 'Cluster IP',
+        header: () => <TransTableHead i18nKey="clusterIp" />,
         cell: (message) => message.getValue(),
       }),
       clientColumnHelper.accessor('name', {
-        id: 'lastUpdate',
-        header: 'Last update',
+        id: 'updatedAt',
+        header: () => <TransTableHead i18nKey="updatedAt" />,
         cell: (message) => message.getValue(),
       }),
       clientColumnHelper.accessor('id', {
@@ -60,15 +61,15 @@ export const ClientListPage = () => {
           <Track gap={8}>
             <Button appearance="text">
               <Icon name="pods" />
-              Pods
+              <TransButton i18nKey="pods" />
             </Button>
             <Button appearance="text">
               <Icon name="edit" />
-              Edit
+              <TransButton i18nKey="edit" />
             </Button>
             <Button appearance="text">
               <Icon name="delete" />
-              Delete
+              <TransButton i18nKey="delete" />
             </Button>
           </Track>
         ),
@@ -80,9 +81,9 @@ export const ClientListPage = () => {
   return (
     <>
       <Track justify="between">
-        <h2>
+        <h1>
           <TransNav i18nKey="clients" />
-        </h2>
+        </h1>
         <Button appearance="primary">
           <TransButton i18nKey="addClient" />
         </Button>

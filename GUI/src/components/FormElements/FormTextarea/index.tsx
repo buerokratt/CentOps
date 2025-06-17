@@ -1,13 +1,14 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
 import { forwardRef, useId, useState } from 'react';
 import type { TextareaAutosizeProps } from 'react-textarea-autosize';
 import TextareaAutosize from 'react-textarea-autosize';
 import clsx from 'clsx';
 
 import './FormTextarea.scss';
+import { renderToString } from 'react-dom/server';
 
 type TextareaProps = TextareaAutosizeProps & {
-  label: string;
+  label: ReactNode;
   name: string;
   hideLabel?: boolean;
   showMaxLength?: boolean;
@@ -60,7 +61,7 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             maxRows={maxRows}
             ref={ref}
             defaultValue={defaultValue}
-            aria-label={hideLabel ? label : undefined}
+            aria-label={hideLabel ? renderToString(label) : undefined}
             onChange={(e) => {
               if (onChange) onChange(e);
               handleOnChange(e);
