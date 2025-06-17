@@ -11,6 +11,7 @@ export const TransField = createTrans({
   clientName: <Trans i18nKey="field.clientName" defaults="Client name" />,
   clusterIp: <Trans i18nKey="field.clusterIp" defaults="Cluster IP" />,
   clusterName: <Trans i18nKey="field.clusterName" defaults="Cluster name" />,
+  content: <Trans i18nKey="field.content" defaults="Content" />,
   createdAt: <Trans i18nKey="field.createdAt" defaults="Created" />,
   firstName: <Trans i18nKey="field.firstName" defaults="First name" />,
   lastName: <Trans i18nKey="field.lastName" defaults="Last name" />,

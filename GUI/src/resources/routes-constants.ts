@@ -12,6 +12,8 @@ export const ROUTES = {
   USER_DETAILS_ROUTE: '/centops/users/:userId',
   CLUSTER_LIST_ROUTE: '/centops/clusters',
   CLUSTER_DETAILS_ROUTE: '/centops/clusters/:clusterId',
+  DOCUMENTATION_ROUTE: '/centops/documentation',
+  DOCUMENTATION_EDIT_ROUTE: '/centops/documentation/edit',
 
   INVITATION_ROUTE: '/centops/invitation',
   OVERVIEW_ROUTE: '/centops/overview',

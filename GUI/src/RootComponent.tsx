@@ -27,6 +27,8 @@ import { UserListPage } from 'pages/user/UserListPage';
 import { UserDetailsPage } from 'pages/user/UserDetailsPage';
 import { ClusterListPage } from 'pages/cluster/ClusterListPage';
 import { ClusterDetailsPage } from 'pages/cluster/ClusterDetailsPage';
+import { DocumentationPage } from 'pages/documentation/DocumentationPage';
+import { DocumentationEditPage } from 'pages/documentation/DocumentationEditPage';
 
 const RootComponent: FC = () => {
   return (
@@ -55,6 +57,14 @@ const RootComponent: FC = () => {
         <Route
           path={ROUTES.CLUSTER_DETAILS_ROUTE}
           Component={ClusterDetailsPage}
+        />
+        <Route
+          path={ROUTES.DOCUMENTATION_ROUTE}
+          Component={DocumentationPage}
+        />
+        <Route
+          path={ROUTES.DOCUMENTATION_EDIT_ROUTE}
+          Component={DocumentationEditPage}
         />
 
         <Route
