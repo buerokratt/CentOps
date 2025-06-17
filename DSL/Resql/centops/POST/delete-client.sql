@@ -3,5 +3,4 @@ INSERT INTO clients (name,
                      created)
 VALUES (:name,
         TRUE,
-        :created::timestamp with time zone)
-RETURNING id;
+        :created::timestamp with time zone);

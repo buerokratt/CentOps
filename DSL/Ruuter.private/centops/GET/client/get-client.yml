@@ -12,6 +12,27 @@ declaration:
       - field: name
         type: string
         description: "Client name"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: ${incoming.headers.cookie}
+    plaintext: "customJwtCookie"
+  result: res
+  next: check_user_info_response
+
+check_user_info_response:
+  switch:
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: validate_name
+  next: return_incorrect_request
 
 validate_name:
   switch:

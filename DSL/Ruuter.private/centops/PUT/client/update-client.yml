@@ -15,14 +15,42 @@ declaration:
         type: string
       - field: kubernetes_cluster_namespace
         type: string
-      - field: hashicorp_vault_token
-        type: string
       - field: authentication_certificate
         type: string
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: ${incoming.headers.cookie}
+    plaintext: "customJwtCookie"
+  result: res
+  next: check_user_info_response
+
+check_user_info_response:
+  switch:
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: extract_request_data
+  next: return_incorrect_request
+
+extract_request_data:
+  assign:
+    param_name: ${incoming.params.name}
+    body_name: ${incoming.body.name}
+    kubernetes_cluster_address: ${incoming.body.kubernetes_cluster_address}
+    kubernetes_cluster_namespace: ${incoming.body.kubernetes_cluster_namespace}
+    authentication_certificate: ${incoming.body.authentication_certificate}
+  next: validate_input
 
 validate_input:
   switch:
-    - condition: ${incoming.params.name == null || incoming.body.name == null || incoming.body.kubernetes_cluster_address == null || incoming.body.kubernetes_cluster_namespace == null || incoming.body.hashicorp_vault_token == null || incoming.body.authentication_certificate == null}
+    - condition: ${param_name == null || body_name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || authentication_certificate == null}
       next: return_bad_request
   next: update_client
 
@@ -31,11 +59,10 @@ update_client:
   args:
     url: "[#CENTOPS_RESQL]/create-or-update-client"
     body:
-      name: ${incoming.body.name}
-      kubernetes_cluster_address: ${incoming.body.kubernetes_cluster_address}
-      kubernetes_cluster_namespace: ${incoming.body.kubernetes_cluster_namespace}
-      hashicorp_vault_token: ${incoming.body.hashicorp_vault_token}
-      authentication_certificate: ${incoming.body.authentication_certificate}
+      name: ${body_name}
+      kubernetes_cluster_address: ${kubernetes_cluster_address}
+      kubernetes_cluster_namespace: ${kubernetes_cluster_namespace}
+      authentication_certificate: ${authentication_certificate}
       created: ${new Date().toISOString()}
   result: update_result
   next: return_updated_client

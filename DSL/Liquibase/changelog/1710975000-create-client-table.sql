@@ -7,7 +7,6 @@ CREATE TABLE clients
     name                         TEXT NOT NULL,
     kubernetes_cluster_address   TEXT,
     kubernetes_cluster_namespace TEXT,
-    hashicorp_vault_token        TEXT,
     authentication_certificate   TEXT,
     deleted                      BOOLEAN                  DEFAULT FALSE,
     created                      TIMESTAMP WITH TIME ZONE DEFAULT now()
