@@ -2,12 +2,17 @@ const publicAppUrl = import.meta.env.REACT_APP_PUBLIC_URL;
 
 export const ROUTES = {
   APPLICATION_ROUTE: `${publicAppUrl}/centops/application`,
-  CLIENTS_ROUTE: '/centops/clients',
-  CLIENTS_CREATE_EDIT_ROUTE: '/centops/clients/:clientId?',
-  CLIENTS_SECRETS_ROUTE: '/centops/clients/:clientId/secrets',
-  CLIENTS_SECRETS_EDIT_ROUTE: '/centops/clients/:clientId/secrets/:secretId?',
+  CLIENT_LIST_ROUTE: '/centops/clients',
+  CLIENT_DETAILS_ROUTE: '/centops/clients/:clientId',
+  CLIENT_SECRETS_ROUTE: '/centops/clients/:clientId/secrets',
+  CLIENT_SECRETS_DETAILS_ROUTE: '/centops/clients/:clientId/secrets/:secretId?',
   CLIENTS_SECRETS_DIFF_ROUTE:
     '/centops/clients/:clientId/secrets/:secretId/diff',
+  USER_LIST_ROUTE: '/centops/users',
+  USER_DETAILS_ROUTE: '/centops/users/:userId',
+  CLUSTER_LIST_ROUTE: '/centops/clusters',
+  CLUSTER_DETAILS_ROUTE: '/centops/clusters/:clusterId',
+
   INVITATION_ROUTE: '/centops/invitation',
   OVERVIEW_ROUTE: '/centops/overview',
   PARTICIPANTS_ROUTE: '/centops/participants',

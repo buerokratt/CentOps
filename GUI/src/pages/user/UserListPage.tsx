@@ -1,6 +1,6 @@
 import { Button, Card, DataTable, Icon, Track } from 'components';
 import { useMemo, useState } from 'react';
-import type { Client } from 'types/client';
+import type { User } from 'types/user';
 import {
   createColumnHelper,
   type PaginationState,
@@ -12,15 +12,15 @@ import { TransTableHead } from 'i18n/trans/table';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 
-export const ClientListPage = () => {
-  const [clients] = useState<Client[]>([
+export const UserListPage = () => {
+  const [clients] = useState<User[]>([
     {
       id: '1',
-      name: 'Client 1',
+      name: 'User 1',
     },
     {
       id: '2',
-      name: 'Client 2',
+      name: 'User 2',
     },
   ]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -29,30 +29,20 @@ export const ClientListPage = () => {
   });
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const clientColumnHelper = createColumnHelper<Client>();
-  const clientColumns = useMemo(
+  const columnHelper = createColumnHelper<User>();
+  const columns = useMemo(
     () => [
-      clientColumnHelper.accessor('name', {
+      columnHelper.accessor('name', {
         id: 'name',
-        header: () => <TransTableHead i18nKey="client" />,
+        header: () => <TransTableHead i18nKey="usersName" />,
         cell: (message) => message.getValue(),
       }),
-      clientColumnHelper.accessor('name', {
-        id: 'nameSpace',
-        header: () => <TransTableHead i18nKey="nameSpace" />,
+      columnHelper.accessor('name', {
+        id: 'identificationNo',
+        header: () => <TransTableHead i18nKey="identificationNo" />,
         cell: (message) => message.getValue(),
       }),
-      clientColumnHelper.accessor('name', {
-        id: 'clusterIp',
-        header: () => <TransTableHead i18nKey="clusterIp" />,
-        cell: (message) => message.getValue(),
-      }),
-      clientColumnHelper.accessor('name', {
-        id: 'updatedAt',
-        header: () => <TransTableHead i18nKey="updatedAt" />,
-        cell: (message) => message.getValue(),
-      }),
-      clientColumnHelper.accessor('id', {
+      columnHelper.accessor('id', {
         id: 'actions',
         header: '',
         enableSorting: false,
@@ -61,10 +51,6 @@ export const ClientListPage = () => {
         },
         cell: () => (
           <Track gap={8}>
-            <Button appearance="text">
-              <Icon name="pods" />
-              <TransButton i18nKey="pods" />
-            </Button>
             <Button appearance="text">
               <Icon name="edit" />
               <TransButton i18nKey="edit" />
@@ -83,12 +69,17 @@ export const ClientListPage = () => {
   return (
     <>
       <Track justify="between">
-        <h1>
-          <TransNav i18nKey="clients" />
-        </h1>
-        <Link to={ROUTES.CLIENT_DETAILS_ROUTE} params={{ clientId: 'create' }}>
+        <Track direction="vertical" align="left">
+          <h6>
+            <TransNav i18nKey="settings" />
+          </h6>
+          <h1>
+            <TransNav i18nKey="users" />
+          </h1>
+        </Track>
+        <Link to={ROUTES.USER_DETAILS_ROUTE} params={{ userId: 'create' }}>
           <Button appearance="primary">
-            <TransButton i18nKey="addClient" />
+            <TransButton i18nKey="addUser" />
           </Button>
         </Link>
       </Track>
@@ -97,7 +88,7 @@ export const ClientListPage = () => {
         <Card disablePadding>
           <DataTable
             data={clients}
-            columns={clientColumns}
+            columns={columns}
             sortable
             pagination={pagination}
             setPagination={setPagination}

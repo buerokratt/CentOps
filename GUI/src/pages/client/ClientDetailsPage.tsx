@@ -19,6 +19,8 @@ import { TransLabel } from 'i18n/trans/label';
 import { GenerateCertificateDialog } from 'pages/client/details/GenerateCertificateDialog';
 import { DeleteCertificateDialog } from 'pages/client/details/DeleteCertificateDialog';
 import { ConfirmChangesDialog } from 'pages/client/details/ConfirmChangesDialog';
+import { ROUTES } from 'resources/routes-constants';
+import { Link } from 'components/Router/Link';
 
 export const ClientDetailsPage = () => {
   const { clientId } = useParams<{ clientId: 'create' | string }>();
@@ -81,9 +83,11 @@ export const ClientDetailsPage = () => {
         }
         footer={
           <Track justify="between">
-            <Button appearance="primary" outlined>
-              <TransButton i18nKey="cancel" />
-            </Button>
+            <Link to={ROUTES.CLIENT_LIST_ROUTE}>
+              <Button appearance="primary" outlined>
+                <TransButton i18nKey="cancel" />
+              </Button>
+            </Link>
             <Button appearance="primary">
               <TransButton i18nKey="save" />
             </Button>
