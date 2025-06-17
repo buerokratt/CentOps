@@ -1,7 +1,7 @@
 WITH origin AS (
     UPDATE manifests
         SET deleted = true
-        WHERE client_id = :client_id AND manifest_id = :manifest_id::uuid
+        WHERE client_id = :client_id AND manifest_id = CAST(:manifest_id AS BIGINT)
         RETURNING created_at
 ),
      inserted AS (

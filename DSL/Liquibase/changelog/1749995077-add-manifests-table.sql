@@ -8,11 +8,11 @@ DROP TABLE IF EXISTS
     CASCADE;
 
 CREATE TABLE manifests (
-                           manifest_id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
+                           manifest_id BIGSERIAL PRIMARY KEY,
                            name VARCHAR (100) NOT NULL,
                            client_id TEXT NOT NULL,
                            helm_version TEXT NOT NULL,
-                           helm_values TEXT NOT NULL,
+                           helm_values TEXT,
                            created_at TIMESTAMP DEFAULT NOW(),
                            updated_at TIMESTAMP,
                            deleted BOOLEAN NOT NULL DEFAULT FALSE
