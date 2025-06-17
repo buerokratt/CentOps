@@ -1,5 +1,5 @@
-# secrets/data/resql
-sqlms.datasources.[0].name={{ with secret "secret/resql" }}{{ .Data.sqlms_datasources_0_name }}{{ end }}
-sqlms.datasources.[0].jdbcUrl={{ with secret "secret/resql" }}{{ .Data.sqlms_datasources_0_jdbcUrl }}{{ end }}
-sqlms.datasources.[0].username={{ with secret "secret/resql" }}{{ .Data.sqlms_datasources_0_username }}{{ end }}
-sqlms.datasources.[0].password={{ with secret "secret/resql" }}{{ .Data.sqlms_datasources_0_password }}{{ end }}
+# secrets/data/resql-users
+sqlms.datasources.[0].name={{ with secret "secret/resql-users" }}{{ .Data.sqlms_datasources_0_name }}{{ end }}
+sqlms.datasources.[0].jdbcUrl={{ with secret "secret/resql-users" }}{{ .Data.sqlms_datasources_0_jdbcUrl }}{{ end }}
+sqlms.datasources.[0].username={{ with secret "secret/resql-users" }}{{ .Data.sqlms_datasources_0_username }}{{ end }}
+sqlms.datasources.[0].password={{ with secret "secret/resql-users" }}{{ .Data.sqlms_datasources_0_password }}{{ end }}
