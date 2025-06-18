@@ -1,0 +1,78 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Update user details"
+  method: put
+  accepts: json
+  returns: json
+  namespace: centops
+  endpoint: /admin/users/{user_id}
+  allowlist:
+    body:
+      - field: first_name
+        type: string
+      - field: last_name
+        type: string
+      - field: id_code
+        type: string
+    params:
+      - field: user_id
+        type: string
+
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: ${incoming.headers.cookie}
+    plaintext: "customJwtCookie"
+  result: res
+  next: check_user_info_response
+
+check_user_info_response:
+  switch:
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: extract_request_data
+  next: return_unauthorized
+
+extract_request_data:
+  assign:
+    user_id: ${incoming.params.user_id}
+    first_name: ${incoming.body.first_name}
+    last_name: ${incoming.body.last_name}
+    id_code: ${incoming.body.id_code}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${user_id == null || first_name == null || last_name == null || id_code == null}
+      next: return_bad_request
+  next: update_user
+
+update_user:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/update-user"
+    body:
+      user_id: ${user_id}
+      first_name: ${first_name}
+      last_name: ${last_name}
+      id_code: ${id_code}
+  result: update_result
+  next: return_updated_user
+
+return_updated_user:
+  status: 204
+  return:
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "User ID, first name and last name are required"
+  next: end
+
+return_unauthorized:
+  status: 401
+  return: "Unauthorized"
+  next: end
