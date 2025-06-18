@@ -1,0 +1,47 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "List all clients"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: ${incoming.headers.cookie}
+    plaintext: "customJwtCookie"
+  result: res
+  next: check_user_info_response
+
+check_user_info_response:
+  switch:
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: get_clients
+  next: return_incorrect_request
+
+get_clients:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-client-list"
+  result: clients_result
+  next: return_clients
+
+return_clients:
+  status: 200
+  return: ${clients_result.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Incorrect request"
+  next: end
