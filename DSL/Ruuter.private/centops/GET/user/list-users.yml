@@ -1,0 +1,19 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "List all users"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+list_users:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-user-list"
+  result: users_result
+
+return_users:
+  status: 200
+  return: ${users_result.response.body}
+  next: end

@@ -1,0 +1,50 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Create a new user"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: first_name
+        type: string
+      - field: last_name
+        type: string
+      - field: id_code
+        type: string
+
+extract_request_data:
+  assign:
+    first_name: ${incoming.body.first_name}
+    last_name: ${incoming.body.last_name}
+    id_code: ${incoming.body.id_code}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${first_name == null || last_name == null || id_code == null}
+      next: return_bad_request
+  next: create_user
+
+create_user:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user"
+    body:
+      first_name: ${first_name}
+      last_name: ${last_name}
+      id_code: ${id_code}
+  result: create_result
+  next: return_created_user
+
+return_created_user:
+  status: 201
+  return: "User created successfully"
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "First name, last name and ID code are required"
+  next: end
