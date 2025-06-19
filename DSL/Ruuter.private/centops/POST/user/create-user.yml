@@ -15,23 +15,6 @@ declaration:
       - field: id_code
         type: string
 
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
-    headers:
-      cookie: ${incoming.headers.cookie}
-    plaintext: "customJwtCookie"
-  result: res
-  next: check_user_info_response
-
-check_user_info_response:
-  switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
-      next: extract_request_data
-  next: return_unauthorized
-
 extract_request_data:
   assign:
     first_name: ${incoming.body.first_name}
@@ -64,9 +47,4 @@ return_created_user:
 return_bad_request:
   status: 400
   return: "First name, last name and ID code are required"
-  next: end
-
-return_unauthorized:
-  status: 401
-  return: "Unauthorized"
   next: end

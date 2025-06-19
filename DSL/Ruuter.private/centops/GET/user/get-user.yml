@@ -11,23 +11,6 @@ declaration:
       - field: user_id
         type: string
 
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
-    headers:
-      cookie: ${incoming.headers.cookie}
-    plaintext: "customJwtCookie"
-  result: res
-  next: check_user_info_response
-
-check_user_info_response:
-  switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
-      next: extract_request_data
-  next: return_unauthorized
-
 extract_request_data:
   assign:
     user_id: ${incoming.params.user_id}
@@ -56,9 +39,4 @@ return_user:
 return_bad_request:
   status: 400
   return: "User ID is required"
-  next: end
-
-return_unauthorized:
-  status: 401
-  return: "Unauthorized"
   next: end
