@@ -229,6 +229,10 @@ export const DataTable: FC<DataTableProps> = ({
                     >
                       {header.isPlaceholder ? null : (
                         <Track gap={8}>
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                           {sortable && header.column.getCanSort() && (
                             <button
                               onClick={header.column.getToggleSortingHandler()}
@@ -253,10 +257,6 @@ export const DataTable: FC<DataTableProps> = ({
                                 />
                               )}
                             </button>
-                          )}
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
                           )}
                           {filterable && header.column.getCanFilter() && (
                             <Filter column={header.column} table={table} />

@@ -7,6 +7,8 @@ export const TransTitle = createTrans({
   cluster: <Trans i18nKey="title.cluster" defaults="Cluster {{cluster}}" />,
   clusterAdd: <Trans i18nKey="title.clusterAdd" defaults="Add cluster" />,
   certificate: <Trans i18nKey="title.certificate" defaults="Certificate" />,
+  manifestAdd: <Trans i18nKey="title.manifestAdd" defaults="Add manifest" />,
+  manifestEdit: <Trans i18nKey="title.manifestEdit" defaults="Edit manifest" />,
   secretAdd: <Trans i18nKey="title.secretAdd" defaults="Add secret" />,
   secretEdit: <Trans i18nKey="title.secretEdit" defaults="Edit secret" />,
   secretDiff: <Trans i18nKey="title.secretDiff" defaults="Diff vaade" />,

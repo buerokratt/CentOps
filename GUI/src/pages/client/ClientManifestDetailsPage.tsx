@@ -4,8 +4,7 @@ import {
   Card,
   FormInput,
   FormSelect,
-  Icon,
-  Label,
+  FormYamlEditor,
   Track,
 } from 'components';
 import { Controller, useForm } from 'react-hook-form';
@@ -13,21 +12,36 @@ import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
 import { TransTitle } from 'i18n/trans/title';
 import { formatDate } from 'utils/date';
-import { FormElement } from 'components/FormElements';
-import { TransLabel } from 'i18n/trans/label';
-import FormTextarea from 'components/FormElements/FormTextarea';
-import { validate } from 'utils/json';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 
-export const ClientSecretDetailsPage = () => {
-  const { secretId } = useParams<{ secretId: 'create' | string }>();
-  const isCreateMode = secretId === 'create';
+export const ClientManifestDetailsPage = () => {
+  const { manifestId } = useParams<{ manifestId: 'create' | string }>();
+  const isCreateMode = manifestId === 'create';
   const { register, control } = useForm({
     defaultValues: {
-      name: 'Super secret',
-      environment: 'production',
-      json: '{}',
+      name: '',
+      helm: '123',
+      yaml: `---
+doe: "a deer, a female deer"
+>>,,,
+ray: "a drop of golden sun"
+pi: 3.14159
+xmas: true
+french-hens: 3
+calling-birds:
+  - huey
+  - dewey
+  - louie
+  - fred
+xmas-fifth-day:
+  calling-birds: four
+  french-hens: 3
+  golden-rings: 5
+  partridges:
+    count: 1
+    location: "a pear tree"
+  turtle-doves: two`,
       version: '1.0.0',
       createdAt: '2025-06-07T14:11:00.107Z',
       updatedAt: '2025-06-07T14:11:00.107Z',
@@ -42,9 +56,9 @@ export const ClientSecretDetailsPage = () => {
         </h6>
         <h1>
           {isCreateMode ? (
-            <TransTitle i18nKey="secretAdd" />
+            <TransTitle i18nKey="manifestAdd" />
           ) : (
-            <TransTitle i18nKey="secretEdit" />
+            <TransTitle i18nKey="manifestEdit" />
           )}
         </h1>
       </Track>
@@ -52,7 +66,7 @@ export const ClientSecretDetailsPage = () => {
       <Card
         footer={
           <Track justify="between">
-            <Link to={ROUTES.CLIENT_SECRETS_ROUTE}>
+            <Link to={ROUTES.CLIENT_MANIFESTS_ROUTE}>
               <Button appearance="primary" outlined>
                 <TransButton i18nKey="cancel" />
               </Button>
@@ -75,45 +89,30 @@ export const ClientSecretDetailsPage = () => {
             type="text"
           />
           <Controller
-            name="environment"
+            name="helm"
             control={control}
             render={({ field }) => (
               <FormSelect
                 {...field}
                 placeholder="-"
-                label={<TransField i18nKey="environment" />}
-                options={[{ label: 'production', value: 'production' }]}
+                label={<TransField i18nKey="helm" />}
+                options={[{ label: '123', value: '123' }]}
               />
             )}
           />
-          <FormTextarea
-            {...register('json')}
-            label={<TransField i18nKey="json" />}
-          />
-          <FormElement label={null}>
-            <Track>
-              <Controller
-                name="json"
-                control={control}
-                render={({ field }) => {
-                  const isValid = validate(field.value);
-                  return isValid ? (
-                    <>
-                      <Label type="success">
-                        <Icon name="check" size="small" />
-                        <TransLabel i18nKey="valid" />
-                      </Label>
-                    </>
-                  ) : (
-                    <Label type="error">
-                      <Icon name="danger" size="small" />
-                      <TransLabel i18nKey="invalid" />
-                    </Label>
-                  );
-                }}
+          <Controller
+            name="yaml"
+            control={control}
+            render={({ field }) => (
+              <FormYamlEditor
+                label={<TransField i18nKey="yaml" />}
+                {...field}
+                // TODO, tmp height
+                maxHeight="640px"
               />
-            </Track>
-          </FormElement>
+            )}
+          />
+
           <Controller
             name="version"
             control={control}

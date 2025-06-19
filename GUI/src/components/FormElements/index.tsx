@@ -9,3 +9,4 @@ export { FormCheckbox } from 'components/FormElements/FormCheckbox';
 export { FormDatepicker } from 'components/FormElements/FormDatepicker';
 export { SwitchBox } from 'components/FormElements/SwitchBox';
 export { FormRichText } from 'components/FormElements/FormRichText';
+export { FormYamlEditor } from 'components/FormElements/FormYamlEditor';
