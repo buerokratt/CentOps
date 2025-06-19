@@ -1,0 +1,42 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get cluster details"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: cluster_id
+        type: string
+
+extract_request_data:
+  assign:
+    cluster_id: ${incoming.params.cluster_id}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${cluster_id == null}
+      next: return_bad_request
+  next: get_cluster
+
+get_cluster:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-cluster"
+    query:
+      cluster_id: ${cluster_id}
+  result: cluster_result
+  next: return_cluster
+
+return_cluster:
+  status: 200
+  return: ${cluster_result.response.body}
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Cluster ID is required"
+  next: end

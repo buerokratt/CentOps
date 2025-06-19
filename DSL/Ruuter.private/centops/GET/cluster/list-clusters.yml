@@ -1,0 +1,20 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "List all clusters"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+list_clusters:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-cluster-list"
+  result: clusters_result
+  next: return_clusters
+
+return_clusters:
+  status: 200
+  return: ${clusters_result.response.body}
+  next: end

@@ -1,0 +1,42 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Delete a cluster"
+  method: delete
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: cluster_id
+        type: string
+
+extract_request_data:
+  assign:
+    cluster_id: ${incoming.params.cluster_id}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${cluster_id == null}
+      next: return_bad_request
+  next: delete_cluster
+
+delete_cluster:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/delete-cluster"
+    body:
+      cluster_id: ${cluster_id}
+  result: delete_result
+  next: return_success
+
+return_success:
+  status: 204
+  return:
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Cluster ID is required"
+  next: end
