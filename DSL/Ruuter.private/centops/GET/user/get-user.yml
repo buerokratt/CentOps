@@ -6,7 +6,6 @@ declaration:
   accepts: json
   returns: json
   namespace: centops
-  endpoint: /admin/users/{user_id}
   allowlist:
     params:
       - field: user_id
