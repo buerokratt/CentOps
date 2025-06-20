@@ -1,0 +1,38 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "List all certificates for a client"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+extract_request_data:
+  assign:
+    client_id: ${incoming.params.client_id}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${client_id == null}
+      next: return_bad_request
+  next: get_certificates
+
+get_certificates:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-certificate-list"
+    query:
+      client_id: ${client_id}
+  result: certificates_result
+  next: return_certificates
+
+return_certificates:
+  status: 200
+  return: ${certificates_result.response.body}
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Client ID is required"
+  next: end
