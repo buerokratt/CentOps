@@ -13,14 +13,16 @@ export const TransField = createTrans({
   clusterName: <Trans i18nKey="field.clusterName" defaults="Cluster name" />,
   content: <Trans i18nKey="field.content" defaults="Content" />,
   createdAt: <Trans i18nKey="field.createdAt" defaults="Created" />,
+  environment: <Trans i18nKey="field.environment" defaults="Environment" />,
   firstName: <Trans i18nKey="field.firstName" defaults="First name" />,
+  helm: <Trans i18nKey="field.helm" defaults="Helm" />,
   lastName: <Trans i18nKey="field.lastName" defaults="Last name" />,
   id: <Trans i18nKey="field.id" defaults="ID" />,
   identificationNo: (
     <Trans i18nKey="field.identificationNo" defaults="Identification number" />
   ),
   issuer: <Trans i18nKey="field.issuer" defaults="Issuer" />,
-  json: <Trans i18nKey="field.json" defaults="Json" />,
+  json: <Trans i18nKey="field.json" defaults="JSON" />,
   name: <Trans i18nKey="field.name" defaults="Name" />,
   nameSpace: <Trans i18nKey="field.nameSpace" defaults="Name space" />,
   vaultApiToken: (
@@ -30,4 +32,5 @@ export const TransField = createTrans({
   validFrom: <Trans i18nKey="field.validFrom" defaults="Valid from" />,
   validTo: <Trans i18nKey="field.validTo" defaults="Valid to" />,
   updatedAt: <Trans i18nKey="field.updatedAt" defaults="Updated" />,
+  yaml: <Trans i18nKey="field.yaml" defaults="YAML" />,
 });

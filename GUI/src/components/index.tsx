@@ -16,6 +16,7 @@ export {
   FormTextarea,
   Switch,
   SwitchBox,
+  FormYamlEditor,
 } from 'components/FormElements';
 export { Toast } from 'components/Toast';
 export { Header } from 'components/Header';

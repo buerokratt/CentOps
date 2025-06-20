@@ -23,12 +23,14 @@ import { ClientDetailsPage } from 'pages/client/ClientDetailsPage';
 import { ClientSecretListPage } from 'pages/client/ClientSecretListPage';
 import { ClientSecretDetailsPage } from 'pages/client/ClientSecretDetailsPage';
 import { ClientSecretDiffPage } from 'pages/client/ClientSecretDiffPage';
+import { ClientManifestListPage } from 'pages/client/ClientManifestListPage';
 import { UserListPage } from 'pages/user/UserListPage';
 import { UserDetailsPage } from 'pages/user/UserDetailsPage';
 import { ClusterListPage } from 'pages/cluster/ClusterListPage';
 import { ClusterDetailsPage } from 'pages/cluster/ClusterDetailsPage';
 import { DocumentationPage } from 'pages/documentation/DocumentationPage';
 import { DocumentationEditPage } from 'pages/documentation/DocumentationEditPage';
+import { ClientManifestDetailsPage } from 'pages/client/ClientManifestDetailsPage';
 
 const RootComponent: FC = () => {
   return (
@@ -50,6 +52,14 @@ const RootComponent: FC = () => {
         <Route
           path={ROUTES.CLIENTS_SECRETS_DIFF_ROUTE}
           Component={ClientSecretDiffPage}
+        />
+        <Route
+          path={ROUTES.CLIENT_MANIFESTS_ROUTE}
+          Component={ClientManifestListPage}
+        />
+        <Route
+          path={ROUTES.CLIENT_MANIFESTS_DETAILS_ROUTE}
+          Component={ClientManifestDetailsPage}
         />
         <Route path={ROUTES.USER_LIST_ROUTE} Component={UserListPage} />
         <Route path={ROUTES.USER_DETAILS_ROUTE} Component={UserDetailsPage} />

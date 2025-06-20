@@ -8,6 +8,9 @@ export const ROUTES = {
   CLIENT_SECRETS_DETAILS_ROUTE: '/centops/clients/:clientId/secrets/:secretId?',
   CLIENTS_SECRETS_DIFF_ROUTE:
     '/centops/clients/:clientId/secrets/:secretId/diff',
+  CLIENT_MANIFESTS_ROUTE: '/centops/clients/:clientId/manifests',
+  CLIENT_MANIFESTS_DETAILS_ROUTE:
+    '/centops/clients/:clientId/manifests/:manifestId?',
   USER_LIST_ROUTE: '/centops/users',
   USER_DETAILS_ROUTE: '/centops/users/:userId',
   CLUSTER_LIST_ROUTE: '/centops/clusters',
