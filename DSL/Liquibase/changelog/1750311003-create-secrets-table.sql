@@ -12,6 +12,5 @@ CREATE TABLE secrets
     updated_at  TIMESTAMP,
     deleted     BOOLEAN     NOT NULL DEFAULT FALSE
 );
-CREATE INDEX idx_secrets_id ON secrets (id);
 CREATE INDEX idx_secrets_client_id_not_deleted ON secrets (client_id) WHERE deleted = false;
 CREATE INDEX idx_secrets_name_not_deleted ON secrets (name) WHERE deleted = false;
