@@ -1,14 +1,14 @@
-FROM node:alpine AS development
-
+FROM node:20-alpine as development
 ENV NODE_ENV development
-ENV PORT=8057
 
 WORKDIR /app
-COPY ./package.json .
-RUN npm install --legacy-peer-deps
+COPY package*.json ./
+COPY .npmrc* .npmrc
+
+RUN npm install
 
 COPY . .
 
-EXPOSE ${PORT}
+EXPOSE 8057
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
