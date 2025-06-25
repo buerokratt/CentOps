@@ -1,0 +1,64 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Create a new manifest"
+  method: put
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: clientId
+        type: string
+        description: "Unique identifier of the client"
+      - field: manifestId
+        type: number
+        description: "Unique identifier of the manifest"
+      - field: name
+        type: string
+        description: "Name of the manifest"
+      - field: helmVersion
+        type: string
+        description: "Helm version of a deployment"
+      - field: helmValues
+        type: string
+        description: "Helm values of a deployment"
+
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.clientId == null || incoming.body.helmVersion == null || incoming.body.helmValues == null || incoming.body.name == null || incoming.body.manifestId == null}
+      next: return_incorrect_request
+  next: extract_request_params
+
+extract_request_params:
+  assign:
+    client_id: ${incoming.body.clientId}
+    manifest_id: ${incoming.body.manifestId}
+    name: ${incoming.body.name}
+    helm_version: ${incoming.body.helmVersion}
+    helm_values: ${incoming.body.helmValues}
+  next: update_manifest
+
+update_manifest:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/update-manifest"
+    body:
+      client_id: ${client_id}
+      manifest_id: ${manifest_id}
+      name: ${name}
+      helm_version: ${helm_version}
+      helm_values: ${helm_values}
+  result: results
+  next: return_result
+
+return_result:
+  wrapper: false
+  status: 200
+  return: ${results.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter are missing: clientId, helmVersion or helmValues or manifestId"
+  next: end
