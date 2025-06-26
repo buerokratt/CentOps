@@ -5,7 +5,7 @@ import { ToastProvider } from 'context/ToastContext';
 
 const App: FC = () => {
   return (
-    <BrowserRouter basename={'/'}>
+    <BrowserRouter basename="/centops">
       <ToastProvider>
         <RootComponent />
       </ToastProvider>

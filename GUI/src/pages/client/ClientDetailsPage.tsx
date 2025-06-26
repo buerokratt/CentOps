@@ -1,24 +1,11 @@
 import { useParams } from 'react-router-dom';
-import {
-  Button,
-  Card,
-  FormInput,
-  Icon,
-  Label,
-  Switch,
-  Track,
-} from 'components';
+import { Button, Card, FormInput, Icon, Switch, Track } from 'components';
 import { Controller, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
 import { TransTitle } from 'i18n/trans/title';
-import { CardFooter, CardHeader } from 'components/Card';
+import { CardHeader } from 'components/Card';
 import { formatDate } from 'utils/date';
-import { FormElement } from 'components/FormElements';
-import { TransLabel } from 'i18n/trans/label';
-import { GenerateCertificateDialog } from 'pages/client/details/GenerateCertificateDialog';
-import { DeleteCertificateDialog } from 'pages/client/details/DeleteCertificateDialog';
-import { ConfirmChangesDialog } from 'pages/client/details/ConfirmChangesDialog';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 
@@ -34,21 +21,11 @@ export const ClientDetailsPage = () => {
       burokrattNetwork: true,
       createdAt: '2025-06-07T14:11:00.107Z',
       updatedAt: '2025-06-07T14:11:00.107Z',
-      certificate: {
-        id: 'cert-2025-03',
-        issuer: 'centops-root-ca',
-        validFrom: '2025-06-07T14:11:00.107Z',
-        validTo: '2025-06-07T14:11:00.107Z',
-        fingerprint: '8A:D3:42:...',
-      },
     },
   });
 
   return (
     <>
-      <GenerateCertificateDialog />
-      <DeleteCertificateDialog />
-      <ConfirmChangesDialog />
       <Track justify="between">
         <h2>
           {isCreateMode ? (
@@ -65,7 +42,7 @@ export const ClientDetailsPage = () => {
           <Track justify="end" gap={8}>
             <Button appearance="text" disabled={isCreateMode}>
               <Icon name="certificate-add" />
-              <TransButton i18nKey="generateCertificate" />
+              <TransButton i18nKey="certificates" />
             </Button>
             <Button appearance="text" disabled={isCreateMode}>
               <Icon name="key" />
@@ -120,106 +97,6 @@ export const ClientDetailsPage = () => {
             label={<TransField i18nKey="vaultApiToken" />}
             type="text"
           />
-          <FormElement label={null}>
-            <Card
-              slots={{
-                header: <CardHeader filled={false} bordered={false} />,
-                footer: <CardFooter bordered={false} />,
-              }}
-              shadow
-              header={<TransTitle i18nKey="certificate" />}
-              footer={
-                <Track justify="between">
-                  <Track gap={8}>
-                    <Label type="success">
-                      <Icon name="check" size="small" />
-                      <TransLabel i18nKey="valid" />
-                    </Label>
-                    <Label type="error">
-                      <Icon name="danger" size="small" />
-                      <TransLabel i18nKey="revoked" />
-                    </Label>
-                    <Label type="warning">
-                      <Icon name="warning" size="small" />
-                      <TransLabel i18nKey="expiring" />
-                    </Label>
-                  </Track>
-                  <Button appearance="error">
-                    <TransButton i18nKey="delete" />
-                  </Button>
-                </Track>
-              }
-            >
-              <Track justify="around" align="left">
-                <Track direction="vertical">
-                  <Controller
-                    name="certificate.id"
-                    control={control}
-                    render={({ field }) => (
-                      <FormInput
-                        {...field}
-                        label={<TransField i18nKey="id" />}
-                        type="text"
-                        readOnly
-                      />
-                    )}
-                  />
-                  <Controller
-                    name="certificate.validFrom"
-                    control={control}
-                    render={({ field }) => (
-                      <FormInput
-                        {...field}
-                        value={formatDate(field.value)}
-                        label={<TransField i18nKey="validFrom" />}
-                        type="text"
-                        readOnly
-                      />
-                    )}
-                  />
-                  <Controller
-                    name="certificate.fingerprint"
-                    control={control}
-                    render={({ field }) => (
-                      <FormInput
-                        {...field}
-                        label={<TransField i18nKey="fingerprint" />}
-                        type="text"
-                        readOnly
-                      />
-                    )}
-                  />
-                </Track>
-                <Track direction="vertical">
-                  <Controller
-                    name="certificate.issuer"
-                    control={control}
-                    render={({ field }) => (
-                      <FormInput
-                        {...field}
-                        label={<TransField i18nKey="issuer" />}
-                        type="text"
-                        readOnly
-                      />
-                    )}
-                  />
-                  <Controller
-                    name="certificate.validTo"
-                    control={control}
-                    render={({ field }) => (
-                      <FormInput
-                        {...field}
-                        value={formatDate(field.value)}
-                        label={<TransField i18nKey="validTo" />}
-                        type="text"
-                        readOnly
-                      />
-                    )}
-                  />
-                </Track>
-              </Track>
-            </Card>
-          </FormElement>
           <Controller
             name="burokrattNetwork"
             control={control}

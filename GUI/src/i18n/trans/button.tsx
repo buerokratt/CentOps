@@ -8,6 +8,8 @@ export const TransButton = createTrans({
   addSecret: <Trans i18nKey="button.addSecret" defaults="Add Secret" />,
   addUser: <Trans i18nKey="button.addUser" defaults="Add User" />,
   cancel: <Trans i18nKey="button.cancel" defaults="Cancel" />,
+  certificates: <Trans i18nKey="button.certificates" defaults="Certificates" />,
+  back: <Trans i18nKey="button.back" defaults="Back" />,
   backToSecrets: (
     <Trans i18nKey="button.backToSecrets" defaults="Back to secrets" />
   ),

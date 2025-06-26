@@ -14,6 +14,7 @@ type CardProps = {
   header?: ReactNode;
   footer?: ReactNode;
   disablePadding?: boolean;
+  bordered?: boolean;
   shadow?: boolean;
   slots?: {
     header?: ReactElement;
@@ -28,6 +29,7 @@ export const Card: FC<PropsWithChildren<CardProps>> = ({
   header,
   footer,
   disablePadding,
+  bordered = true,
   shadow,
   slots,
   children,
@@ -36,6 +38,7 @@ export const Card: FC<PropsWithChildren<CardProps>> = ({
     <div
       className={clsx('card', {
         'disable-padding': disablePadding,
+        bordered,
         shadow,
       })}
     >

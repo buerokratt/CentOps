@@ -2,11 +2,15 @@ import { createTrans } from 'i18n/trans/index';
 import { Trans } from 'react-i18next';
 
 export const TransTableHead = createTrans({
+  certificate: (
+    <Trans i18nKey="table.head.certificate" defaults="Certificate" />
+  ),
   client: <Trans i18nKey="table.head.client" defaults="Client" />,
   clusterIp: <Trans i18nKey="table.head.clusterIp" defaults="Cluster IP" />,
   clusterName: (
     <Trans i18nKey="table.head.clusterName" defaults="Cluster name" />
   ),
+  createdAt: <Trans i18nKey="table.head.createdAt" defaults="Created at" />,
   identificationNo: (
     <Trans
       i18nKey="table.head.identificationNo"

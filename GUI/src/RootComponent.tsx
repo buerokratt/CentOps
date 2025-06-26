@@ -31,6 +31,8 @@ import { ClusterDetailsPage } from 'pages/cluster/ClusterDetailsPage';
 import { DocumentationPage } from 'pages/documentation/DocumentationPage';
 import { DocumentationEditPage } from 'pages/documentation/DocumentationEditPage';
 import { ClientManifestDetailsPage } from 'pages/client/ClientManifestDetailsPage';
+import { ClientCertificateList } from 'pages/client/ClientCertificateList';
+import { ClientCertificateCreatePage } from 'pages/client/ClientCertificateCreatePage';
 
 const RootComponent: FC = () => {
   return (
@@ -52,6 +54,14 @@ const RootComponent: FC = () => {
         <Route
           path={ROUTES.CLIENTS_SECRETS_DIFF_ROUTE}
           Component={ClientSecretDiffPage}
+        />
+        <Route
+          path={ROUTES.CLIENT_CERTIFICATES_ROUTE}
+          Component={ClientCertificateList}
+        />
+        <Route
+          path={ROUTES.CLIENT_CERTIFICATES_CREATE_ROUTE}
+          Component={ClientCertificateCreatePage}
         />
         <Route
           path={ROUTES.CLIENT_MANIFESTS_ROUTE}
