@@ -12,11 +12,14 @@ export const TransField = createTrans({
   clusterIp: <Trans i18nKey="field.clusterIp" defaults="Cluster IP" />,
   clusterName: <Trans i18nKey="field.clusterName" defaults="Cluster name" />,
   content: <Trans i18nKey="field.content" defaults="Content" />,
+  commonName: <Trans i18nKey="field.commonName" defaults="Common name" />,
+  country: <Trans i18nKey="field.country" defaults="Country" />,
   createdAt: <Trans i18nKey="field.createdAt" defaults="Created" />,
   environment: <Trans i18nKey="field.environment" defaults="Environment" />,
   firstName: <Trans i18nKey="field.firstName" defaults="First name" />,
   helm: <Trans i18nKey="field.helm" defaults="Helm" />,
   lastName: <Trans i18nKey="field.lastName" defaults="Last name" />,
+  locality: <Trans i18nKey="field.locality" defaults="Locality" />,
   id: <Trans i18nKey="field.id" defaults="ID" />,
   identificationNo: (
     <Trans i18nKey="field.identificationNo" defaults="Identification number" />
@@ -25,6 +28,13 @@ export const TransField = createTrans({
   json: <Trans i18nKey="field.json" defaults="JSON" />,
   name: <Trans i18nKey="field.name" defaults="Name" />,
   nameSpace: <Trans i18nKey="field.nameSpace" defaults="Name space" />,
+  organization: <Trans i18nKey="field.organization" defaults="Organization" />,
+  organizationUnit: (
+    <Trans i18nKey="field.organizationUnit" defaults="Organization unit" />
+  ),
+  stateOfProvince: (
+    <Trans i18nKey="field.stateOfProvince" defaults="State of province" />
+  ),
   vaultApiToken: (
     <Trans i18nKey="field.vaultApiToken" defaults="Vault API token" />
   ),

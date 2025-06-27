@@ -5,8 +5,11 @@
 
 .card {
   background-color: get-color(white);
-  border: 1px solid get-color(black-coral-2);
-  border-radius: $veera-radius-s;
+
+  &.bordered {
+    border: 1px solid get-color(black-coral-2);
+    border-radius: $veera-radius-s;
+  }
 
   &.shadow {
     border: none;
