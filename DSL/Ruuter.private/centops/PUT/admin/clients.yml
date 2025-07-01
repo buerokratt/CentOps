@@ -1,0 +1,92 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Update client details"
+  method: put
+  accepts: json
+  returns: json
+  namespace: centops
+  endpoint: /clients/{name}
+  allowlist:
+    body:
+      - field: name
+        type: string
+      - field: kubernetes_cluster_address
+        type: string
+      - field: kubernetes_cluster_namespace
+        type: string
+      - field: argo_app_deployment_name
+        type: string
+      - field: authentication_certificate
+        type: string
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: ${incoming.headers.cookie}
+    plaintext: "customJwtCookie"
+  result: res
+  next: check_user_info_response
+
+check_user_info_response:
+  switch:
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: extract_request_data
+  next: return_incorrect_request
+
+extract_request_data:
+  assign:
+    param_name: ${incoming.params.name}
+    body_name: ${incoming.body.name}
+    kubernetes_cluster_address: ${incoming.body.kubernetes_cluster_address}
+    kubernetes_cluster_namespace: ${incoming.body.kubernetes_cluster_namespace}
+    argo_app_deployment_name: ${incoming.body.argo_app_deployment_name}
+    authentication_certificate: ${incoming.body.authentication_certificate}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${param_name == null || body_name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null}
+      next: return_bad_request
+  next: update_client
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "PUT"
+      path: "admin/clients"
+  result: create_result
+  next: update_client
+
+update_client:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-or-update-client"
+    body:
+      name: ${body_name}
+      kubernetes_cluster_address: ${kubernetes_cluster_address}
+      kubernetes_cluster_namespace: ${kubernetes_cluster_namespace}
+      argo_app_deployment_name: ${argo_app_deployment_name}
+      authentication_certificate: ${authentication_certificate}
+      created: ${new Date().toISOString()}
+  result: update_result
+  next: return_updated_client
+
+return_updated_client:
+  status: 200
+  return: ${update_result.response.body}
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Client name and all fields are required"
+  next: end
