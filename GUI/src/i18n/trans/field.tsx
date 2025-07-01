@@ -26,6 +26,7 @@ export const TransField = createTrans({
   ),
   issuer: <Trans i18nKey="field.issuer" defaults="Issuer" />,
   json: <Trans i18nKey="field.json" defaults="JSON" />,
+  manifest: <Trans i18nKey="field.manifest" defaults="Manifest" />,
   name: <Trans i18nKey="field.name" defaults="Name" />,
   nameSpace: <Trans i18nKey="field.nameSpace" defaults="Name space" />,
   organization: <Trans i18nKey="field.organization" defaults="Organization" />,

@@ -16,6 +16,10 @@
   position: relative;
   gap: 4px;
 
+  &--inline {
+    display: inline-flex;
+  }
+
   &--info {
     color: get-color(sapphire-blue-10);
     border-color: get-color(sapphire-blue-10);

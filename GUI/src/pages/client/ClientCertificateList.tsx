@@ -1,6 +1,6 @@
 import { Button, Card, DataTable, Icon, Label, Track } from 'components';
 import { useMemo, useState } from 'react';
-import type { ClientSecret } from 'types/client';
+import type { ClientCertificate } from 'types/client';
 import {
   createColumnHelper,
   type PaginationState,
@@ -19,7 +19,7 @@ import { ConfirmChangesDialog } from 'pages/client/dialog/ConfirmChangesDialog';
 import { CertificateDetailsDialog } from 'pages/client/dialog/CertificateDetailsDialog';
 
 export const ClientCertificateList = () => {
-  const [clients] = useState<ClientSecret[]>([
+  const [clients] = useState<ClientCertificate[]>([
     {
       id: '1',
       name: 'Client 1',
@@ -35,7 +35,7 @@ export const ClientCertificateList = () => {
   });
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columnHelper = createColumnHelper<ClientSecret>();
+  const columnHelper = createColumnHelper<ClientCertificate>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
@@ -115,7 +115,7 @@ export const ClientCertificateList = () => {
         footer={
           <Link to={ROUTES.CLIENT_DETAILS_ROUTE}>
             <Button appearance="primary" outlined>
-              <TransButton i18nKey="back" />
+              <TransButton i18nKey="backToClient" />
             </Button>
           </Link>
         }
