@@ -1,0 +1,46 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Delete a user"
+  method: delete
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: user_id
+        type: string
+
+validate_id_code:
+  switch:
+    - condition: ${incoming.params.user_id == null}
+      next: return_bad_request
+  next: create_log
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "DELETE"
+      path: "admin/users"
+  result: delete_user
+
+delete_user:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/delete-user"
+    body:
+      user_id: ${incoming.params.user_id}
+  result: delete_result
+  next: return_deleted_user
+
+return_deleted_user:
+  status: 204
+  return:
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "User ID code is required"
+  next: end
