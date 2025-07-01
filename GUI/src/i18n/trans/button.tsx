@@ -10,10 +10,14 @@ export const TransButton = createTrans({
   cancel: <Trans i18nKey="button.cancel" defaults="Cancel" />,
   certificates: <Trans i18nKey="button.certificates" defaults="Certificates" />,
   back: <Trans i18nKey="button.back" defaults="Back" />,
+  backToClient: (
+    <Trans i18nKey="button.backToClient" defaults="Back to client" />
+  ),
   backToSecrets: (
     <Trans i18nKey="button.backToSecrets" defaults="Back to secrets" />
   ),
   delete: <Trans i18nKey="button.delete" defaults="Delete" />,
+  deploy: <Trans i18nKey="button.deploy" defaults="Deploy" />,
   deployment: <Trans i18nKey="button.deployment" defaults="Deployment" />,
   difference: <Trans i18nKey="button.difference" defaults="Difference" />,
   duplicate: <Trans i18nKey="button.duplicate" defaults="Duplicate" />,
@@ -26,7 +30,11 @@ export const TransButton = createTrans({
     />
   ),
   manifests: <Trans i18nKey="button.manifests" defaults="Manifests" />,
+  newDeployment: (
+    <Trans i18nKey="button.newDeployment" defaults="New deployment" />
+  ),
   pods: <Trans i18nKey="button.pods" defaults="Pods" />,
+  rollback: <Trans i18nKey="button.rollback" defaults="Rollback" />,
   save: <Trans i18nKey="button.save" defaults="Save" />,
   secrets: <Trans i18nKey="button.secrets" defaults="Secrets" />,
   testConnection: (

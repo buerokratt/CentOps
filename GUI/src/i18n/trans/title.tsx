@@ -2,6 +2,7 @@ import { createTrans } from 'i18n/trans/index';
 import { Trans } from 'react-i18next';
 
 export const TransTitle = createTrans({
+  audit: <Trans i18nKey="title.audit" defaults="Audit logs" />,
   client: <Trans i18nKey="title.client" defaults="Client {{client}}" />,
   clientAdd: <Trans i18nKey="title.clientAdd" defaults="Add client" />,
   cluster: <Trans i18nKey="title.cluster" defaults="Cluster {{cluster}}" />,

@@ -75,6 +75,7 @@ type ColumnMeta = {
   meta: {
     size: number | string;
     sticky: 'left' | 'right';
+    align: 'left' | 'right';
   };
 };
 
@@ -225,6 +226,7 @@ export const DataTable: FC<DataTableProps> = ({
                             : undefined,
                         backgroundColor: 'white',
                         zIndex: header.column.columnDef.meta?.sticky ? 1 : 0,
+                        textAlign: header.column.columnDef.meta?.align,
                       }}
                     >
                       {header.isPlaceholder ? null : (
@@ -294,6 +296,7 @@ export const DataTable: FC<DataTableProps> = ({
                           ? `${cell.column.getAfter('right') * 0.675}px`
                           : undefined,
                       zIndex: cell.column.columnDef.meta?.sticky ? 1 : 0,
+                      textAlign: cell.column.columnDef.meta?.align,
                     }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

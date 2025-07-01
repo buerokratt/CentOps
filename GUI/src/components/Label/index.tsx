@@ -6,18 +6,18 @@ import { Tooltip } from 'components';
 
 import './Label.scss';
 
-type LabelProps = {
+export type LabelProps = {
   type?: 'warning' | 'error' | 'info' | 'success' | 'warning-dark' | 'disabled';
   tooltip?: ReactNode;
+  inline?: boolean;
 };
 
 export const Label = forwardRef<HTMLSpanElement, PropsWithChildren<LabelProps>>(
-  ({ type = 'info', tooltip, children }, ref) => {
-    const labelClasses = clsx(
-      'label',
-      `label--${type}`,
-      tooltip && 'label--tooltip'
-    );
+  ({ type = 'info', tooltip, inline, children }, ref) => {
+    const labelClasses = clsx('label', `label--${type}`, {
+      ['label--tooltip']: tooltip,
+      ['label--inline']: inline,
+    });
 
     return (
       <span ref={ref} className={labelClasses}>
