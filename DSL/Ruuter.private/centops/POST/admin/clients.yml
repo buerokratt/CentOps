@@ -15,6 +15,8 @@ declaration:
         type: string
       - field: kubernetes_cluster_namespace
         type: string
+      - field: argo_app_deployment_name
+        type: string
       - field: authentication_certificate
         type: string
     headers:
@@ -44,12 +46,13 @@ extract_request_data:
     name: ${incoming.body.name}
     kubernetes_cluster_address: ${incoming.body.kubernetes_cluster_address}
     kubernetes_cluster_namespace: ${incoming.body.kubernetes_cluster_namespace}
+    argo_app_deployment_name: ${incoming.body.argo_app_deployment_name}
     authentication_certificate: ${incoming.body.authentication_certificate}
   next: validate_input
 
 validate_input:
   switch:
-    - condition: ${name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || authentication_certificate == null}
+    - condition: ${name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null}
       next: return_bad_request
   next: create_log
 
@@ -71,6 +74,7 @@ create_client:
       kubernetes_cluster_address: ${kubernetes_cluster_address}
       kubernetes_cluster_namespace: ${kubernetes_cluster_namespace}
       authentication_certificate: ${authentication_certificate}
+      argo_app_deployment_name: ${argo_app_deployment_name}
       created: ${new Date().toISOString()}
   result: create_result
   next: return_created_client
