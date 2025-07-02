@@ -55,7 +55,7 @@ validate_input:
   switch:
     - condition: ${param_name == null || body_name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null}
       next: return_bad_request
-  next: update_client
+  next: create_log
 
 create_log:
   call: http.post

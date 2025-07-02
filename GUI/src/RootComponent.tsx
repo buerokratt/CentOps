@@ -33,6 +33,11 @@ import { DocumentationEditPage } from 'pages/documentation/DocumentationEditPage
 import { ClientManifestDetailsPage } from 'pages/client/ClientManifestDetailsPage';
 import { ClientCertificateList } from 'pages/client/ClientCertificateList';
 import { ClientCertificateCreatePage } from 'pages/client/ClientCertificateCreatePage';
+import { ClientDeploymentList } from 'pages/client/ClientDeploymentList';
+import { ClientDeploymentCreatePage } from 'pages/client/ClientDeploymentCreatePage';
+import { ClientPodsList } from 'pages/client/ClientPodsList';
+import { UserActivityPage } from 'pages/audit/UserActivityPage';
+import { SecretAccessPage } from 'pages/audit/SecretAccessPage';
 
 const RootComponent: FC = () => {
   return (
@@ -52,7 +57,7 @@ const RootComponent: FC = () => {
           Component={ClientSecretDetailsPage}
         />
         <Route
-          path={ROUTES.CLIENTS_SECRETS_DIFF_ROUTE}
+          path={ROUTES.CLIENT_SECRETS_DIFF_ROUTE}
           Component={ClientSecretDiffPage}
         />
         <Route
@@ -63,6 +68,15 @@ const RootComponent: FC = () => {
           path={ROUTES.CLIENT_CERTIFICATES_CREATE_ROUTE}
           Component={ClientCertificateCreatePage}
         />
+        <Route
+          path={ROUTES.CLIENT_DEPLOYMENTS_ROUTE}
+          Component={ClientDeploymentList}
+        />
+        <Route
+          path={ROUTES.CLIENT_DEPLOYMENTS_CREATE_ROUTE}
+          Component={ClientDeploymentCreatePage}
+        />
+        <Route path={ROUTES.CLIENT_PODS_ROUTE} Component={ClientPodsList} />
         <Route
           path={ROUTES.CLIENT_MANIFESTS_ROUTE}
           Component={ClientManifestListPage}
@@ -85,6 +99,14 @@ const RootComponent: FC = () => {
         <Route
           path={ROUTES.DOCUMENTATION_EDIT_ROUTE}
           Component={DocumentationEditPage}
+        />
+        <Route
+          path={ROUTES.AUDIT_USER_ACTIVITY_ROUTE}
+          Component={UserActivityPage}
+        />
+        <Route
+          path={ROUTES.AUDIT_SECRET_ACCESS_ROUTE}
+          Component={SecretAccessPage}
         />
 
         <Route
