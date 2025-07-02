@@ -1,0 +1,60 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Create a new cluster"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: name
+        type: string
+      - field: ip_address
+        type: string
+      - field: argo_api_url
+        type: string
+
+extract_request_data:
+  assign:
+    name: ${incoming.body.name}
+    ip_address: ${incoming.body.ip_address}
+    argo_api_url: ${incoming.body.argo_api_url}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${name == null || ip_address == null || argo_api_url == null}
+      next: return_bad_request
+  next: create_log
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "POST"
+      path: "admin/clusters"
+  result: create_result
+  next: create_cluster
+
+create_cluster:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-cluster"
+    body:
+      name: ${name}
+      ip_address: ${ip_address}
+      argo_api_url: ${argo_api_url}
+  result: create_result
+  next: return_created
+
+return_created:
+  status: 201
+  return: "Cluster created successfully"
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Name, IP address, Argo API URL and token are required"
+  next: end

@@ -1,0 +1,65 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Update user details"
+  method: put
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: first_name
+        type: string
+      - field: last_name
+        type: string
+      - field: id_code
+        type: string
+    params:
+      - field: user_id
+        type: string
+
+extract_request_data:
+  assign:
+    user_id: ${incoming.params.user_id}
+    first_name: ${incoming.body.first_name}
+    last_name: ${incoming.body.last_name}
+    id_code: ${incoming.body.id_code}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${user_id == null || first_name == null || last_name == null || id_code == null}
+      next: return_bad_request
+  next: create_log
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "PUT"
+      path: "admin/users"
+  result: create_result
+  next: update_user
+
+update_user:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/update-user"
+    body:
+      user_id: ${user_id}
+      first_name: ${first_name}
+      last_name: ${last_name}
+      id_code: ${id_code}
+  result: update_result
+  next: return_updated_user
+
+return_updated_user:
+  status: 204
+  return:
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "User ID, first name and last name are required"
+  next: end

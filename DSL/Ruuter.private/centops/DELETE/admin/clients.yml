@@ -1,0 +1,66 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Delete a client"
+  method: delete
+  accepts: json
+  returns: json
+  namespace: centops
+  endpoint: /clients/{name}
+  allowlist:
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: ${incoming.headers.cookie}
+    plaintext: "customJwtCookie"
+  result: res
+  next: check_user_info_response
+
+check_user_info_response:
+  switch:
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: validate_name
+  next: return_incorrect_request
+
+validate_name:
+  switch:
+    - condition: ${incoming.params.name == null}
+      next: return_bad_request
+  next: create_log
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "DELETE"
+      path: "admin/clients"
+  result: delete_client
+
+delete_client:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/delete-client"
+    body:
+      name: ${incoming.params.name}
+      created: ${new Date().toISOString()}
+  result: delete_result
+  next: return_deleted_client
+
+return_deleted_client:
+  status: 204
+  return:
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Client name is required"
+  next: end

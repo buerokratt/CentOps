@@ -1,0 +1,42 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Delete a user log"
+  method: delete
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: log_id
+        type: string
+
+extract_request_data:
+  assign:
+    log_id: ${incoming.params.log_id}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${log_id == null}
+      next: return_bad_request
+  next: delete_log
+
+delete_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/delete-user-log"
+    body:
+      log_id: ${log_id}
+  result: delete_result
+  next: return_success
+
+return_success:
+  status: 204
+  return:
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Log ID is required"
+  next: end
