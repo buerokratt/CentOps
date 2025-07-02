@@ -1,0 +1,6 @@
+# secrets/data/tim-postgresql
+POSTGRES_USER={{ with secret "secret/tim-postgresql" }}{{ .Data.POSTGRES_USER }}{{ end }}
+POSTGRES_PASSWORD={{ with secret "secret/tim-postgresql" }}{{ .Data.POSTGRES_PASSWORD }}{{ end }}
+POSTGRES_DB={{ with secret "secret/tim-postgresql" }}{{ .Data.POSTGRES_DB }}{{ end }}
+POSTGRES_HOST_AUTH_METHOD={{ with secret "secret/tim-postgresql" }}{{ .Data.POSTGRES_HOST_AUTH_METHOD }}{{ end }}
+

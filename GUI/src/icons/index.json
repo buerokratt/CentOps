@@ -1,0 +1,15 @@
+{
+  "certificate-add": "certificate-add.svg",
+  "check": "check.svg",
+  "close": "close.svg",
+  "copy": "copy.svg",
+  "danger": "danger.svg",
+  "delete": "delete.svg",
+  "diff": "diff.svg",
+  "edit": "edit.svg",
+  "flag": "flag.svg",
+  "key": "key.svg",
+  "manifest": "manifest.svg",
+  "pods": "pods.svg",
+  "warning": "warning.svg"
+}

@@ -13,29 +13,7 @@ declaration:
         description: "Body field 'invitationId'"
       - field: info
         type: object
-        description: "Body field 'info'"  
-    headers:
-      - field: cookie
-        type: string
-        description: "Cookie field"    
-
-check_for_cookie:
-  switch:
-    - condition: ${incoming.headers == null || incoming.headers.cookie == null}
-      next: return_unauthorized
-
-authenticate:
-  template: "[#CENTOPS_PROJECT_LAYER]/permissions/applicant"
-  requestType: templates
-  headers:
-    cookie: ${incoming.headers.cookie}
-  result: permission
-
-validate_permission:
-  switch:
-    - condition: ${permission}
-      next: check_body
-  next: return_unauthorized
+        description: "Body field 'info'"
 
 check_body:
   switch:
@@ -150,9 +128,4 @@ return_incorrect_request:
 return_invitation_invalid:
   status: 404
   return: "Inserted invitation ID is not valid"
-  next: end
-
-return_unauthorized:
-  return: "error: unauthorized"
-  status: 401
   next: end
