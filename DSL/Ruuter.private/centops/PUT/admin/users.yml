@@ -8,22 +8,22 @@ declaration:
   namespace: centops
   allowlist:
     body:
-      - field: first_name
+      - field: firstName
         type: string
-      - field: last_name
+      - field: lastName
         type: string
-      - field: id_code
+      - field: idCode
         type: string
     params:
-      - field: user_id
+      - field: userId
         type: string
 
 extract_request_data:
   assign:
-    user_id: ${incoming.params.user_id}
-    first_name: ${incoming.body.first_name}
-    last_name: ${incoming.body.last_name}
-    id_code: ${incoming.body.id_code}
+    user_id: ${incoming.params.userId}
+    first_name: ${incoming.body.firstName}
+    last_name: ${incoming.body.lastName}
+    id_code: ${incoming.body.idCode}
   next: validate_input
 
 validate_input:

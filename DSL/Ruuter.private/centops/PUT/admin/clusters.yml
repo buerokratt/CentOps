@@ -10,20 +10,20 @@ declaration:
     body:
       - field: name
         type: string
-      - field: ip_address
+      - field: ipAddress
         type: string
-      - field: argo_api_url
+      - field: argoApiUrl
         type: string
     params:
-      - field: cluster_id
+      - field: clusterId
         type: string
 
 extract_request_data:
   assign:
-    cluster_id: ${incoming.params.cluster_id}
+    cluster_id: ${incoming.params.clusterId}
     name: ${incoming.body.name}
-    ip_address: ${incoming.body.ip_address}
-    argo_api_url: ${incoming.body.argo_api_url}
+    ip_address: ${incoming.body.ipAddress}
+    argo_api_url: ${incoming.body.argoApiUrl}
   next: validate_input
 
 validate_input:

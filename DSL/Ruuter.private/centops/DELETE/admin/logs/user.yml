@@ -8,12 +8,12 @@ declaration:
   namespace: centops
   allowlist:
     params:
-      - field: log_id
+      - field: logId
         type: string
 
 extract_request_data:
   assign:
-    log_id: ${incoming.params.log_id}
+    log_id: ${incoming.params.logId}
   next: validate_input
 
 validate_input:
