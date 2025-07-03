@@ -9,8 +9,8 @@ declaration:
 
 extract_request_data:
   assign:
-    client_id: ${incoming.params.client_id}
-    certificate_id: ${incoming.params.certificate_id}
+    client_id: ${incoming.params.clientId}
+    certificate_id: ${incoming.params.certificateId}
   next: validate_input
 
 validate_input:

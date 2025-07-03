@@ -8,12 +8,12 @@ declaration:
   namespace: centops
   allowlist:
     params:
-      - field: cluster_id
+      - field: clusterId
         type: string
 
 extract_request_data:
   assign:
-    cluster_id: ${incoming.params.cluster_id}
+    cluster_id: ${incoming.params.clusterId}
   next: validate_input
 
 validate_input:

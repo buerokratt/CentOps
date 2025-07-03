@@ -11,13 +11,13 @@ declaration:
     body:
       - field: name
         type: string
-      - field: kubernetes_cluster_address
+      - field: kubernetesClusterAddress
         type: string
-      - field: kubernetes_cluster_namespace
+      - field: kubernetesClusterNamespace
         type: string
-      - field: argo_app_deployment_name
+      - field: argoAppDeploymentName
         type: string
-      - field: authentication_certificate
+      - field: authenticationCertificate
         type: string
     headers:
       - field: cookie
@@ -44,10 +44,10 @@ check_user_info_response:
 extract_request_data:
   assign:
     name: ${incoming.body.name}
-    kubernetes_cluster_address: ${incoming.body.kubernetes_cluster_address}
-    kubernetes_cluster_namespace: ${incoming.body.kubernetes_cluster_namespace}
-    argo_app_deployment_name: ${incoming.body.argo_app_deployment_name}
-    authentication_certificate: ${incoming.body.authentication_certificate}
+    kubernetes_cluster_address: ${incoming.body.kubernetesClusterAddress}
+    kubernetes_cluster_namespace: ${incoming.body.kubernetesClusterNamespace}
+    argo_app_deployment_name: ${incoming.body.argoAppDeploymentName}
+    authentication_certificate: ${incoming.body.authenticationCertificate}
   next: validate_input
 
 validate_input:

@@ -8,12 +8,12 @@ declaration:
   namespace: centops
   allowlist:
     params:
-      - field: user_id
+      - field: userId
         type: string
 
 validate_id_code:
   switch:
-    - condition: ${incoming.params.user_id == null}
+    - condition: ${incoming.params.userId == null}
       next: return_bad_request
   next: create_log
 
@@ -31,7 +31,7 @@ delete_user:
   args:
     url: "[#CENTOPS_RESQL]/delete-user"
     body:
-      user_id: ${incoming.params.user_id}
+      user_id: ${incoming.params.userId}
   result: delete_result
   next: return_deleted_user
 
