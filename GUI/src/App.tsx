@@ -1,11 +1,11 @@
 import type { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import RootComponent from 'RootComponent';
+import { RootComponent } from 'RootComponent';
 import { ToastProvider } from 'context/ToastContext';
 
 const App: FC = () => {
   return (
-    <BrowserRouter basename="/centops">
+    <BrowserRouter basename={import.meta.env.REACT_APP_BASE}>
       <ToastProvider>
         <RootComponent />
       </ToastProvider>

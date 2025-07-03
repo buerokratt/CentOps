@@ -19,8 +19,9 @@ import FormTextarea from 'components/FormElements/FormTextarea';
 import { validate } from 'utils/json';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientSecretDetailsPage = () => {
+export const ClientSecretDetailsPage = withAuthorization(() => {
   const { secretId } = useParams<{ secretId: 'create' | string }>();
   const isCreateMode = secretId === 'create';
   const { register, control } = useForm({
@@ -144,4 +145,4 @@ export const ClientSecretDetailsPage = () => {
       </Card>
     </>
   );
-};
+});

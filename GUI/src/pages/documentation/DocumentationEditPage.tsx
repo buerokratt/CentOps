@@ -5,8 +5,9 @@ import { TransField } from 'i18n/trans/field';
 import { formatDate } from 'utils/date';
 import FormTextarea from 'components/FormElements/FormTextarea';
 import { TransNav } from 'i18n/trans/nav';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const DocumentationEditPage = () => {
+export const DocumentationEditPage = withAuthorization(() => {
   const { register, control } = useForm({
     defaultValues: {
       content: `# Github is great
@@ -66,4 +67,4 @@ export const DocumentationEditPage = () => {
       </Card>
     </>
   );
-};
+});

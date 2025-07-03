@@ -1,0 +1,37 @@
+[
+  {
+    "id": "clients",
+    "label": { "et": "Clients", "en": "Clients" },
+    "path": "/clients"
+  },
+  {
+    "id": "users",
+    "label": { "et": "Users", "en": "Users" },
+    "path": "/users"
+  },
+  {
+    "id": "clusters",
+    "label": { "et": "Clusters", "en": "Clusters" },
+    "path": "/clusters"
+  },
+  {
+    "id": "audit",
+    "label": { "et": "Audit logs", "en": "Audit logs" },
+    "path": "/audit",
+    "children": [
+      {
+        "label": { "et": "User activity", "en": "User activity" },
+        "path": "/user-activity"
+      },
+      {
+        "label": { "et": "Secrets access", "en": "Secrets access" },
+        "path": "/secret-access"
+      }
+    ]
+  },
+  {
+    "id": "documentation",
+    "label": { "et": "Documentation", "en": "Documentation" },
+    "path": "/documentation"
+  }
+]

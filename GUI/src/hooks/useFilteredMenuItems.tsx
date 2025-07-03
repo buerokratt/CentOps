@@ -3,13 +3,18 @@ import { useQuery } from '@tanstack/react-query';
 import { type MenuItem } from 'types/menuItem';
 import useMenuItems from 'hooks/useMenuItems';
 import { type CountConf } from 'types/countConf';
+import { ROLES } from 'utils/constants';
+import { accountStore } from 'store/account';
 
 const rolePermissions = {
-  ROLE_ADMINISTRATOR: ['clients'],
-  ROLE_SERVICE_MANAGER: ['clients'],
-  ROLE_CUSTOMER_SUPPORT_AGENT: ['clients'],
-  ROLE_CHATBOT_TRAINER: ['clients'],
-  ROLE_ANALYST: ['clients'],
+  [ROLES.ROLE_ADMINISTRATOR]: [
+    'clients',
+    'users',
+    'clusters',
+    'audit',
+    'documentation',
+  ],
+  [ROLES.ROLE_UNAUTHENTICATED]: [],
 };
 type Role = keyof typeof rolePermissions;
 
@@ -17,11 +22,18 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
   const items = useMenuItems(countConf);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
-  const { data } = useQuery<{ response: Role[] }>({
-    queryKey: ['accounts/user-role', 'prod'],
-    // TODO, remove initialData
-    initialData: { response: ['ROLE_ADMINISTRATOR'] },
+  const { isSuccess, data } = useQuery<{ response: Role[] }>({
+    queryKey: ['account/user-role', 'prod'],
+    initialData: { response: [ROLES.ROLE_UNAUTHENTICATED] },
   });
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      // console.log(data.response);
+      accountStore.setState({ userRoles: data.response });
+      // console.log(accountStore.getState());
+    }
+  }, [data, isSuccess]);
 
   useEffect(() => {
     if (!data) {

@@ -1,3 +1,4 @@
+import 'styles/main.scss';
 import type { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Layout, MainNavigation } from 'components';
@@ -9,7 +10,6 @@ import {
   ParticipantsPage,
 } from 'pages';
 import { ROUTES } from 'resources/routes-constants';
-import 'styles/main.scss';
 import InstitutionsPages from 'pages/InstitutionsPage';
 import MessagesPage from 'pages/MessagesPage';
 import ManifestsOverviewPage from 'pages/manifests/ManifestsOverviewPage';
@@ -39,7 +39,7 @@ import { ClientPodsList } from 'pages/client/ClientPodsList';
 import { UserActivityPage } from 'pages/audit/UserActivityPage';
 import { SecretAccessPage } from 'pages/audit/SecretAccessPage';
 
-const RootComponent: FC = () => {
+export const RootComponent: FC = () => {
   return (
     <Routes>
       <Route element={<Layout navigation={<MainNavigation />} />}>
@@ -164,5 +164,3 @@ const RootComponent: FC = () => {
     </Routes>
   );
 };
-
-export default RootComponent;

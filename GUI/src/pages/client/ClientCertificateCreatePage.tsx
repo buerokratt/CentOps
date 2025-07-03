@@ -6,8 +6,9 @@ import { TransTitle } from 'i18n/trans/title';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 import { Trans } from 'react-i18next';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientCertificateCreatePage = () => {
+export const ClientCertificateCreatePage = withAuthorization(() => {
   const { register, control } = useForm({
     defaultValues: {
       name: 'Kana',
@@ -96,4 +97,4 @@ export const ClientCertificateCreatePage = () => {
       </Card>
     </>
   );
-};
+});

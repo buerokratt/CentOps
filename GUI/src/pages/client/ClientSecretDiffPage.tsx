@@ -4,8 +4,9 @@ import { TransButton } from 'i18n/trans/button';
 import ReactDiffViewer from 'react-diff-viewer';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientSecretDiffPage = () => {
+export const ClientSecretDiffPage = withAuthorization(() => {
   return (
     <>
       <Track direction="vertical" align="left">
@@ -38,4 +39,4 @@ export const ClientSecretDiffPage = () => {
       </Card>
     </>
   );
-};
+});

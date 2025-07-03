@@ -13,8 +13,9 @@ import { Link } from 'components/Router/Link';
 import { ROUTES } from 'resources/routes-constants';
 import { TransTitle } from 'i18n/trans/title';
 import { formatDate } from 'utils/date';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientManifestListPage = () => {
+export const ClientManifestListPage = withAuthorization(() => {
   const [clients] = useState<ClientManifest[]>([
     {
       id: '1',
@@ -110,4 +111,4 @@ export const ClientManifestListPage = () => {
       </Card>
     </>
   );
-};
+});

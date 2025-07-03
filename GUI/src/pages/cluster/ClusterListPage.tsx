@@ -1,6 +1,13 @@
-import { Button, Card, DataTable, Icon, Track } from 'components';
-import { useMemo, useState } from 'react';
-import type { Cluster } from 'types/cluster';
+import {
+  Button,
+  Card,
+  ConfirmDeleteButton,
+  DataTable,
+  Icon,
+  Track,
+} from 'components';
+import { useCallback, useMemo, useState } from 'react';
+import type { ApiCluster } from 'types/cluster';
 import {
   createColumnHelper,
   type PaginationState,
@@ -11,25 +18,29 @@ import { TransNav } from 'i18n/trans/nav';
 import { TransTableHead } from 'i18n/trans/table';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
+import { useQuery } from '@tanstack/react-query';
+import { withAuthorization } from 'hoc/withAuthorization';
+import api from 'services/api';
 
-export const ClusterListPage = () => {
-  const [clients] = useState<Cluster[]>([
-    {
-      id: '1',
-      name: 'Cluster 1',
-    },
-    {
-      id: '2',
-      name: 'Cluster 2',
-    },
-  ]);
+export const ClusterListPage = withAuthorization(() => {
+  const {
+    data: { response: clusters },
+    refetch,
+  } = useQuery<{ response: ApiCluster[] }>({
+    queryKey: ['admin/clusters'],
+    initialData: { response: [] },
+  });
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const handleDelete = useCallback(async ({ clusterId }: ApiCluster) => {
+    await api.delete(`/admin/clusters?clusterId=${clusterId}`);
+    refetch();
+  }, []);
 
-  const columnHelper = createColumnHelper<Cluster>();
+  const columnHelper = createColumnHelper<ApiCluster>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
@@ -37,23 +48,31 @@ export const ClusterListPage = () => {
         header: () => <TransTableHead i18nKey="clusterName" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('id', {
+      columnHelper.display({
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
-        },
-        cell: () => (
+        meta: { size: 0 },
+        cell: (props) => (
           <Track gap={8}>
-            <Button appearance="text">
+            <Button
+              appearance="text"
+              component={Link}
+              to={ROUTES.CLUSTER_DETAILS_ROUTE}
+              params={{ clusterId: props.row.original.clusterId }}
+            >
               <Icon name="edit" />
               <TransButton i18nKey="edit" />
             </Button>
-            <Button appearance="text">
+            <ConfirmDeleteButton
+              appearance="text"
+              entity={props.row.original}
+              entityName="name"
+              onConfirm={handleDelete}
+            >
               <Icon name="delete" />
               <TransButton i18nKey="delete" />
-            </Button>
+            </ConfirmDeleteButton>
           </Track>
         ),
       }),
@@ -85,7 +104,7 @@ export const ClusterListPage = () => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={clients}
+            data={clusters}
             columns={columns}
             sortable
             pagination={pagination}
@@ -97,4 +116,4 @@ export const ClusterListPage = () => {
       </Card>
     </>
   );
-};
+});

@@ -20,6 +20,7 @@ import { TransLabel } from 'i18n/trans/label';
 import { formatDate } from 'utils/date';
 import type { IconName } from 'components/Icon';
 import type { LabelProps } from 'components/Label';
+import { withAuthorization } from 'hoc/withAuthorization';
 
 const statusMap = new Map<
   ClientPodStatus,
@@ -30,7 +31,7 @@ const statusMap = new Map<
   [ClientPodStatuses.NOT_RUNNING, { icon: 'danger', type: 'error' }],
 ]);
 
-export const ClientPodsList = () => {
+export const ClientPodsList = withAuthorization(() => {
   const [clients] = useState<ClientPod[]>([
     {
       id: '1',
@@ -152,4 +153,4 @@ export const ClientPodsList = () => {
       </Card>
     </>
   );
-};
+});

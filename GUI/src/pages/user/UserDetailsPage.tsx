@@ -6,8 +6,9 @@ import { TransField } from 'i18n/trans/field';
 import { TransTitle } from 'i18n/trans/title';
 import { formatDate } from 'utils/date';
 import { TransNav } from 'i18n/trans/nav';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const UserDetailsPage = () => {
+export const UserDetailsPage = withAuthorization(() => {
   const { userId } = useParams<{ userId: 'create' | string }>();
   const isCreateMode = userId === 'create';
   const { register, control } = useForm({
@@ -101,4 +102,4 @@ export const UserDetailsPage = () => {
       </Card>
     </>
   );
-};
+});

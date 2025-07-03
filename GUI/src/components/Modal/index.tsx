@@ -3,11 +3,11 @@ import * as RadixDialog from '@radix-ui/react-dialog';
 import { Track } from 'components';
 import './Modal.scss';
 
-type ModalProps = {
+export interface ModalProps {
   title: string;
   footer?: ReactNode;
   onClose: () => void;
-};
+}
 
 export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   title,

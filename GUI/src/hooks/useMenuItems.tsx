@@ -40,6 +40,8 @@ const useMenuItems = (count?: CountConf) => {
             "REACT_APP_MENU_JSON was ignored becuase it wasn't an array"
           );
         }
+        // TODO, tmp return just externals
+        return externals;
       }
     } catch (e) {
       console.warn(e);

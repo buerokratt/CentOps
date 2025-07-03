@@ -25,6 +25,10 @@ export { Icon } from 'components/Icon';
 export { Label } from 'components/Label';
 export { Layout } from 'components/Layout';
 export { Modal } from 'components/Modal';
+export {
+  ConfirmDeleteButton,
+  ConfirmDeleteModal,
+} from 'components/Modal/ConfirmDeleteModal';
 export { Popover } from 'components/Popover';
 export { Popup } from 'components/Popup';
 export { Section } from 'components/Section';

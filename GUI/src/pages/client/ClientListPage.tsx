@@ -11,8 +11,9 @@ import { TransNav } from 'i18n/trans/nav';
 import { TransTableHead } from 'i18n/trans/table';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientListPage = () => {
+export const ClientListPage = withAuthorization(() => {
   const [clients] = useState<Client[]>([
     {
       id: '1',
@@ -108,4 +109,4 @@ export const ClientListPage = () => {
       </Card>
     </>
   );
-};
+});
