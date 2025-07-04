@@ -7,15 +7,6 @@ declaration:
   returns: json
   namespace: centops
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "GET"
-      path: "admin/documentations"
-  result: create_result
-
 get_documentation_list:
   call: http.get
   args:
