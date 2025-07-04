@@ -1,0 +1,57 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Update documentation"
+  method: put
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: content
+        type: string
+    params:
+      - field: documentId
+        type: string
+
+extract_request_data:
+  assign:
+    document_id: ${incoming.params.documentId}
+    content: ${incoming.body.content}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${document_id == null || content == null}
+      next: return_bad_request
+  next: create_log
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "PUT"
+      path: "admin/documentations"
+  result: create_result
+  next: update_documentation
+
+update_documentation:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/update-documentation"
+    body:
+      document_id: ${document_id}
+      content: ${content}
+  result: update_result
+  next: return_success
+
+return_success:
+  status: 204
+  return:
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Document ID and content are required"
+  next: end

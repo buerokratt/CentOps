@@ -1,0 +1,28 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get documentation list"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "GET"
+      path: "admin/documentations"
+  result: create_result
+
+get_documentation_list:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-documentation-list"
+  result: docs_result
+
+return_documentation_list:
+  status: 200
+  return: ${docs_result.response.body}
+  next: end
