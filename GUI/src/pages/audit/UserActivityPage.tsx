@@ -12,6 +12,7 @@ import type { AuditUserActivity } from 'types/audit';
 import type { LabelProps } from 'components/Label';
 import type { Method } from 'axios';
 import { formatDate } from 'utils/date';
+import { withAuthorization } from 'hoc/withAuthorization';
 
 const methodMap = new Map<Method, LabelProps['type']>([
   ['post', 'info'],
@@ -21,7 +22,7 @@ const methodMap = new Map<Method, LabelProps['type']>([
   ['get', 'success'],
 ]);
 
-export const UserActivityPage = () => {
+export const UserActivityPage = withAuthorization(() => {
   const [clients] = useState<AuditUserActivity[]>([
     {
       id: '1',
@@ -123,4 +124,4 @@ export const UserActivityPage = () => {
       </Card>
     </>
   );
-};
+});

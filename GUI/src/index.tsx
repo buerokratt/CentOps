@@ -10,15 +10,23 @@ import api from 'services/api';
 import { ToastProvider } from 'context/ToastContext';
 import 'i18n';
 
-const defaultQueryFn: QueryFunction | undefined = async ({ queryKey }) => {
-  const { data } = await api.get(queryKey[0] as string);
-  return data;
-};
+if (import.meta.env.DEV) {
+  try {
+    await (await import('./dev')).auth();
+  } catch (e) {
+    console.error('[DEV] Failed to load dev module:', e);
+  }
+}
+
+const defaultQueryFn: QueryFunction = async ({ queryKey: [url] }) =>
+  (await api.get(url as string)).data;
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      refetchOnMount: true,
       queryFn: defaultQueryFn,
+      // staleTime: 5 * 60 * 1000, // 5 minutes
     },
   },
 });

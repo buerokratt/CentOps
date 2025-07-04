@@ -6,8 +6,9 @@ import { TransTitle } from 'i18n/trans/title';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 import { Trans } from 'react-i18next';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientDeploymentCreatePage = () => {
+export const ClientDeploymentCreatePage = withAuthorization(() => {
   const { register, control } = useForm({
     defaultValues: {
       nameSpace: 'ppa-buerokratt',
@@ -67,4 +68,4 @@ export const ClientDeploymentCreatePage = () => {
       </Card>
     </>
   );
-};
+});

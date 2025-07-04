@@ -12,8 +12,9 @@ import { TransTableHead } from 'i18n/trans/table';
 import { Link } from 'components/Router/Link';
 import { ROUTES } from 'resources/routes-constants';
 import { TransTitle } from 'i18n/trans/title';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientSecretListPage = () => {
+export const ClientSecretListPage = withAuthorization(() => {
   const [clients] = useState<ClientSecret[]>([
     {
       id: '1',
@@ -107,4 +108,4 @@ export const ClientSecretListPage = () => {
       </Card>
     </>
   );
-};
+});

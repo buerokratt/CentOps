@@ -15,13 +15,14 @@ import {
 } from 'types/audit';
 import type { LabelProps } from 'components/Label';
 import { formatDate } from 'utils/date';
+import { withAuthorization } from 'hoc/withAuthorization';
 
 const operationMap = new Map<AuditSecretsAccessOperation, LabelProps['type']>([
   [AuditSecretsAccessOperations.Read, 'info'],
   [AuditSecretsAccessOperations.Write, 'info'],
 ]);
 
-export const SecretAccessPage = () => {
+export const SecretAccessPage = withAuthorization(() => {
   const [clients] = useState<AuditSecretsAccess[]>([
     {
       id: '1',
@@ -88,7 +89,7 @@ export const SecretAccessPage = () => {
           <TransTitle i18nKey="audit" />
         </h6>
         <h1>
-          <Trans i18nKey="title.auditUserActivity" defaults="Secret access" />
+          <Trans i18nKey="title.auditSecretsAccess" defaults="Secret access" />
         </h1>
       </Track>
 
@@ -107,4 +108,4 @@ export const SecretAccessPage = () => {
       </Card>
     </>
   );
-};
+});
