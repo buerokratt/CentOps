@@ -1,7 +1,7 @@
 version: '3.9'
 services:
-  ruuter-private:
-    container_name: ruuter-private
+  ruuter:
+    container_name: ruuter
     image: ruuter
     depends_on:
       - vault-agent
@@ -14,29 +14,10 @@ services:
       - application.DSL.processedFiletypes=.yml,.yaml,.tmp
       - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
     volumes:
-      - ./DSL/Ruuter.private:/DSL
+      - ./DSL/Ruuter:/DSL
       - ./constants.ini:/app/constants.ini
     ports:
       - 8050:8050
-    networks:
-      - bykstack
-
-  ruuter-public:
-    container_name: ruuter-public
-    image: ruuter
-    environment:
-      - application.cors.allowedOrigins=http://localhost:8058,https://tim.buerokratt.ee
-      - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
-      - application.logging.displayRequestContent=true
-      - application.logging.displayResponseContent=true
-      - server.port=8051
-      - application.DSL.processedFiletypes=.yml,.yaml,.tmp
-      - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
-    volumes:
-      - ./DSL/Ruuter.public:/DSL
-      - ./constants.ini:/app/constants.ini
-    ports:
-      - 8051:8051
     networks:
       - bykstack
 

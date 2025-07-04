@@ -1,0 +1,51 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Create documentation"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: content
+        type: string
+
+extract_request_data:
+  assign:
+    content: ${incoming.body.content}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${content == null}
+      next: return_bad_request
+  next: create_documentation
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "POST"
+      path: "admin/documentations"
+  result: create_user
+
+create_documentation:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-documentation"
+    body:
+      content: ${content}
+  result: create_result
+  next: return_created
+
+return_created:
+  status: 201
+  return: "Documentation created successfully"
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Content is required"
+  next: end
