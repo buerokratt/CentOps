@@ -20,6 +20,7 @@ import { TransLabel } from 'i18n/trans/label';
 import { formatDate } from 'utils/date';
 import type { LabelProps } from 'components/Label';
 import type { IconName } from 'components/Icon';
+import { withAuthorization } from 'hoc/withAuthorization';
 
 const statusMap = new Map<
   ClientDeploymentStatus,
@@ -30,7 +31,7 @@ const statusMap = new Map<
   [ClientDeploymentStatuses.FAILED, { icon: 'danger', type: 'error' }],
 ]);
 
-export const ClientDeploymentList = () => {
+export const ClientDeploymentList = withAuthorization(() => {
   const [deployments] = useState<ClientDeployment[]>([
     {
       id: '1',
@@ -147,4 +148,4 @@ export const ClientDeploymentList = () => {
       </Card>
     </>
   );
-};
+});

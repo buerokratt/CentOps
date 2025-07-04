@@ -17,8 +17,9 @@ import { GenerateCertificateDialog } from 'pages/client/dialog/GenerateCertifica
 import { DeleteCertificateDialog } from 'pages/client/dialog/DeleteCertificateDialog';
 import { ConfirmChangesDialog } from 'pages/client/dialog/ConfirmChangesDialog';
 import { CertificateDetailsDialog } from 'pages/client/dialog/CertificateDetailsDialog';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientCertificateList = () => {
+export const ClientCertificateList = withAuthorization(() => {
   const [clients] = useState<ClientCertificate[]>([
     {
       id: '1',
@@ -134,4 +135,4 @@ export const ClientCertificateList = () => {
       </Card>
     </>
   );
-};
+});

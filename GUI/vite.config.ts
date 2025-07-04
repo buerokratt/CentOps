@@ -8,12 +8,13 @@ import VitePluginSvgSpritemap from '@spiriit/vite-plugin-svg-spritemap';
 import * as path from 'path';
 import * as fs from 'node:fs';
 import chokidar, { type FSWatcher } from 'chokidar';
+import menu from './menu.json';
 
 const iconsDir = 'src/icons';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/',
+  base: process.env.REACT_APP_BASE ?? '/',
   server: {
     port: 8057,
     host: '0.0.0.0',
@@ -42,6 +43,9 @@ export default defineConfig({
   ],
   define: {
     'process.env': {},
+    'import.meta.env.REACT_APP_BASE': JSON.stringify(
+      process.env.REACT_APP_BASE
+    ),
     'import.meta.env.REACT_APP_SERVICE_ID': JSON.stringify(
       process.env.REACT_APP_SERVICE_ID
     ),
@@ -51,6 +55,7 @@ export default defineConfig({
     'import.meta.env.REACT_APP_PUBLIC_URL': JSON.stringify(
       process.env.REACT_APP_PUBLIC_URL
     ),
+    'import.meta.env.REACT_APP_MENU_JSON': JSON.stringify(JSON.stringify(menu)),
   },
   css: {
     preprocessorOptions: {

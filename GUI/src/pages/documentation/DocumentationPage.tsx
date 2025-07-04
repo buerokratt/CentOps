@@ -4,8 +4,9 @@ import { Link } from 'components/Router/Link';
 import { ROUTES } from 'resources/routes-constants';
 import { TransButton } from 'i18n/trans/button';
 import Markdown from 'markdown-to-jsx';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const DocumentationPage = () => {
+export const DocumentationPage = withAuthorization(() => {
   const markdown = `# Github is great
   
   [Read about everything on Github](https://github.com).
@@ -29,4 +30,4 @@ export const DocumentationPage = () => {
       </Card>
     </>
   );
-};
+});

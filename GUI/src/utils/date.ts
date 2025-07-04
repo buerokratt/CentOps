@@ -1,31 +1,40 @@
-import * as dateFns from 'date-fns';
-
+import { format, isValid, parseISO } from 'date-fns';
 import et from 'date-fns/locale/et';
 import en from 'date-fns/locale/en-US';
 import i18n from 'i18n';
 
-export const locales = { et, en };
-export const localesMap = new Map([
-  ['et', locales.et],
-  ['en', locales.en],
-]);
+export const locales = { et, en } as const;
+export const localesMap = new Map(Object.entries(locales));
 
 const formatPatterns = {
-  dateTime: `dd-MM-yyyy hh:mm a`,
+  dateTime: 'dd-MM-yyyy hh:mm a',
   default: 'dd.MM.yyyy',
 } as const;
+
 type DateFormatPattern = keyof typeof formatPatterns;
+type DateInput = Date | string;
+
+const parseDate = (date: DateInput): Date | null => {
+  if (date instanceof Date) {
+    return isValid(date) ? date : null;
+  }
+  const parsedDate = parseISO(date);
+  return isValid(parsedDate) ? parsedDate : null;
+};
 
 export const formatDate = (
-  date: Date | string,
-  formatStyle: keyof typeof formatPatterns | string = formatPatterns.default
-) =>
-  dateFns.format(
-    typeof date === 'string' ? dateFns.parseISO(date) : date,
+  date: DateInput,
+  formatStyle: DateFormatPattern | string = formatPatterns.default
+): string => {
+  const parsedDate = parseDate(date);
+  if (!parsedDate) return '';
+
+  const pattern =
     formatStyle in formatPatterns
       ? formatPatterns[formatStyle as DateFormatPattern]
-      : formatStyle,
-    {
-      locale: localesMap.get(i18n.language!),
-    }
-  );
+      : formatStyle;
+
+  const locale = localesMap.get(i18n.language!) ?? locales.en;
+
+  return format(parsedDate, pattern, { locale });
+};

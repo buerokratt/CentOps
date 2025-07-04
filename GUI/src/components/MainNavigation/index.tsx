@@ -1,9 +1,7 @@
 import type { FC, MouseEvent } from 'react';
 import { useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { MdClose } from 'react-icons/md';
-import { Icon, MenuTree } from 'components';
-import { useTranslation } from 'react-i18next';
+import { MenuTree } from 'components';
 import useFilteredMenuItems from 'hooks/useFilteredMenuItems';
 import 'components/MainNavigation/MainNavigation.scss';
 import { type CountConf } from 'types/countConf';
@@ -13,7 +11,6 @@ interface MainNavigationProps {
 }
 
 export const MainNavigation: FC<MainNavigationProps> = ({ countConf }) => {
-  const { t } = useTranslation();
   const menuItems = useFilteredMenuItems(countConf);
   const serviceId = useMemo(
     () => import.meta.env.REACT_APP_SERVICE_ID?.split(','),
@@ -47,10 +44,7 @@ export const MainNavigation: FC<MainNavigationProps> = ({ countConf }) => {
         className="nav__menu-toggle close-button-item"
         onClick={handleCloseButtonClick}
       >
-        <Icon icon={<MdClose />} />
-        <span className="menu-item-title">
-          {t(`mainMenu.${navCollapsed ? 'open' : 'close'}Menu`)}
-        </span>
+        <span className="menu-item-title">Centops</span>
       </button>
       <ul className="nav__menu">
         <MenuTree

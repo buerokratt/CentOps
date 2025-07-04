@@ -8,8 +8,9 @@ import { CardHeader } from 'components/Card';
 import { formatDate } from 'utils/date';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientDetailsPage = () => {
+export const ClientDetailsPage = withAuthorization(() => {
   const { clientId } = useParams<{ clientId: 'create' | string }>();
   const isCreateMode = clientId === 'create';
   const { register, control } = useForm({
@@ -139,4 +140,4 @@ export const ClientDetailsPage = () => {
       </Card>
     </>
   );
-};
+});

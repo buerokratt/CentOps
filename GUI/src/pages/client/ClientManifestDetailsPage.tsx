@@ -14,8 +14,9 @@ import { TransTitle } from 'i18n/trans/title';
 import { formatDate } from 'utils/date';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
+import { withAuthorization } from 'hoc/withAuthorization';
 
-export const ClientManifestDetailsPage = () => {
+export const ClientManifestDetailsPage = withAuthorization(() => {
   const { manifestId } = useParams<{ manifestId: 'create' | string }>();
   const isCreateMode = manifestId === 'create';
   const { register, control } = useForm({
@@ -143,4 +144,4 @@ xmas-fifth-day:
       </Card>
     </>
   );
-};
+});
