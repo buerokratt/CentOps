@@ -27,7 +27,7 @@ check_for_required_parameters:
 
 call_create_user_log_template:
   template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
-  requestType: post
+  requestType: templates
   body:
     method: "DELETE"
     path: "admin/clients/manifests/delete"

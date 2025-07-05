@@ -32,7 +32,7 @@ get_user_info:
 
 check_cookie_info_response:
   switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+    - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
       next: extract_user_info_data
   next: return_bad_request
 
@@ -42,7 +42,7 @@ extract_user_info_data:
     first_name: ${user_info_response.response.body.firstName}
     last_name: ${user_info_response.response.body.lastName}
     path: ${incoming.body.path}
-    data: ${incoming.body.data}
+    method: ${incoming.body.method}
   next: create_log
 
 create_log:
@@ -50,8 +50,11 @@ create_log:
   args:
     url: "[#CENTOPS_RESQL]/create-user-log"
     body:
-      method: "DELETE"
-      path: "admin/clients"
+      method: ${method}
+      path: ${path}
+      user_id_code: ${user_id_code}
+      first_name: ${first_name}
+      last_name: ${last_name}
   result: create_log_result
   next: return_result
 
