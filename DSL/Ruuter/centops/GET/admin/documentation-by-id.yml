@@ -1,0 +1,42 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get documentation by ID"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: documentId
+        type: string
+
+extract_request_data:
+  assign:
+    document_id: ${incoming.params.documentId}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${document_id == null}
+      next: return_bad_request
+  next: get_documentation
+
+get_documentation:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-documentation"
+    query:
+      document_id: ${document_id}
+  result: doc_result
+  next: return_documentation
+
+return_documentation:
+  status: 200
+  return: ${doc_result.response.body}
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Document ID is required"
+  next: end
