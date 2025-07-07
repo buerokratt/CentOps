@@ -1,0 +1,39 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get deployments list per client"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: clientId
+        type: string
+        description: "Unique identifier of the client"
+
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.params.clientId == null}
+      next: return_incorrect_request
+  next: get_deployments
+
+get_deployments:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-deployments-by-client-id"
+    body:
+      client_id: ${incoming.params.clientId}
+  result: results
+  next: return_result
+
+return_result:
+  wrapper: false
+  status: 200
+  return: ${results.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter missing: clientId"
+  next: end

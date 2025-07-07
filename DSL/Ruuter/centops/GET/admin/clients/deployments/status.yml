@@ -1,0 +1,72 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get deployment status for a specific application"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: appName
+        type: string
+        description: "The name of the Argo CD application"
+
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.params.appName == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    appName: ${incoming.params.appName}
+  next: query_deployment_status
+
+query_deployment_status:
+  call: http.get
+  args:
+    url: "[#ARGO_CD_SERVER]/api/v1/applications/${appName}"
+    headers:
+      Authorization: "Bearer [#ARGO_CD_TOKEN]"
+      Content-Type: application/json
+  result: deployment_result
+  next: check_response
+
+check_response:
+  switch:
+    - condition: ${deployment_result.response.statusCodeValue >= 200 && deployment_result.response.statusCodeValue < 300}
+      next: merge_json_objects
+  next: return_error
+
+merge_json_objects:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER]/merge/objects"
+    body:
+      object1:
+        health: ${deployment_result.response.body.status.health}
+      object2:
+        status: ${deployment_result.response.body.status.sync.status}
+  result: merge_json_result
+  next: return_success
+
+return_success:
+  wrapper: false
+  return: ${merge_json_result.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter missing: client_id"
+  next: end
+
+return_error:
+  assign:
+    has_response: ${deployment_result != null && deployment_result.response != null}
+    has_body: ${has_response && deployment_result.response.body != null}
+    status_code: "${has_response ? deployment_result.response.statusCodeValue : 500}"
+    error_message: "${has_body ? deployment_result.response.body.error : ['Internal server error']}"
+  status: ${status_code}
+  return: ${error_message}
+  next: end
