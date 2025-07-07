@@ -1,0 +1,70 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Template for log user activity"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: method
+        type: string
+        description: "HTTP method type"
+      - field: path
+        type: string
+        description: "DSL request path"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie header with a jwt"
+
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: "customJwtCookie=${incoming.headers.cookie}"
+    plaintext: "customJwtCookie"
+  result: user_info_response
+  next: check_cookie_info_response
+
+check_cookie_info_response:
+  switch:
+    - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
+      next: extract_user_info_data
+  next: return_bad_request
+
+extract_user_info_data:
+  assign:
+    user_id_code: ${user_info_response.response.body.idCode}
+    first_name: ${user_info_response.response.body.firstName}
+    last_name: ${user_info_response.response.body.lastName}
+    path: ${incoming.body.path}
+    method: ${incoming.body.method}
+  next: create_log
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: ${method}
+      path: ${path}
+      user_id_code: ${user_id_code}
+      first_name: ${first_name}
+      last_name: ${last_name}
+  result: create_log_result
+  next: return_result
+
+return_result:
+  wrapper: false
+  status: 200
+  return: ${create_log_result.response.body}
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "User log haven't been created"
+  next: end
