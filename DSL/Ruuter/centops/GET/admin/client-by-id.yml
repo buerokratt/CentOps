@@ -43,16 +43,7 @@ validate_name:
 assign_parameters:
   assign:
     name: ${incoming.params.name}
-  next: create_log
-
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "GET"
-      path: "admin/client-by-id"
-  result: send_request
+  next: send_request
 
 send_request:
   call: http.get

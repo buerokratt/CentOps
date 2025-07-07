@@ -20,16 +20,7 @@ validate_input:
   switch:
     - condition: ${user_id == null}
       next: return_bad_request
-  next: create_log
-
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "GET"
-      path: "admin/user-by-id"
-  result: get_user
+  next: get_user
 
 get_user:
   call: http.get
