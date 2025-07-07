@@ -94,7 +94,7 @@ services:
     depends_on:
       - tim-postgresql
     environment:
-      - SECURITY_ALLOWLIST_JWT=resql,tim,tim-postgresql,ruuter-private,ruuter-public,data-mapper,gui_dev,localhost,127.0.0.1,::1
+      - SECURITY_ALLOWLIST_JWT=resql,tim,tim-postgresql,ruuter,data-mapper,gui_dev,localhost,127.0.0.1,::1
       - JWT_INTEGRATION_SIGNATURE_KEY_STORE_PASSWORD=defaultpassword
     ports:
       - 8085:8085

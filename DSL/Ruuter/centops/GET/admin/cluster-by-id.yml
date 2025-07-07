@@ -20,16 +20,7 @@ validate_input:
   switch:
     - condition: ${cluster_id == null}
       next: return_bad_request
-  next: create_log
-
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "GET"
-      path: "admin/cluster-by-id"
-  result: get_cluster
+  next: get_cluster
 
 get_cluster:
   call: http.get

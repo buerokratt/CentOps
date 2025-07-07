@@ -7,21 +7,11 @@ declaration:
   returns: json
   namespace: centops
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "GET"
-      path: "admin/clusters"
-  result: create_result
-
 list_clusters:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-cluster-list"
   result: clusters_result
-  next: return_clusters
 
 return_clusters:
   status: 200
