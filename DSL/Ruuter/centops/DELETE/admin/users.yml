@@ -11,6 +11,31 @@ declaration:
       - field: userId
         type: string
 
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: "customJwtCookie=${incoming.headers.cookie}"
+    plaintext:
+      "customJwtCookie"
+  result: user_info_response
+  next: check_user_info_response
+
+check_user_info_response:
+  switch:
+    - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
+      next: assign_user_data
+  next: return_incorrect_request
+
+assign_user_data:
+  assign:
+    userIdCode: ${user_info_response.response.body.idCode}
+    firstName: ${user_info_response.response.body.firstName}
+    lastName: ${user_info_response.response.body.lastName}
+  next: validate_id_code
+
 validate_id_code:
   switch:
     - condition: ${incoming.params.userId == null}
@@ -24,6 +49,9 @@ create_log:
     body:
       method: "DELETE"
       path: "admin/users"
+      user_id_code: ${userIdCode}
+      first_name: ${firstName}
+      last_name: ${lastName}
   result: delete_user
 
 delete_user:

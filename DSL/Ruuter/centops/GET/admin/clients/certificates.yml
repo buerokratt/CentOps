@@ -6,10 +6,22 @@ declaration:
   accepts: json
   returns: json
   namespace: centops
+  allowlist:
+    params:
+      - field: clientId
+        type: string
+      - field: page
+        type: number
+        description: "Page number for pagination"
+      - field: pageSize
+        type: number
+        description: "Number of items per page"
 
 extract_request_data:
   assign:
-    client_id: ${incoming.params.client_id}
+    client_id: ${incoming.params.clientId}
+    page: ${incoming.params.page ?? 1}
+    page_size: ${incoming.params.pageSize ?? 10}
   next: validate_input
 
 validate_input:
@@ -24,6 +36,8 @@ get_certificates:
     url: "[#CENTOPS_RESQL]/get-certificate-list"
     query:
       client_id: ${client_id}
+      page: ${page}
+      page_size: ${page_size}
   result: certificates_result
   next: return_certificates
 
