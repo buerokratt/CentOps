@@ -1,0 +1,226 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Trigger app deployment"
+  method: post
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    body:
+      - field: clientId
+        type: text
+        description: "Unique client id"
+      - field: manifestId
+        type: number
+        description: "Unique manifest id"
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+get_user_info:
+  call: http.post
+  args:
+    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
+    contentType: plaintext
+    headers:
+      cookie: "customJwtCookie=${incoming.headers.cookie}"
+    plaintext:
+      "customJwtCookie"
+  result: user_info_response
+  next: check_user_info_response
+
+check_user_info_response:
+  switch:
+    - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
+      next: assign_user_data
+  next: return_incorrect_request
+
+assign_user_data:
+  assign:
+    userIdCode: ${user_info_response.response.body.idCode}
+    firstName: ${user_info_response.response.body.firstName}
+    lastName: ${user_info_response.response.body.lastName}
+  next: check_for_required_parameters
+
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.body.clientId == null ||incoming.body.manifestId == null || userIdCode == null || firstName == null || lastName == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    clientId: ${incoming.body.clientId}
+    manifestId: ${incoming.body.manifestId}
+  next: get_client_data
+
+get_client_data:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-client-by-id"
+    query:
+      id: ${clientId}
+  result: client_result
+  next: check_client_data
+
+check_client_data:
+  switch:
+    - condition: ${client_result.response.body[0].kubernetesClusterNamespace == null || client_result.response.body[0].name == null}
+      next: create_error_log
+  next: extract_client_data
+
+extract_client_data:
+  assign:
+    namespace: ${client_result.response.body[0].kubernetesClusterNamespace}
+    clientName: ${client_result.response.body[0].name}
+    argoAppName: ${client_result.response.body[0].argoAppDeploymentName}
+  next: get_manifest_data
+
+get_manifest_data:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/get-manifests-details"
+    body:
+      manifest_id: ${manifestId}
+      client_id: ${clientId}
+  result: manifest_result
+  next: check_manifest_data
+
+check_manifest_data:
+  switch:
+    - condition: ${manifest_result.response.body[0].helmVersion == null || manifest_result.response.body[0].helmValues == null }
+      next: return_incorrect_request
+  next: extract_manifest_data
+
+extract_manifest_data:
+  assign:
+    helm_version: ${manifest_result.response.body[0].helmVersion}
+    helm_values: ${manifest_result.response.body[0].helmValues}
+  next: create_log
+
+create_log:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-user-log"
+    body:
+      method: "POST"
+      path: "admin/clients/deployments/run"
+      user_id_code: ${userIdCode}
+      first_name: ${firstName}
+      last_name: ${lastName}
+  result: create_log_result
+  next: trigger_argo_cd_deployment
+
+#call ArgoCD deployment
+trigger_argo_cd_deployment:
+  call: http.post
+  args:
+    url: "[#ARGO_CD_SERVER]/api/v1/applications?upsert=true"
+    headers:
+      Authorization: "Bearer [#ARGO_CD_TOKEN]"
+      Content-Type: application/json
+    body:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: ${argoAppName}
+        labels:
+          client-id: ${clientId}
+          client-name: ${clientName}
+      spec:
+        destination:
+          namespace: ${namespace}
+          server: "[#KUBERNETES_SERVER]"
+        project: default
+        source:
+          path: "[#GITHUB_HELM_PATH]"
+          repoURL: "[#GITHUB_URL]"
+          targetRevision: master
+          plugin:
+            env:
+              - name: HELM_VALUES
+                value: ${helm_values}
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+          syncOptions:
+            - CreateNamespace=true
+  result: argocd_run_result
+  error: save_negative_deployment_data
+  next: check_argocd_response
+
+check_argocd_response:
+  switch:
+    - condition: ${200 <= argocd_run_result.response.statusCodeValue && argocd_run_result.response.statusCodeValue < 300}
+      next: extract_argo_cd_data
+  next: save_negative_deployment_data
+
+extract_argo_cd_data:
+  assign:
+    argoDeploymentId: ${argocd_run_result.response.body.metadata.uid}
+  next: save_positive_deployment_data
+
+save_positive_deployment_data:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-deployment"
+    body:
+      client_id: ${clientId}
+      manifest_id: ${manifestId}
+      manifest_version: ${helm_version}
+      status: "DEPLOYED"
+      deployed_by_id_code: ${userIdCode}
+      deployed_by_username: ${firstName}
+      deployed_by_lastname: ${lastName}
+      argo_deploy_app_name: ${argoAppName}
+      argo_deployment_id: ${argoDeploymentId}
+  result: deployment_positive_result
+  next: return_successful_result
+
+save_negative_deployment_data:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-failed-deployment"
+    body:
+      client_id: ${clientId}
+      manifest_id: ${manifestId}
+      manifest_version: ${helm_version}
+      status: "FAILED"
+      deployed_by_id_code: ${userIdCode}
+      deployed_by_username: ${firstName}
+      deployed_by_lastname: ${lastName}
+      argo_deploy_app_name: ${argoAppName}
+      argo_deploy_err_message: ${argocd_run_result.response.body}
+  result: deployment_negative_result
+  next: merge_json_objects
+
+return_successful_result:
+  wrapper: false
+  status: 200
+  return: ${deployment_positive_result.response.body}
+  next: end
+
+merge_json_objects:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER]/merge/objects"
+    body:
+      object1: ${deployment_negative_result.response.body[0]}
+      object2:
+        errorMessage: ${argocd_run_result.response.body}
+  result: merge_json_result
+  next: return_unsuccessful_result
+
+return_unsuccessful_result:
+  wrapper: false
+  status: 500
+  return: ${merge_json_result.response.body}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameters missing: client_id, secretId or manifestId or cookie"
+  next: end
