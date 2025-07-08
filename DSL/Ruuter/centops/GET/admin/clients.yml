@@ -26,17 +26,8 @@ get_user_info:
 check_user_info_response:
   switch:
     - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
-      next: create_log
+      next: get_clients
   next: return_incorrect_request
-
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "GET"
-      path: "admin/clients"
-  result: get_clients
 
 get_clients:
   call: http.get
