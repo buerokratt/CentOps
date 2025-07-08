@@ -1,6 +1,13 @@
-import { Button, Card, DataTable, Icon, Track } from 'components';
-import { useMemo, useState } from 'react';
-import type { User } from 'types/user';
+import {
+  Button,
+  Card,
+  ConfirmDeleteButton,
+  DataTable,
+  Icon,
+  Track,
+} from 'components';
+import { useCallback, useMemo, useState } from 'react';
+import type { ApiUser } from 'types/user';
 import {
   createColumnHelper,
   type PaginationState,
@@ -12,25 +19,28 @@ import { TransTableHead } from 'i18n/trans/table';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
+import { useQuery } from '@tanstack/react-query';
+import api from 'services/api';
 
 export const UserListPage = withAuthorization(() => {
-  const [clients] = useState<User[]>([
-    {
-      id: '1',
-      name: 'User 1',
-    },
-    {
-      id: '2',
-      name: 'User 2',
-    },
-  ]);
+  const {
+    data: { response: users },
+    refetch,
+  } = useQuery<{ response: ApiUser[] }>({
+    queryKey: ['admin/clusters'],
+    initialData: { response: [] },
+  });
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-
-  const columnHelper = createColumnHelper<User>();
+  const handleDelete = useCallback(async ({ userId }: ApiUser) => {
+    await api.delete(`/admin/users?userId=${userId}`);
+    refetch();
+  }, []);
+  const columnHelper = createColumnHelper<ApiUser>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
@@ -50,16 +60,26 @@ export const UserListPage = withAuthorization(() => {
         meta: {
           size: 0,
         },
-        cell: () => (
+        cell: (props) => (
           <Track gap={8}>
-            <Button appearance="text">
+            <Button
+              appearance="text"
+              component={Link}
+              to={ROUTES.USER_DETAILS_ROUTE}
+              params={{ clusterId: props.row.original.userId }}
+            >
               <Icon name="edit" />
               <TransButton i18nKey="edit" />
             </Button>
-            <Button appearance="text">
+            <ConfirmDeleteButton
+              appearance="text"
+              entity={props.row.original}
+              entityName="name"
+              onConfirm={handleDelete}
+            >
               <Icon name="delete" />
               <TransButton i18nKey="delete" />
-            </Button>
+            </ConfirmDeleteButton>
           </Track>
         ),
       }),
@@ -88,7 +108,7 @@ export const UserListPage = withAuthorization(() => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={clients}
+            data={users}
             columns={columns}
             sortable
             pagination={pagination}
