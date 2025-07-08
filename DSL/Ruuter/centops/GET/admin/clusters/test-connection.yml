@@ -1,0 +1,88 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get status connection to cluster"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: clusterName
+        type: string
+        description: "The name of the Kubernetes cluster"
+
+check_for_required_parameters:
+  switch:
+    - condition: ${incoming.params.clusterName == null}
+      next: return_incorrect_request
+  next: extract_request_data
+
+extract_request_data:
+  assign:
+    clusterName: ${incoming.params.clusterName}
+  next: query_cluster_status
+
+query_cluster_status:
+  call: http.get
+  args:
+    url: "[#ARGO_CD_SERVER]/api/v1/clusters"
+    headers:
+      Authorization: "Bearer [#ARGO_CD_TOKEN]"
+      Content-Type: application/json
+  result: clusters_result
+  next: check_response
+
+check_response:
+  switch:
+    - condition: ${clusters_result.response.statusCodeValue >= 200 && clusters_result.response.statusCodeValue < 300}
+      next: extract_status_data
+  next: return_error
+
+extract_status_data:
+  assign:
+    clusterConnStatus:  ${clusters_result.items.find(obj => obj.name === ${clusterName})}
+  next: query_cluster_status
+
+check_for_status_required_parameters:
+  switch:
+    - condition: clusters_result.items.find(obj => obj.name === ${clusterName}) == null}
+      next: return_failed_status
+  next: return_success
+
+merge_json_objects: #TODO: check if need it
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER]/merge/objects"
+    body:
+      object1:
+        health: ${deployment_result.response.body.status.health}
+      object2:
+        status: ${deployment_result.response.body.status.sync.status}
+  result: merge_json_result
+  next: return_success
+
+return_success:
+  wrapper: false
+  return:  ${clusters_result.items.find(obj => obj.name === ${clusterName})}
+  next: end
+
+return_incorrect_request:
+  status: 400
+  return: "Required parameter missing: client_id"
+  next: end
+
+return_failed_status:
+  status: 400
+  return: "Connection status was failed or cluster doesn't exist"
+  next: end
+
+return_error:
+  assign:
+    has_response: ${deployment_result != null && deployment_result.response != null}
+    has_body: ${has_response && deployment_result.response.body != null}
+    status_code: "${has_response ? deployment_result.response.statusCodeValue : 500}"
+    error_message: "${has_body ? deployment_result.response.body.error : ['Internal server error']}"
+  status: ${status_code}
+  return: ${error_message}
+  next: end
