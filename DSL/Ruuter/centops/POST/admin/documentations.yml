@@ -10,6 +10,10 @@ declaration:
     body:
       - field: content
         type: string
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 extract_request_data:
   assign:
@@ -18,18 +22,20 @@ extract_request_data:
 
 validate_input:
   switch:
-    - condition: ${content == null}
+    - condition: ${content == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
-  next: create_documentation
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "POST"
-      path: "admin/documentations"
-  result: create_user
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "POST"
+    path: "admin/documentations"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_result
+  next: create_documentation
 
 create_documentation:
   call: http.post
@@ -47,5 +53,5 @@ return_created:
 
 return_bad_request:
   status: 400
-  return: "Content is required"
+  return: "Content and cookie are required"
   next: end

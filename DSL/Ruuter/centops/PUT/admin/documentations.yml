@@ -13,6 +13,10 @@ declaration:
     params:
       - field: documentId
         type: string
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 extract_request_data:
   assign:
@@ -22,18 +26,19 @@ extract_request_data:
 
 validate_input:
   switch:
-    - condition: ${document_id == null || content == null}
+    - condition: ${document_id == null || content == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
-  next: create_log
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "PUT"
-      path: "admin/documentations"
-  result: create_result
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "PUT"
+    path: "admin/documentations"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_result
   next: update_documentation
 
 update_documentation:
@@ -53,5 +58,5 @@ return_success:
 
 return_bad_request:
   status: 400
-  return: "Document ID and content are required"
+  return: "Document ID, content and cookie are required"
   next: end

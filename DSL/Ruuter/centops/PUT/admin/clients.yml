@@ -30,7 +30,7 @@ get_user_info:
     url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
     contentType: plaintext
     headers:
-      cookie: ${incoming.headers.cookie}
+      cookie: "customJwtCookie=${incoming.headers.cookie}"
     plaintext: "customJwtCookie"
   result: res
   next: check_user_info_response
@@ -53,18 +53,19 @@ extract_request_data:
 
 validate_input:
   switch:
-    - condition: ${param_name == null || body_name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null}
+    - condition: ${param_name == null || body_name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
-  next: create_log
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "PUT"
-      path: "admin/clients"
-  result: create_result
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "PUT"
+    path: "admin/clients"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_result
   next: update_client
 
 update_client:
@@ -88,5 +89,5 @@ return_updated_client:
 
 return_bad_request:
   status: 400
-  return: "Client name and all fields are required"
+  return: "Client name, cookie and all fields are required"
   next: end

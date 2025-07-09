@@ -12,6 +12,8 @@ declaration:
         type: string
       - field: ipAddress
         type: string
+      - field: argoApiUrl
+        type: string
     params:
       - field: clusterId
         type: string

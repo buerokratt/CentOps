@@ -3,7 +3,10 @@ SELECT id,
        name,
        ip_address,
        argo_api_url,
-       created_at
+       created_at,
+       CEIL(COUNT(*) OVER() / :page_size::DECIMAL) AS total_pages
 FROM clusters c
 WHERE c.id = (SELECT max(id) FROM clusters WHERE cluster_id = c.cluster_id)
-  AND c.deleted = false;
+  AND c.deleted = false
+ORDER BY id
+OFFSET ((GREATEST(:page::INTEGER, 1) - 1) * :page_size::INTEGER ) LIMIT :page_size::INTEGER;
