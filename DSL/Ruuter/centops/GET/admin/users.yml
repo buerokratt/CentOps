@@ -6,11 +6,27 @@ declaration:
   accepts: json
   returns: json
   namespace: centops
+  allowlist:
+    params:
+      - field: page
+        type: number
+        description: "Page number for pagination"
+      - field: pageSize
+        type: number
+        description: "Number of items per page"
+
+extractRequestData:
+  assign:
+    page: ${incoming.params.page ?? 1}
+    page_size: ${incoming.params.pageSize ?? 10}
 
 list_users:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-user-list"
+    query:
+      page: ${page}
+      page_size: ${page_size}
   result: users_result
 
 return_users:
