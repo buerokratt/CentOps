@@ -10,21 +10,27 @@ declaration:
     params:
       - field: userId
         type: string
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 validate_id_code:
   switch:
-    - condition: ${incoming.params.userId == null}
+    - condition: ${incoming.params.userId == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
-  next: create_log
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "DELETE"
-      path: "admin/users"
-  result: delete_user
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "DELETE"
+    path: "admin/users"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_result
+  next: delete_user
 
 delete_user:
   call: http.post
