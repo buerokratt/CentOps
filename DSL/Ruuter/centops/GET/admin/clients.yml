@@ -7,32 +7,26 @@ declaration:
   returns: json
   namespace: centops
   allowlist:
-    headers:
-      - field: cookie
-        type: string
-        description: "Cookie field"
+    params:
+      - field: page
+        type: number
+        description: "Page number for pagination"
+      - field: pageSize
+        type: number
+        description: "Number of items per page"
 
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
-    headers:
-      cookie: ${incoming.headers.cookie}
-    plaintext: "customJwtCookie"
-  result: res
-  next: check_user_info_response
-
-check_user_info_response:
-  switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
-      next: get_clients
-  next: return_incorrect_request
+extractRequestData:
+  assign:
+    page: ${incoming.params.page ?? 1}
+    page_size: ${incoming.params.pageSize ?? 10}
 
 get_clients:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-client-list"
+    query:
+      page: ${page}
+      page_size: ${page_size}
   result: clients_result
   next: return_clients
 

@@ -20,13 +20,14 @@ get_user_info:
     contentType: plaintext
     headers:
       cookie: "customJwtCookie=${incoming.headers.cookie}"
-    plaintext: "customJwtCookie"
-  result: res
+    plaintext:
+      "customJwtCookie"
+  result: user_info_response
   next: check_user_info_response
 
 check_user_info_response:
   switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+    - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
       next: validate_name
   next: return_incorrect_request
 
