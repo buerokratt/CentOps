@@ -28,33 +28,25 @@ get_user_info:
 check_user_info_response:
   switch:
     - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
-      next: assign_user_data
+      next: validate_name
   next: return_incorrect_request
-
-assign_user_data:
-  assign:
-    userIdCode: ${user_info_response.response.body.idCode}
-    firstName: ${user_info_response.response.body.firstName}
-    lastName: ${user_info_response.response.body.lastName}
-  next: validate_name
 
 validate_name:
   switch:
-    - condition: ${incoming.params.name == null}
+    - condition: ${incoming.params.name == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
-  next: create_log
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "DELETE"
-      path: "admin/clients"
-      user_id_code: ${userIdCode}
-      first_name: ${firstName}
-      last_name: ${lastName}
-  result: delete_client
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "DELETE"
+    path: "admin/clients"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_result
+  next: delete_client
 
 delete_client:
   call: http.post
@@ -73,5 +65,5 @@ return_deleted_client:
 
 return_bad_request:
   status: 400
-  return: "Client name is required"
+  return: "Client name and cookie are required"
   next: end

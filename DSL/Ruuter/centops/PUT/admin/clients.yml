@@ -31,23 +31,15 @@ get_user_info:
     contentType: plaintext
     headers:
       cookie: "customJwtCookie=${incoming.headers.cookie}"
-    plaintext:
-      "customJwtCookie"
-  result: user_info_response
+    plaintext: "customJwtCookie"
+  result: res
   next: check_user_info_response
 
 check_user_info_response:
   switch:
-    - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
-      next: assign_user_data
+    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
+      next: extract_request_data
   next: return_incorrect_request
-
-assign_user_data:
-  assign:
-    userIdCode: ${user_info_response.response.body.idCode}
-    firstName: ${user_info_response.response.body.firstName}
-    lastName: ${user_info_response.response.body.lastName}
-  next: extract_request_data
 
 extract_request_data:
   assign:
@@ -61,21 +53,19 @@ extract_request_data:
 
 validate_input:
   switch:
-    - condition: ${param_name == null || body_name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null}
+    - condition: ${param_name == null || body_name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
-  next: create_log
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "PUT"
-      path: "admin/clients"
-      user_id_code: ${userIdCode}
-      first_name: ${firstName}
-      last_name: ${lastName}
-  result: create_result
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "PUT"
+    path: "admin/clients"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_result
   next: update_client
 
 update_client:
@@ -99,5 +89,5 @@ return_updated_client:
 
 return_bad_request:
   status: 400
-  return: "Client name and all fields are required"
+  return: "Client name, cookie and all fields are required"
   next: end
