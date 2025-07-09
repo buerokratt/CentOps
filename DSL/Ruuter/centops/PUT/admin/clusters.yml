@@ -17,57 +17,33 @@ declaration:
     params:
       - field: clusterId
         type: string
-
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
     headers:
-      cookie: "customJwtCookie=${incoming.headers.cookie}"
-    plaintext:
-      "customJwtCookie"
-  result: user_info_response
-  next: check_user_info_response
-
-check_user_info_response:
-  switch:
-    - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
-      next: assign_user_data
-  next: return_incorrect_request
-
-assign_user_data:
-  assign:
-    userIdCode: ${user_info_response.response.body.idCode}
-    firstName: ${user_info_response.response.body.firstName}
-    lastName: ${user_info_response.response.body.lastName}
-  next: extract_request_data
+      - field: cookie
+        type: string
+        description: "Cookie field"
 
 extract_request_data:
   assign:
     cluster_id: ${incoming.params.clusterId}
     name: ${incoming.body.name}
     ip_address: ${incoming.body.ipAddress}
-    argo_api_url: ${incoming.body.argoApiUrl}
   next: validate_input
 
 validate_input:
   switch:
-    - condition: ${cluster_id == null || name == null || ip_address == null || argo_api_url == null}
+    - condition: ${cluster_id == null || name == null || ip_address == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
-  next: create_log
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "PUT"
-      path: "admin/clusters"
-      user_id_code: ${userIdCode}
-      first_name: ${firstName}
-      last_name: ${lastName}
-  result: create_result
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "PUT"
+    path: "admin/clusters"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_cluster
   next: update_cluster
 
 update_cluster:
@@ -78,7 +54,6 @@ update_cluster:
       cluster_id: ${cluster_id}
       name: ${name}
       ip_address: ${ip_address}
-      argo_api_url: ${argo_api_url}
   result: update_result
   next: return_success
 
@@ -89,5 +64,5 @@ return_success:
 
 return_bad_request:
   status: 400
-  return: "Cluster ID and all fields are required"
+  return: "Cluster ID, cookie and all fields are required"
   next: end
