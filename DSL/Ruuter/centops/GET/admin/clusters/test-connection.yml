@@ -36,53 +36,26 @@ query_cluster_status:
 check_response:
   switch:
     - condition: ${clusters_result.response.statusCodeValue >= 200 && clusters_result.response.statusCodeValue < 300}
-      next: extract_status_data
-  next: return_error
+      next: parse_cluster_status
+  next: return_failed_status
 
-extract_status_data:
-  assign:
-    clusterConnStatus:  ${clusters_result.items.find(obj => obj.name === ${clusterName})}
-  next: query_cluster_status
-
-check_for_status_required_parameters:
+parse_cluster_status:
   switch:
-    - condition: clusters_result.items.find(obj => obj.name === ${clusterName}) == null}
+    - condition: ${clusters_result.response.body.items.find(obj => obj.name === clusterName) === undefined}
       next: return_failed_status
-  next: return_success
-
-merge_json_objects: #TODO: check if need it
-  call: http.post
-  args:
-    url: "[#CENTOPS_DMAPPER]/merge/objects"
-    body:
-      object1:
-        health: ${deployment_result.response.body.status.health}
-      object2:
-        status: ${deployment_result.response.body.status.sync.status}
-  result: merge_json_result
   next: return_success
 
 return_success:
   wrapper: false
-  return:  ${clusters_result.items.find(obj => obj.name === ${clusterName})}
+  return: ${clusters_result.response.body.items.find(obj => obj.name === clusterName)?.connectionState}
   next: end
 
 return_incorrect_request:
   status: 400
-  return: "Required parameter missing: client_id"
+  return: "Required parameter missing: clusterName"
   next: end
 
 return_failed_status:
   status: 400
   return: "Connection status was failed or cluster doesn't exist"
-  next: end
-
-return_error:
-  assign:
-    has_response: ${deployment_result != null && deployment_result.response != null}
-    has_body: ${has_response && deployment_result.response.body != null}
-    status_code: "${has_response ? deployment_result.response.statusCodeValue : 500}"
-    error_message: "${has_body ? deployment_result.response.body.error : ['Internal server error']}"
-  status: ${status_code}
-  return: ${error_message}
   next: end

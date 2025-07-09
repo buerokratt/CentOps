@@ -12,30 +12,32 @@ declaration:
         type: string
       - field: ipAddress
         type: string
-      - field: argoApiUrl
+    headers:
+      - field: cookie
         type: string
+        description: "Cookie field"
 
 extract_request_data:
   assign:
     name: ${incoming.body.name}
     ip_address: ${incoming.body.ipAddress}
-    argo_api_url: ${incoming.body.argoApiUrl}
   next: validate_input
 
 validate_input:
   switch:
-    - condition: ${name == null || ip_address == null || argo_api_url == null}
+    - condition: ${name == null || ip_address == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
-  next: create_log
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "POST"
-      path: "admin/clusters"
-  result: create_result
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "POST"
+    path: "admin/clusters"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_cluster
   next: create_cluster
 
 create_cluster:
@@ -45,7 +47,6 @@ create_cluster:
     body:
       name: ${name}
       ip_address: ${ip_address}
-      argo_api_url: ${argo_api_url}
   result: create_result
   next: return_created
 
@@ -56,5 +57,5 @@ return_created:
 
 return_bad_request:
   status: 400
-  return: "Name, IP address, Argo API URL and token are required"
+  return: "Name, IP address are required or cookie"
   next: end
