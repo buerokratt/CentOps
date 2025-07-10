@@ -1,6 +1,20 @@
 export interface Client {
   id: string;
   name: string;
+  clientId: string;
+  // https://k8s.example.com:6443
+  kubernetesClusterAddress: string;
+  kubernetesClusterNamespace: string;
+  hashicorpVaultToken: string;
+  // TODO ↑ which one is valid? ↓
+  argoAppDeploymentName?: string;
+  // "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----"
+  authenticationCertificate: string;
+}
+
+export interface ApiClient extends Client {
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ClientSecret {

@@ -6,6 +6,9 @@ export const TransTableHead = createTrans({
     <Trans i18nKey="table.head.certificate" defaults="Certificate" />
   ),
   client: <Trans i18nKey="table.head.client" defaults="Client" />,
+  clusterAddress: (
+    <Trans i18nKey="table.head.clusterAddress" defaults="Cluster address" />
+  ),
   clusterIp: <Trans i18nKey="table.head.clusterIp" defaults="Cluster IP" />,
   clusterName: (
     <Trans i18nKey="table.head.clusterName" defaults="Cluster name" />

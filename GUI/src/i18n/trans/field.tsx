@@ -7,7 +7,11 @@ export const TransField = createTrans({
     <Trans i18nKey="field.burokrattNetwork" defaults="Bürokratt network" />
   ),
   fingerprint: <Trans i18nKey="field.fingerprint" defaults="Fingerprint" />,
+  certificate: <Trans i18nKey="field.certificate" defaults="Certificate" />,
   clientName: <Trans i18nKey="field.clientName" defaults="Client name" />,
+  clusterAddress: (
+    <Trans i18nKey="field.clusterAddress" defaults="Cluster address" />
+  ),
   clusterIp: <Trans i18nKey="field.clusterIp" defaults="Cluster IP" />,
   clusterName: <Trans i18nKey="field.clusterName" defaults="Cluster name" />,
   content: <Trans i18nKey="field.content" defaults="Content" />,

@@ -1,6 +1,13 @@
-import { Button, Card, DataTable, Icon, Track } from 'components';
-import { useMemo, useState } from 'react';
-import type { Client } from 'types/client';
+import {
+  Button,
+  Card,
+  ConfirmDeleteButton,
+  DataTable,
+  Icon,
+  Track,
+} from 'components';
+import { useCallback, useMemo, useState } from 'react';
+import type { ApiClient } from 'types/client';
 import {
   createColumnHelper,
   type PaginationState,
@@ -12,25 +19,27 @@ import { TransTableHead } from 'i18n/trans/table';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
+import { useQuery } from '@tanstack/react-query';
+import api from 'services/api';
 
 export const ClientListPage = withAuthorization(() => {
-  const [clients] = useState<Client[]>([
-    {
-      id: '1',
-      name: 'Client 1',
-    },
-    {
-      id: '2',
-      name: 'Client 2',
-    },
-  ]);
+  const {
+    data: { response: clients },
+    refetch,
+  } = useQuery<{ response: ApiClient[] }>({
+    queryKey: ['admin/clients'],
+    initialData: { response: [] },
+  });
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-
-  const columnHelper = createColumnHelper<Client>();
+  const handleDelete = useCallback(async ({ clientId }: ApiClient) => {
+    await api.delete(`/admin/clients?clientId=${clientId}`);
+    refetch();
+  }, []);
+  const columnHelper = createColumnHelper<ApiClient>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
@@ -38,14 +47,14 @@ export const ClientListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="client" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('name', {
+      columnHelper.accessor('kubernetesClusterNamespace', {
         id: 'nameSpace',
         header: () => <TransTableHead i18nKey="nameSpace" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('name', {
-        id: 'clusterIp',
-        header: () => <TransTableHead i18nKey="clusterIp" />,
+      columnHelper.accessor('kubernetesClusterNamespace', {
+        id: 'clusterAddress',
+        header: () => <TransTableHead i18nKey="clusterAddress" />,
         cell: (message) => message.getValue(),
       }),
       columnHelper.accessor('name', {
@@ -57,23 +66,36 @@ export const ClientListPage = withAuthorization(() => {
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
-        },
-        cell: () => (
+        meta: { size: 0 },
+        cell: (props) => (
           <Track gap={8}>
-            <Button appearance="text">
+            <Button
+              appearance="text"
+              component={Link}
+              to={ROUTES.CLIENT_PODS_ROUTE}
+              params={{ clientId: props.row.original.clientId }}
+            >
               <Icon name="pods" />
               <TransButton i18nKey="pods" />
             </Button>
-            <Button appearance="text">
+            <Button
+              appearance="text"
+              component={Link}
+              to={ROUTES.CLIENT_DETAILS_ROUTE}
+              params={{ clientId: props.row.original.clientId }}
+            >
               <Icon name="edit" />
               <TransButton i18nKey="edit" />
             </Button>
-            <Button appearance="text">
+            <ConfirmDeleteButton
+              appearance="text"
+              entity={props.row.original}
+              entityName="name"
+              onConfirm={handleDelete}
+            >
               <Icon name="delete" />
               <TransButton i18nKey="delete" />
-            </Button>
+            </ConfirmDeleteButton>
           </Track>
         ),
       }),

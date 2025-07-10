@@ -1,6 +1,6 @@
-import { useParams } from 'react-router-dom';
-import { Button, Card, FormInput, Icon, Switch, Track } from 'components';
-import { Controller, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Card, FormInput, Icon, Track } from 'components';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
 import { TransTitle } from 'i18n/trans/title';
@@ -9,21 +9,77 @@ import { formatDate } from 'utils/date';
 import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { ApiClient } from 'types/client';
+import { useCallback, useEffect } from 'react';
+import { useToast } from 'hooks';
+import { useTranslation } from 'react-i18next';
+import type { AxiosError } from 'axios';
+import api from 'services/api';
+import FormTextarea from 'components/FormElements/FormTextarea';
 
 export const ClientDetailsPage = withAuthorization(() => {
   const { clientId } = useParams<{ clientId: 'create' | string }>();
   const isCreateMode = clientId === 'create';
-  const { register, control } = useForm({
-    defaultValues: {
-      name: '',
-      clusterIp: '',
-      nameSpace: '',
-      vaultApiToken: '',
-      burokrattNetwork: true,
-      createdAt: '2025-06-07T14:11:00.107Z',
-      updatedAt: '2025-06-07T14:11:00.107Z',
+
+  const {
+    data: { response: client },
+  } = useQuery<{ response: ApiClient | object }>({
+    enabled: !isCreateMode,
+    queryKey: [`admin/client-by-id?clientId=${clientId}`],
+    initialData: { response: {} },
+  });
+  const { register, control, reset, handleSubmit } = useForm<ApiClient>({
+    defaultValues: client,
+  });
+  useEffect(() => {
+    if (client) reset(client);
+  }, [client]);
+
+  const navigate = useNavigate();
+  const toast = useToast();
+  const { t } = useTranslation();
+  const clusterMutation = useMutation<
+    ApiClient,
+    AxiosError,
+    {
+      method: 'post' | 'put';
+      data: ApiClient;
+    }
+  >({
+    mutationFn: async ({ method, data: { clientId, ...data } }) =>
+      (
+        await {
+          post: async () => api.post('admin/clients', data),
+          put: async () => api.put(`admin/clients?clientId=${clientId}`, data),
+        }[method]()
+      ).data,
+    onSuccess: (_, { method }) => {
+      navigate(-1);
+      toast.open({
+        type: 'success',
+        title: t('toast.notification'),
+        message: {
+          post: t('toast.userCreated', {
+            defaultValue: 'Client Created Successfully',
+          }),
+          put: t('toast.userUpdated', {
+            defaultValue: 'Client Updated Successfully',
+          }),
+        }[method],
+      });
+    },
+    onError: (error) => {
+      toast.open({
+        type: 'error',
+        title: t('toast.notificationError'),
+        message: error.message,
+      });
     },
   });
+  const onSubmit: SubmitHandler<ApiClient> = useCallback((data) => {
+    clusterMutation.mutate({ method: data.id ? 'put' : 'post', data });
+  }, []);
 
   return (
     <>
@@ -38,6 +94,8 @@ export const ClientDetailsPage = withAuthorization(() => {
       </Track>
 
       <Card
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
         slots={{ header: <CardHeader filled={false} bordered={false} /> }}
         header={
           <Track justify="end" gap={8}>
@@ -79,63 +137,59 @@ export const ClientDetailsPage = withAuthorization(() => {
           style={{ width: '90%', marginLeft: 'auto' }}
         >
           <FormInput
-            {...register('name')}
+            {...register('name', { required: true })}
             label={<TransField i18nKey="clientName" />}
             type="text"
           />
           <FormInput
-            {...register('clusterIp')}
-            label={<TransField i18nKey="clusterIp" />}
+            {...register('kubernetesClusterAddress', { required: true })}
+            label={<TransField i18nKey="clusterAddress" />}
             type="text"
           />
           <FormInput
-            {...register('nameSpace')}
+            {...register('kubernetesClusterNamespace', { required: true })}
             label={<TransField i18nKey="nameSpace" />}
             type="text"
           />
           <FormInput
-            {...register('vaultApiToken')}
+            {...register('hashicorpVaultToken', { required: true })}
             label={<TransField i18nKey="vaultApiToken" />}
             type="text"
           />
-          <Controller
-            name="burokrattNetwork"
-            control={control}
-            render={({ field }) => (
-              <Switch
-                onCheckedChange={field.onChange}
-                label={<TransField i18nKey="burokrattNetwork" />}
-                checked={field.value}
-                {...field}
-              />
-            )}
+          <FormTextarea
+            {...register('authenticationCertificate', { required: true })}
+            label={<TransField i18nKey="certificate" />}
           />
-          <Controller
-            name="createdAt"
-            control={control}
-            render={({ field }) => (
-              <FormInput
-                {...field}
-                value={formatDate(field.value)}
-                label={<TransField i18nKey="createdAt" />}
-                type="text"
-                readOnly
+          {!isCreateMode && (
+            <>
+              <Controller
+                name="createdAt"
+                control={control}
+                render={({ field }) => (
+                  <FormInput
+                    {...field}
+                    value={formatDate(field.value)}
+                    label={<TransField i18nKey="createdAt" />}
+                    type="text"
+                    readOnly
+                  />
+                )}
               />
-            )}
-          />
-          <Controller
-            name="updatedAt"
-            control={control}
-            render={({ field }) => (
-              <FormInput
-                {...field}
-                value={formatDate(field.value)}
-                label={<TransField i18nKey="updatedAt" />}
-                type="text"
-                readOnly
+              <Controller
+                name="updatedAt"
+                control={control}
+                render={({ field }) => (
+                  <FormInput
+                    {...field}
+                    value={formatDate(field.value)}
+                    label={<TransField i18nKey="updatedAt" />}
+                    type="text"
+                    readOnly
+                  />
+                )}
               />
-            )}
-          />
+            </>
+          )}
         </Track>
       </Card>
     </>
