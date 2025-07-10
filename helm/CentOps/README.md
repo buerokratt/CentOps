@@ -11,6 +11,13 @@ This README provides an overview of the CentOps Helm chart, instructions for pac
 
 - HashiCorp Vault with an unseal job (job-vault-unseal.yaml) for automatic unsealing.
 
+### Installing the ArgoCD
+
+ArgoCD will be deployed into he same namespace as rest of Centops
+
+In case needed, manual deployment:
+`kubectl apply -n <NAMESPACE> -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml`
+
 
 #### Vault init automation
 
