@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-mapper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: data-mapper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-mapper
+  template:
+    metadata:
+      labels:
+        app: data-mapper
+    spec:
+      initContainers:
+      - name: git-clone
+        image: alpine/git:latest
+        volumeMounts:
+          - name: dsl
+            mountPath: /workspace/app/modules
+        command:
+          - sh
+          - -c
+          - |
+            if [ ! -d "/workspace/app/modules/centops" ]; then
+              git clone --single-branch --depth 1 --branch helm-charts https://github.com/varmoh/CentOps.git /tmp/CentOps &&
+              cp -r /tmp/CentOps/DSL/DMapper/centops /workspace/app/modules/;
+              cp -r /tmp/CentOps/DSL/Data /workspace/app/modules/;
+            else
+              echo "centops folder already present, skipping clone.";
+            fi          
+      containers:
+      - name: data-mapper
+        image: {{ .Values.images.dataMapper.repository }}:{{ .Values.images.dataMapper.tag }}
+        imagePullPolicy: {{ .Values.images.dataMapper.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.ports.dataMapper }}
+        env:
+        - name: PORT
+          value: {{ .Values.ports.dataMapper | quote }}
+        - name: CONTENT_FOLDER
+          value: {{ .Values.dataMapper.env.contentFolder | quote }}
+        volumeMounts:
+        - name: dsl
+          mountPath: /workspace/app/modules
+      volumes:
+      - name: dsl
+        emptyDir: {}

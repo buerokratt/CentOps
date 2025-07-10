@@ -1,0 +1,125 @@
+suite: Test vault Deployment
+templates:
+  - deployment-vault.yaml
+tests:
+  - it: should render deployment with default values
+    set:
+      namespace: default
+      replicaCount: 1
+      images:
+        vault:
+          repository: hashicorp/vault
+          tag: 1.18
+          pullPolicy: IfNotPresent
+      ports:
+        vault: 8200
+      vault:
+        env:
+          vaultAddr: "http://0.0.0.0:8200"
+      volumes:
+        vault:
+          storage: "1Gi"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: vault
+      - equal:
+          path: metadata.namespace
+          value: default
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.selector.matchLabels.app
+          value: vault
+      - equal:
+          path: spec.template.metadata.labels.app
+          value: vault
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: vault
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: hashicorp/vault:1.18
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8200
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: VAULT_ADDR
+              value: "http://0.0.0.0:8200"
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts
+          value:
+            - name: config
+              mountPath: /vault/config/config.hcl
+              subPath: config.hcl
+            - name: data
+              mountPath: /vault/data
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: config
+              configMap:
+                name: vault-config
+            - name: data
+              persistentVolumeClaim:
+                claimName: vault-pvc
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          value:
+            - IPC_LOCK
+      - hasDocuments:
+          count: 1
+
+  - it: should render deployment with custom values
+    set:
+      namespace: test-namespace
+      replicaCount: 1  # Changed from 2
+      images:
+        vault:
+          repository: custom-vault
+          tag: 1.19
+          pullPolicy: Always
+      ports:
+        vault: 8201
+      vault:
+        env:
+          vaultAddr: "http://0.0.0.0:8201"
+      volumes:
+        vault:
+          storage: "2Gi"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.namespace
+          value: test-namespace
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: custom-vault:1.19
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8201
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: VAULT_ADDR
+              value: "http://0.0.0.0:8201"
+      - equal:
+          path: spec.template.spec.volumes[1].persistentVolumeClaim.claimName
+          value: vault-pvc  # Changed index to [1] due to volume order
+      - hasDocuments:
+          count: 1

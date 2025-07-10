@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-unseal
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: vault-unseal
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        env:
+        - name: VAULT_UNSEAL_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.vaultUnsealSecretName }}
+              key: unseal-key
+        command:
+        - sh
+        - -c
+        - until curl --silent http://vault:{{ .Values.ports.vault }}/v1/sys/health | grep -q '\"initialized\":true'; do sleep 2; done; curl --silent --request PUT --data "{\"key\":\"$VAULT_UNSEAL_KEY\"}" http://vault:{{ .Values.ports.vault }}/v1/sys/unseal
+      restartPolicy: OnFailure

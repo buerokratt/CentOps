@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-agent
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: vault-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault-agent
+  template:
+    metadata:
+      labels:
+        app: vault-agent
+    spec:
+      containers:
+      - name: vault-agent
+        image: {{ .Values.images.vault.repository }}:{{ .Values.images.vault.tag }}
+        imagePullPolicy: {{ .Values.images.vault.pullPolicy }}
+        volumeMounts:
+        - name: config
+          mountPath: /vault/vault-agent.hcl
+          subPath: vault-agent.hcl
+        - name: templates
+          mountPath: /vault/templates/database-template.ctmpl
+          subPath: database-template.ctmpl
+        - name: templates
+          mountPath: /vault/templates/resql-template.ctmpl
+          subPath: resql-template.ctmpl
+        - name: templates
+          mountPath: /vault/templates/resql-users-template.ctmpl
+          subPath: resql-users-template.ctmpl
+        - name: templates
+          mountPath: /vault/templates/tim-postgresql-template.ctmpl
+          subPath: tim-postgresql-template.ctmpl
+        - name: secrets
+          mountPath: /vault/secrets
+        - name: vault-token
+          mountPath: /vault/secrets/.vault-token
+          subPath: vault-token
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+        command: ["vault", "agent", "-config=/vault/vault-agent.hcl"]
+      volumes:
+      - name: config
+        configMap:
+          name: vault-config
+      - name: templates
+        configMap:
+          name: vault-config
+      - name: secrets
+        emptyDir: {}
+      - name: vault-token
+        secret:
+          secretName: {{ .Values.secrets.vaultTokenSecretName }}
+      initContainers:
+      - name: wait-for-vault
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        command: ["sh", "-c", "until curl --silent http://vault:{{ .Values.ports.vault }}/v1/sys/health; do sleep 2; done"]

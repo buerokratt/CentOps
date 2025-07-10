@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+      - name: database
+        image: {{ .Values.images.postgres.repository }}:{{ .Values.images.postgres.tag }}
+        imagePullPolicy: {{ .Values.images.postgres.pullPolicy }}
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - configMapRef:
+            name: vault-config
+            key: database.env
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d/init-databases.sh
+          subPath: init-databases.sh
+        - name: secrets
+          mountPath: /vault/secrets
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: database-pvc
+      - name: init-script
+        configMap:
+          name: database-config
+      - name: secrets
+        emptyDir: {}
+      initContainers:
+      - name: wait-for-vault-agent
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        command: ["sh", "-c", "until curl --silent http://vault-agent:{{ .Values.ports.vaultAgent }}/v1/sys/health; do sleep 2; done"]

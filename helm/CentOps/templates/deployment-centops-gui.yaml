@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: centopsgui
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: centopsgui
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: centopsgui
+  template:
+    metadata:
+      labels:
+        app: centopsgui
+    spec:
+      containers:
+      - name: centopsgui
+        image: "{{ .Values.images.centopsgui.repository }}:{{ .Values.images.centopsgui.tag }}"
+        imagePullPolicy: {{ .Values.images.centopsgui.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.ports.centopsgui }}
+        env:
+        - name: NODE_ENV
+          value: {{ .Values.centopsgui.env.nodeEnv | quote }}
+        - name: CHOKIDAR_USEPOLLING
+          value: {{ .Values.centopsgui.env.chokidarUsePolling | quote }}
+        - name: REACT_APP_API_URL
+          value: {{ .Values.centopsgui.env.reactAppApiUrl | quote }}
+        - name: REACT_APP_PUBLIC_URL
+          value: {{ .Values.centopsgui.env.reactAppPublicUrl | quote }}
+        - name: PORT
+          value: {{ .Values.ports.centopsgui | quote }}
+        volumeMounts:
+        - name: node-modules
+          mountPath: /app/node_modules
+        - name: app
+          mountPath: /app
+      volumes:
+      - name: node-modules
+        emptyDir: {}
+      - name: app
+        emptyDir: {}

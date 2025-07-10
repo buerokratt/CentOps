@@ -1,0 +1,95 @@
+suite: Test resql Deployment
+templates:
+  - deployment-resql.yaml
+tests:
+  - it: should render deployment with default values
+    set:
+      namespace: byrokratt
+      replicaCount: 1
+      images:
+        resql:
+          repository: resql/image
+          tag: latest
+          pullPolicy: IfNotPresent
+        curl:
+          repository: curlimages/curl
+          tag: 8.1.0
+      ports:
+        resql: 8081
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: resql
+      - equal:
+          path: metadata.namespace
+          value: byrokratt
+      - equal:
+          path: spec.selector.matchLabels.app
+          value: resql
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: resql
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: resql/image:latest
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8081
+      - equal:
+          path: spec.template.spec.containers[1].name
+          value: vault-agent
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: hashicorp/vault:1.18
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: dsl
+      - equal:
+          path: spec.template.spec.volumes[0].emptyDir
+          value: {}
+      - equal:
+          path: spec.template.spec.volumes[1].name
+          value: config
+      - equal:
+          path: spec.template.spec.volumes[1].configMap.name
+          value: vault-config
+      - equal:
+          path: spec.template.spec.volumes[2].name
+          value: secrets
+      - equal:
+          path: spec.template.spec.initContainers
+          value:
+            - name: git-clone
+              image: alpine/git:latest
+              args:
+                - clone
+                - --single-branch
+                - --depth 1
+                - --branch helm-charts
+                - --
+                - https://github.com/varmoh/CentOps.git
+                - /dsl
+              command:
+                - sh
+                - -c
+                - |
+                  git clone --single-branch --depth 1 --branch helm-charts https://github.com/varmoh/CentOps.git /dsl && mv /dsl/DSL/Resql/centops/* /dsl/
+              volumeMounts:
+                - mountPath: /dsl
+                  name: dsl
+            - name: wait-for-database
+              image: curlimages/curl:8.1.0
+              command:
+                - sh
+                - -c
+                - until curl --silent http://database:8053; do sleep 2; done
+            - name: wait-for-vault-agent
+              image: curlimages/curl:8.1.0
+              command:
+                - sh
+                - -c
+                - until curl --silent http://vault-agent:8200/v1/sys/health; do sleep 2; done
+      - hasDocuments:
+          count: 1

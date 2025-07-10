@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tim-postgresql
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: tim-postgresql
+  ports:
+  - protocol: TCP
+    port: {{ .Values.ports.timPostgresql }}
+    targetPort: 5432
+  type: ClusterIP

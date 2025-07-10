@@ -1,0 +1,148 @@
+suite: Test centopsgui Deployment
+templates:
+  - deployment-centops-gui.yaml
+tests:
+  - it: should render deployment with default values
+    set:
+      namespace: default
+      replicaCount: 1
+      images:
+        centopsgui:
+          repository: gui-dev
+          tag: latest
+          pullPolicy: IfNotPresent
+      ports:
+        centopsgui: 8057
+      centopsgui:
+        env:
+          nodeEnv: "development"
+          chokidarUsePolling: "true"
+          reactAppApiUrl: "http://localhost:8050/centops"
+          reactAppPublicUrl: "http://localhost:8058/centops"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: centopsgui
+      - equal:
+          path: metadata.namespace
+          value: default
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.selector.matchLabels.app
+          value: centopsgui
+      - equal:
+          path: spec.template.metadata.labels.app
+          value: centopsgui
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: centopsgui
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: gui-dev:latest
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8057
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: NODE_ENV
+              value: "development"
+            - name: CHOKIDAR_USEPOLLING
+              value: "true"
+            - name: REACT_APP_API_URL
+              value: "http://localhost:8050/centops"
+            - name: REACT_APP_PUBLIC_URL
+              value: "http://localhost:8058/centops"
+            - name: PORT
+              value: "8057"
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts
+          value:
+            - name: node-modules
+              mountPath: /app/node_modules
+            - name: app
+              mountPath: /app
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: node-modules
+              emptyDir: {}
+            - name: app
+              emptyDir: {}
+      - hasDocuments:
+          count: 1
+
+  - it: should render deployment with custom namespace and replica count
+    set:
+      namespace: test-namespace
+      replicaCount: 3
+      images:
+        centopsgui:
+          repository: custom-gui
+          tag: v1.0.0
+          pullPolicy: Always
+      ports:
+        centopsgui: 8080
+      centopsgui:
+        env:
+          nodeEnv: "production"
+          chokidarUsePolling: "false"
+          reactAppApiUrl: "https://api.example.com"
+          reactAppPublicUrl: "https://public.example.com"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: centopsgui
+      - equal:
+          path: metadata.namespace
+          value: test-namespace
+      - equal:
+          path: spec.replicas
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: custom-gui:v1.0.0
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8080
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: NODE_ENV
+              value: "production"
+            - name: CHOKIDAR_USEPOLLING
+              value: "false"
+            - name: REACT_APP_API_URL
+              value: "https://api.example.com"
+            - name: REACT_APP_PUBLIC_URL
+              value: "https://public.example.com"
+            - name: PORT
+              value: "8080"
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts
+          value:
+            - name: node-modules
+              mountPath: /app/node_modules
+            - name: app
+              mountPath: /app
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: node-modules
+              emptyDir: {}
+            - name: app
+              emptyDir: {}
+      - hasDocuments:
+          count: 1

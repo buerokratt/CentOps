@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resql
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: resql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resql
+  template:
+    metadata:
+      labels:
+        app: resql
+    spec:
+      containers:
+      - name: resql
+        image: {{ .Values.images.resql.repository }}:{{ .Values.images.resql.tag }}
+        imagePullPolicy: {{ .Values.images.resql.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.ports.resql }}
+        env:
+        - name: logging.level.org.springframework.boot
+          value: {{ .Values.resql.env.loggingLevel | quote }}
+        - name: server.port
+          value: {{ .Values.ports.resql | quote }}
+        envFrom:
+        - configMapRef:
+            name: vault-config
+            key: resql.env
+        volumeMounts:
+        - name: dsl
+          mountPath: /DSL
+        - name: secrets
+          mountPath: /vault/secrets
+      volumes:
+      - name: dsl
+        emptyDir: {}
+      - name: secrets
+        emptyDir: {}
+      initContainers:
+      - name: git-clone
+        image: alpine/git:latest
+        volumeMounts:
+        - name: dsl
+          mountPath: /DSL
+        command:
+          - sh
+          - -c
+          - |
+            if [ ! -d "/DSL/centops" ]; then
+              git clone --single-branch --depth 1 --branch helm-charts https://github.com/varmoh/CentOps.git /tmp/CentOps &&
+              cp -r /tmp/CentOps/DSL/Resq/centops /DSL/;
+            else
+              echo "centops folder already present, skipping clone.";
+            fi   
+      - name: wait-for-database
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        command: ["sh", "-c", "until curl --silent http://database:{{ .Values.ports.database }}; do sleep 2; done"]
+      - name: wait-for-vault-agent
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        command: ["sh", "-c", "until curl --silent http://vault-agent:{{ .Values.ports.vaultAgent }}/v1/sys/health; do sleep 2; done"]

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tim
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: tim
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tim
+  template:
+    metadata:
+      labels:
+        app: tim
+    spec:
+      containers:
+      - name: tim
+        image: {{ .Values.images.tim.repository }}:{{ .Values.images.tim.tag }}
+        imagePullPolicy: {{ .Values.images.tim.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.ports.tim }}
+        env:
+        - name: security.allowList.JWT
+          value: {{ .Values.tim.env.securityAllowListJwt | quote }}
+        - name: server.port
+          value: {{ .Values.ports.tim | quote }}
+        - name: jwt.integration.signature.keystore-password
+          value: {{ .Values.tim.env.jwtIntegrationSignatureKeyStorePassword | quote }}
+        envFrom:
+        - configMapRef:
+            name: vault-config
+            key: tim-postgresql.env
+        resources:
+          {{- toYaml .Values.tim.resources | nindent 12 }}
+        volumeMounts:
+        - name: secrets
+          mountPath: /vault/secrets
+      volumes:
+      - name: secrets
+        emptyDir: {}
+      initContainers:
+      - name: wait-for-tim-postgresql
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        command: ["sh", "-c", "until curl --silent http://tim-postgresql:{{ .Values.ports.timPostgresql }}; do sleep 2; done"]
+      - name: wait-for-vault-agent
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        command: ["sh", "-c", "until curl --silent http://vault-agent:{{ .Values.ports.vaultAgent }}/v1/sys/health; do sleep 2; done"]

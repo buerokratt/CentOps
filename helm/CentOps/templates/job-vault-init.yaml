@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-init
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-vault
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        command:
+        - sh
+        - -c
+        - until curl --silent http://vault:{{ .Values.ports.vault }}/v1/sys/health; do sleep 2; done
+      containers:
+      - name: vault-init
+        image: hashicorp/vault:1.18
+        env:
+        - name: VAULT_ADDR
+          value: "http://vault:{{ .Values.ports.vault }}"
+        command:
+        - sh
+        - -c
+        - |
+          vault operator init -key-shares=1 -key-threshold=1 -format=json > /tmp/vault-init.json && \
+          UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /tmp/vault-init.json) && \
+          ROOT_TOKEN=$(jq -r '.root_token' /tmp/vault-init.json) && \
+          kubectl create secret generic vault-unseal-secret --namespace {{ .Values.namespace }} --from-literal=unseal-key=$UNSEAL_KEY --dry-run=client -o yaml | kubectl apply -f - && \
+          kubectl create secret generic vault-token-secret --namespace {{ .Values.namespace }} --from-literal=vault-token=$ROOT_TOKEN --dry-run=client -o yaml | kubectl apply -f -
+      restartPolicy: OnFailure
+      serviceAccountName: vault-init

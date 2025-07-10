@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: vault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      containers:
+      - name: vault
+        image: {{ .Values.images.vault.repository }}:{{ .Values.images.vault.tag }}
+        imagePullPolicy: {{ .Values.images.vault.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.ports.vault }}
+        env:
+        - name: VAULT_ADDR
+          value: {{ .Values.vault.env.vaultAddr | quote }}
+        volumeMounts:
+        - name: config
+          mountPath: /vault/config/config.hcl
+          subPath: config.hcl
+        - name: data
+          mountPath: /vault/data
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+        command: ["vault", "server", "-config=/vault/config/config.hcl"]
+      volumes:
+      - name: config
+        configMap:
+          name: vault-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: vault-pvc

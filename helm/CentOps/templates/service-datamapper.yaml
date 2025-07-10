@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-mapper
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: data-mapper
+  ports:
+  - protocol: TCP
+    port: {{ .Values.ports.dataMapper }}
+    targetPort: {{ .Values.ports.dataMapper }}
+  type: ClusterIP

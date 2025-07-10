@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tim-postgresql
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: tim-postgresql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tim-postgresql
+  template:
+    metadata:
+      labels:
+        app: tim-postgresql
+    spec:
+      containers:
+      - name: tim-postgresql
+        image: {{ .Values.images.postgres.repository }}:{{ .Values.images.postgres.tag }}
+        imagePullPolicy: {{ .Values.images.postgres.pullPolicy }}
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - configMapRef:
+            name: vault-config
+            key: tim-postgresql.env
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+        - name: secrets
+          mountPath: /vault/secrets
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: tim-postgresql-pvc
+      - name: secrets
+        emptyDir: {}
+      initContainers:
+      - name: wait-for-vault-agent
+        image: {{ .Values.images.curl.repository }}:{{ .Values.images.curl.tag }}
+        command: ["sh", "-c", "until curl --silent http://vault-agent:{{ .Values.ports.vaultAgent }}/v1/sys/health; do sleep 2; done"]

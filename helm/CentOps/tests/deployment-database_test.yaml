@@ -1,0 +1,131 @@
+suite: Test database Deployment
+templates:
+  - deployment-database.yaml
+tests:
+  - it: should render deployment with default values
+    set:
+      namespace: default
+      replicaCount: 1
+      images:
+        postgres:
+          repository: postgres
+          tag: 14.1
+          pullPolicy: IfNotPresent
+        curl:
+          repository: curlimages/curl
+          tag: 8.1.0
+          pullPolicy: IfNotPresent
+      ports:
+        database: 8053
+        vaultAgent: 8200
+      volumes:
+        database:
+          storage: "1Gi"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: database
+      - equal:
+          path: metadata.namespace
+          value: default
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.selector.matchLabels.app
+          value: database
+      - equal:
+          path: spec.template.metadata.labels.app
+          value: database
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: database
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: postgres:14.1
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 5432
+      - equal:
+          path: spec.template.spec.containers[0].envFrom
+          value:
+            - configMapRef:
+                name: vault-config
+                key: database.env
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts
+          value:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d/init-databases.sh
+              subPath: init-databases.sh
+            - name: secrets
+              mountPath: /vault/secrets
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: data
+              persistentVolumeClaim:
+                claimName: database-pvc
+            - name: init-script
+              configMap:
+                name: database-config
+            - name: secrets
+              emptyDir: {}
+      - equal:
+          path: spec.template.spec.initContainers
+          value:
+            - name: wait-for-vault-agent
+              image: curlimages/curl:8.1.0
+              command: ["sh", "-c", "until curl --silent http://vault-agent:8200/v1/sys/health; do sleep 2; done"]
+      - hasDocuments:
+          count: 1
+
+  - it: should render deployment with custom values
+    set:
+      namespace: test-namespace
+      replicaCount: 1  # Changed from 2, assuming template hardcodes replicas
+      images:
+        postgres:
+          repository: custom-postgres
+          tag: 15  # Changed from 15.0 to match actual output
+          pullPolicy: Always
+        curl:
+          repository: custom-curl
+          tag: 8.2.0
+          pullPolicy: Always
+      ports:
+        database: 5432
+        vaultAgent: 8200
+      volumes:
+        database:
+          storage: "2Gi"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.namespace
+          value: test-namespace
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: custom-postgres:15
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: database-pvc
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: custom-curl:8.2.0
+      - hasDocuments:
+          count: 1

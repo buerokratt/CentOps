@@ -1,0 +1,105 @@
+# Global settings
+namespace: centops
+replicaCount: 1
+# Image settings
+images:
+  ruuter:
+    repository: ruuter
+    tag: latest
+    pullPolicy: IfNotPresent
+  resql:
+    repository: resql
+    tag: latest
+    pullPolicy: IfNotPresent
+  postgres:
+    repository: postgres
+    tag: 14.1
+    pullPolicy: IfNotPresent
+  dataMapper:
+    repository: data-mapper
+    tag: latest
+    pullPolicy: IfNotPresent
+  tim:
+    repository: tim
+    tag: latest
+    pullPolicy: IfNotPresent
+  centopsgui:
+    repository: gui-dev
+    tag: latest
+    pullPolicy: IfNotPresent
+  vault:
+    repository: hashicorp/vault
+    tag: 1.18
+    pullPolicy: IfNotPresent
+  curl:
+    repository: curlimages/curl
+    tag: 8.1.0
+    pullPolicy: IfNotPresent
+
+# Service ports
+ports:
+  ruuter: 8050
+  resql: 8052
+  resqlUsers: 8059
+  database: 8053
+  dataMapper: 8054
+  tim: 8085
+  timPostgresql: 9876
+  guiDev: 8057
+  vault: 8200
+  vaultAgent: 8200
+
+# Environment variables
+ruuter:
+  env:
+    corsAllowedOrigins: "http://localhost:8057,https://tim.buerokratt.ee"
+    httpCodesAllowList: "200,201,202,203,204,205,206,207,208,226"
+    displayRequestContent: "true"
+    displayResponseContent: "true"
+    processedFiletypes: ".yml,.yaml,.tmp"
+    allowedMethodTypes: "GET,POST,PUT,DELETE"
+
+resql:
+  env:
+    loggingLevel: "INFO"
+
+resqlUsers:
+  env:
+    loggingLevel: "INFO"
+
+dataMapper:
+  env:
+    contentFolder: "/data"
+
+tim:
+  env:
+    securityAllowListJwt: "resql,tim,tim-postgresql,ruuter-private,ruuter-public,data-mapper,gui_dev,localhost,127.0.0.1,::1"
+    jwtIntegrationSignatureKeyStorePassword: "defaultpassword"
+  resources:
+    limits:
+      cpu: "0.5"
+      memory: "512Mi"
+
+centopsgui:
+  env:
+    nodeEnv: "development"
+    chokidarUsePolling: "true"
+    reactAppApiUrl: "http://localhost:8050/centops"
+    reactAppPublicUrl: "http://localhost:8058/centops"
+
+vault:
+  env:
+    vaultAddr: "http://0.0.0.0:8200"
+
+# Volume settings
+volumes:
+  database:
+    storage: "1Gi"
+  timPostgresql:
+    storage: "1Gi"
+  vault:
+    storage: "1Gi"
+
+secrets:
+  vaultUnsealSecretName: "vault-unseal-secret" # Name of Kubernetes Secret for unseal key
+  vaultTokenSecretName: "vault-token-secret"   # Name of Kubernetes Secret for Vault token

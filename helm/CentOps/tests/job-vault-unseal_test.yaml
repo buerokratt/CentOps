@@ -1,0 +1,86 @@
+suite: Test vault-unseal Job
+templates:
+  - job-vault-unseal.yaml
+tests:
+  - it: should render job with default values
+    set:
+      namespace: default
+      images:
+        curl:
+          repository: curlimages/curl
+          tag: 8.1.0
+      ports:
+        vault: 8200
+      secrets:
+        vaultUnsealSecretName: "vault-unseal-secret"
+    asserts:
+      - isKind:
+          of: Job
+      - equal:
+          path: metadata.name
+          value: vault-unseal
+      - equal:
+          path: metadata.namespace
+          value: default
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: vault-unseal
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: curlimages/curl:8.1.0
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: VAULT_UNSEAL_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vault-unseal-secret
+                  key: unseal-key
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value:
+            - sh
+            - -c
+            - until curl --silent http://vault:8200/v1/sys/health | grep -q '"initialized":true'; do sleep 2; done; curl --silent --request PUT --data '{"key":"$VAULT_UNSEAL_KEY"}' http://vault:8200/v1/sys/unseal
+      - equal:
+          path: spec.template.spec.restartPolicy
+          value: Never
+      - hasDocuments:
+          count: 1
+
+  - it: should render job with custom values
+    set:
+      namespace: test-namespace
+      images:
+        curl:
+          repository: custom-curl
+          tag: 8.2.0
+      ports:
+        vault: 8201
+      secrets:
+        vaultUnsealSecretName: "custom-vault-unseal-secret"
+    asserts:
+      - isKind:
+          of: Job
+      - equal:
+          path: metadata.namespace
+          value: test-namespace
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: custom-curl:8.2.0
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: VAULT_UNSEAL_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: custom-vault-unseal-secret
+                  key: unseal-key
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value:
+            - sh
+            - -c
+            - until curl --silent http://vault:8201/v1/sys/health | grep -q '"initialized":true'; do sleep 2; done; curl --silent --request PUT --data '{"key":"$VAULT_UNSEAL_KEY"}' http://vault:8201/v1/sys/unseal
+      - hasDocuments:
+          count: 1

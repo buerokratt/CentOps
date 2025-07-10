@@ -1,0 +1,111 @@
+suite: Test vault-config ConfigMap
+templates:
+  - configmap-vault.yaml
+tests:
+  - it: should render ConfigMap with default values
+    set:
+      namespace: default
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - equal:
+          path: metadata.name
+          value: vault-config
+      - equal:
+          path: metadata.namespace
+          value: default
+      - equal:
+          path: data.config\.hcl
+          value: |
+            storage "file" {
+              path = "/vault/data"
+            }
+            listener "tcp" {
+              address = "0.0.0.0:8200"
+              tls_disable = true
+            }
+            api_addr = "http://vault:8200"
+            ui = true
+      - equal:
+          path: data.vault-agent\.hcl
+          value: |
+            pid_file = "/vault/pidfile"
+            vault {
+              address = "http://vault:8200"
+            }
+            auto_auth {
+              method {
+                type = "token_file"
+                config {
+                  token_file_path = "/vault/secrets/.vault-token"
+                }
+              }
+            }
+            template {
+              source      = "/vault/templates/database-template.ctmpl"
+              destination = "/vault/secrets/database.env"
+            }
+            template {
+              source      = "/vault/templates/resql-template.ctmpl"
+              destination = "/vault/secrets/resql.env"
+            }
+            template {
+              source      = "/vault/templates/resql-users-template.ctmpl"
+              destination = "/vault/secrets/resql-users.env"
+            }
+            template {
+              source      = "/vault/templates/tim-postgresql-template.ctmpl"
+              destination = "/vault/secrets/tim-postgresql.env"
+            }
+      - equal:
+          path: data.database-template\.ctmpl
+          value: |
+            {{ with secret "secret/database" }}
+            POSTGRES_USER={{ .Data.data.POSTGRES_USER }}
+            POSTGRES_PASSWORD={{ .Data.data.POSTGRES_PASSWORD }}
+            POSTGRES_MULTIPLE_DATABASES={{ .Data.data.POSTGRES_MULTIPLE_DATABASES }}
+            {{ end }}
+      - equal:
+          path: data.resql-template\.ctmpl
+          value: |
+            {{ with secret "secret/resql" }}
+            sqlms.datasources[0].name={{ .Data.data.sqlms_datasources_0_name }}
+            sqlms.datasources[0].jdbcUrl={{ .Data.data.sqlms_datasources_0_jdbcUrl }}
+            sqlms.datasources[0].username={{ .Data.data.sqlms_datasources_0_username }}
+            sqlms.datasources[0].password={{ .Data.data.sqlms_datasources_0_password }}
+            {{ end }}
+      - equal:
+          path: data.resql-users-template\.ctmpl
+          value: |
+            {{ with secret "secret/resql-users" }}
+            sqlms.datasources[0].name={{ .Data.data.sqlms_datasources_0_name }}
+            sqlms.datasources[0].jdbcUrl={{ .Data.data.sqlms_datasources_0_jdbcUrl }}
+            sqlms.datasources[0].username={{ .Data.data.sqlms_datasources_0_username }}
+            sqlms.datasources[0].password={{ .Data.data.sqlms_datasources_0_password }}
+            {{ end }}
+      - equal:
+          path: data.tim-postgresql-template\.ctmpl
+          value: |
+            {{ with secret "secret/tim-postgresql" }}
+            POSTGRES_USER={{ .Data.data.POSTGRES_USER }}
+            POSTGRES_PASSWORD={{ .Data.data.POSTGRES_PASSWORD }}
+            POSTGRES_DB={{ .Data.data.POSTGRES_DB }}
+            POSTGRES_HOST_AUTH_METHOD={{ .Data.data.POSTGRES_HOST_AUTH_METHOD }}
+            {{ end }}
+      - hasDocuments:
+          count: 1
+
+  - it: should render ConfigMap with custom namespace
+    set:
+      namespace: test-namespace
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - equal:
+          path: metadata.namespace
+          value: test-namespace
+      - equal:
+          path: metadata.name
+          value: vault-config
+      - hasDocuments:
+          count: 1

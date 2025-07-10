@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tim
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: tim
+  ports:
+  - protocol: TCP
+    port: {{ .Values.ports.tim }}
+    targetPort: {{ .Values.ports.tim }}
+  type: ClusterIP
