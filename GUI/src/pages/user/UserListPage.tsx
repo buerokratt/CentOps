@@ -21,13 +21,14 @@ import { Link } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
 import { useQuery } from '@tanstack/react-query';
 import api from 'services/api';
+import { userName } from 'utils/user';
 
 export const UserListPage = withAuthorization(() => {
   const {
     data: { response: users },
     refetch,
   } = useQuery<{ response: ApiUser[] }>({
-    queryKey: ['admin/clusters'],
+    queryKey: ['admin/users'],
     initialData: { response: [] },
   });
 
@@ -43,13 +44,13 @@ export const UserListPage = withAuthorization(() => {
   const columnHelper = createColumnHelper<ApiUser>();
   const columns = useMemo(
     () => [
-      columnHelper.accessor('name', {
-        id: 'name',
+      columnHelper.accessor('userId', {
+        id: 'userName',
         header: () => <TransTableHead i18nKey="usersName" />,
-        cell: (message) => message.getValue(),
+        cell: (props) => userName(props.row.original),
       }),
-      columnHelper.accessor('name', {
-        id: 'identificationNo',
+      columnHelper.accessor('idCode', {
+        id: 'idCode',
         header: () => <TransTableHead i18nKey="identificationNo" />,
         cell: (message) => message.getValue(),
       }),
@@ -74,7 +75,7 @@ export const UserListPage = withAuthorization(() => {
             <ConfirmDeleteButton
               appearance="text"
               entity={props.row.original}
-              entityName="name"
+              entityName="firstName"
               onConfirm={handleDelete}
             >
               <Icon name="delete" />

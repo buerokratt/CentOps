@@ -17,15 +17,14 @@
   {
     "id": "audit",
     "label": { "et": "Audit logs", "en": "Audit logs" },
-    "path": "/audit",
     "children": [
       {
         "label": { "et": "User activity", "en": "User activity" },
-        "path": "/user-activity"
+        "path": "/audit/user-activity"
       },
       {
         "label": { "et": "Secrets access", "en": "Secrets access" },
-        "path": "/secret-access"
+        "path": "/audit/secret-access"
       }
     ]
   },

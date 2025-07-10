@@ -87,13 +87,11 @@ export const UserDetailsPage = withAuthorization(() => {
           <TransNav i18nKey="settings" />
         </h6>
         <h1>
-          <h2>
-            {isCreateMode ? (
-              <TransTitle i18nKey="userAdd" />
-            ) : (
-              <TransTitle i18nKey="user" values={{ user: 'A' }} />
-            )}
-          </h2>
+          {isCreateMode ? (
+            <TransTitle i18nKey="userAdd" />
+          ) : (
+            <TransTitle i18nKey="user" values={{ user: 'A' }} />
+          )}
         </h1>
       </Track>
 
@@ -120,17 +118,17 @@ export const UserDetailsPage = withAuthorization(() => {
           style={{ width: '90%', marginLeft: 'auto' }}
         >
           <FormInput
-            {...register('firstName')}
+            {...register('firstName', { required: true })}
             label={<TransField i18nKey="firstName" />}
             type="text"
           />
           <FormInput
-            {...register('lastName')}
+            {...register('lastName', { required: true })}
             label={<TransField i18nKey="lastName" />}
             type="text"
           />
           <FormInput
-            {...register('identificationNo')}
+            {...register('idCode', { required: true })}
             label={<TransField i18nKey="identificationNo" />}
             type="text"
           />
