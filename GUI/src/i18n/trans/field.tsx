@@ -3,6 +3,12 @@ import { Trans } from 'react-i18next';
 
 export const TransField = createTrans({
   argoApiUrl: <Trans i18nKey="field.argoApiUrl" defaults="Argo API URL" />,
+  argoAppDeploymentName: (
+    <Trans
+      i18nKey="field.argoAppDeploymentName"
+      defaults="Argo App deployment name"
+    />
+  ),
   burokrattNetwork: (
     <Trans i18nKey="field.burokrattNetwork" defaults="Bürokratt network" />
   ),

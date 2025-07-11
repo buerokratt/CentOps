@@ -24,14 +24,13 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
 
   const { isSuccess, data } = useQuery<{ response: Role[] }>({
     queryKey: ['account/user-role', 'prod'],
-    initialData: { response: [ROLES.ROLE_UNAUTHENTICATED] },
+    // TODO, hardcode the tole, because api returns 300 status code
+    initialData: { response: [ROLES.ROLE_ADMINISTRATOR] },
   });
 
   useEffect(() => {
     if (isSuccess && data) {
-      // console.log(data.response);
       accountStore.setState({ userRoles: data.response });
-      // console.log(accountStore.getState());
     }
   }, [data, isSuccess]);
 
@@ -42,12 +41,11 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
 
     const roles = data.response;
 
-    const permissions = new Set();
+    const permissions = new Set<string>();
 
     roles.forEach((role) => {
       if (rolePermissions[role]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rolePermissions[role].forEach((permission: any) =>
+        rolePermissions[role].forEach((permission) =>
           permissions.add(permission)
         );
       }

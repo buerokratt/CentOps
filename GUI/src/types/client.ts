@@ -5,9 +5,7 @@ export interface Client {
   // https://k8s.example.com:6443
   kubernetesClusterAddress: string;
   kubernetesClusterNamespace: string;
-  hashicorpVaultToken: string;
-  // TODO ↑ which one is valid? ↓
-  argoAppDeploymentName?: string;
+  argoAppDeploymentName: string;
   // "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----"
   authenticationCertificate: string;
 }

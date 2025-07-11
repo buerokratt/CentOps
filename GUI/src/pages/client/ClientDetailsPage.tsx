@@ -144,17 +144,14 @@ export const ClientDetailsPage = withAuthorization(() => {
           <FormInput
             {...register('kubernetesClusterAddress', { required: true })}
             label={<TransField i18nKey="clusterAddress" />}
-            type="text"
           />
           <FormInput
             {...register('kubernetesClusterNamespace', { required: true })}
             label={<TransField i18nKey="nameSpace" />}
-            type="text"
           />
           <FormInput
-            {...register('hashicorpVaultToken', { required: true })}
-            label={<TransField i18nKey="vaultApiToken" />}
-            type="text"
+            {...register('argoAppDeploymentName', { required: true })}
+            label={<TransField i18nKey="argoAppDeploymentName" />}
           />
           <FormTextarea
             {...register('authenticationCertificate', { required: true })}
@@ -170,7 +167,6 @@ export const ClientDetailsPage = withAuthorization(() => {
                     {...field}
                     value={formatDate(field.value)}
                     label={<TransField i18nKey="createdAt" />}
-                    type="text"
                     readOnly
                   />
                 )}

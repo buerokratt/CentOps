@@ -1,12 +1,20 @@
 import type { Method } from 'axios';
+import type { LabelProps } from 'components/Label';
+
+export const methodMap = new Map<Method, LabelProps['type']>([
+  ['post', 'info'],
+  ['put', 'info'],
+  ['patch', 'warning'],
+  ['delete', 'error'],
+  ['get', 'success'],
+]);
 
 export interface AuditUserActivity {
-  id: string;
-  user: string;
+  /** @format uuid */
+  logId: string;
   method: Method;
   path: string;
-  meta: string;
-  timestamp: string;
+  createdAt: string;
 }
 
 export enum AuditSecretsAccessOperations {
@@ -17,10 +25,11 @@ export type AuditSecretsAccessOperation =
   keyof typeof AuditSecretsAccessOperations;
 
 export interface AuditSecretsAccess {
+  /** @format uuid */
   id: string;
-  user: string;
-  client: string;
-  operation: AuditSecretsAccessOperation;
-  meta: string;
+  clientId: string;
+  ipAddress: string;
+  action: Method;
+  userAgent: string;
   timestamp: string;
 }

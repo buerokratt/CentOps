@@ -8,31 +8,20 @@ import {
 import { TransTableHead } from 'i18n/trans/table';
 import { TransTitle } from 'i18n/trans/title';
 import { Trans } from 'react-i18next';
-import {
-  type AuditSecretsAccess,
-  type AuditSecretsAccessOperation,
-  AuditSecretsAccessOperations,
-} from 'types/audit';
-import type { LabelProps } from 'components/Label';
+import { type AuditSecretsAccess, methodMap } from 'types/audit';
 import { formatDate } from 'utils/date';
 import { withAuthorization } from 'hoc/withAuthorization';
-
-const operationMap = new Map<AuditSecretsAccessOperation, LabelProps['type']>([
-  [AuditSecretsAccessOperations.Read, 'info'],
-  [AuditSecretsAccessOperations.Write, 'info'],
-]);
+import type { Method } from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 export const SecretAccessPage = withAuthorization(() => {
-  const [clients] = useState<AuditSecretsAccess[]>([
-    {
-      id: '1',
-      user: 'User 1',
-      client: 'Client 1',
-      operation: AuditSecretsAccessOperations.Read,
-      meta: 'data',
-      timestamp: '2025-06-25T10:38:14.643Z',
-    },
-  ]);
+  const {
+    data: { response: logs },
+  } = useQuery<{ response: AuditSecretsAccess[] }>({
+    queryKey: ['admin/logs/secrets'],
+    initialData: { response: [] },
+  });
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -42,22 +31,17 @@ export const SecretAccessPage = withAuthorization(() => {
   const columnHelper = createColumnHelper<AuditSecretsAccess>();
   const columns = useMemo(
     () => [
-      columnHelper.accessor('user', {
-        id: 'user',
-        header: () => <TransTableHead i18nKey="user" />,
-        cell: (message) => message.getValue(),
-      }),
-      columnHelper.accessor('client', {
-        id: 'client',
+      columnHelper.accessor('clientId', {
+        id: 'clientId',
         header: () => <TransTableHead i18nKey="client" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('operation', {
+      columnHelper.accessor('action', {
         id: 'method',
         header: () => <TransTableHead i18nKey="operation" />,
         cell: (message) => {
-          const value = message.getValue<AuditSecretsAccessOperation>();
-          const type = operationMap.get(value);
+          const value = message.getValue<Method>();
+          const type = methodMap.get(value);
 
           if (!type) return null;
 
@@ -68,9 +52,14 @@ export const SecretAccessPage = withAuthorization(() => {
           );
         },
       }),
-      columnHelper.accessor('meta', {
+      columnHelper.accessor('ipAddress', {
         id: 'meta',
-        header: () => <TransTableHead i18nKey="metaData" />,
+        header: () => <TransTableHead i18nKey="ipAddress" />,
+        cell: (message) => message.getValue(),
+      }),
+      columnHelper.accessor('userAgent', {
+        id: 'userAgent',
+        header: () => <TransTableHead i18nKey="userAgent" />,
         cell: (message) => message.getValue(),
       }),
       columnHelper.accessor('timestamp', {
@@ -96,7 +85,7 @@ export const SecretAccessPage = withAuthorization(() => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={clients}
+            data={logs ?? []}
             columns={columns}
             sortable
             pagination={pagination}
