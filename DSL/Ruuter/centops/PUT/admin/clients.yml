@@ -19,32 +19,14 @@ declaration:
         type: string
       - field: authenticationCertificate
         type: string
-    headers:
-      - field: cookie
+    params:
+      - field: clientId
         type: string
-        description: "Cookie field"
-
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
-    headers:
-      cookie: "customJwtCookie=${incoming.headers.cookie}"
-    plaintext: "customJwtCookie"
-  result: res
-  next: check_user_info_response
-
-check_user_info_response:
-  switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
-      next: extract_request_data
-  next: return_incorrect_request
 
 extract_request_data:
   assign:
-    param_name: ${incoming.params.name}
-    body_name: ${incoming.body.name}
+    client_id: ${incoming.params.clientId}
+    name: ${incoming.body.name}
     kubernetes_cluster_address: ${incoming.body.kubernetesClusterAddress}
     kubernetes_cluster_namespace: ${incoming.body.kubernetesClusterNamespace}
     argo_app_deployment_name: ${incoming.body.argoAppDeploymentName}
@@ -53,7 +35,7 @@ extract_request_data:
 
 validate_input:
   switch:
-    - condition: ${param_name == null || body_name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null || incoming.headers == null || incoming.headers.cookie == null}
+    - condition: ${client_id == null || name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
   next: call_create_user_log_template
 
@@ -71,23 +53,24 @@ call_create_user_log_template:
 update_client:
   call: http.post
   args:
-    url: "[#CENTOPS_RESQL]/create-or-update-client"
+    url: "[#CENTOPS_RESQL]/update-client"
     body:
-      name: ${body_name}
+      client_id: ${client_id}
+      name: ${name}
       kubernetes_cluster_address: ${kubernetes_cluster_address}
       kubernetes_cluster_namespace: ${kubernetes_cluster_namespace}
       argo_app_deployment_name: ${argo_app_deployment_name}
       authentication_certificate: ${authentication_certificate}
-      created: ${new Date().toISOString()}
+      created_at: ${new Date().toISOString()}
   result: update_result
   next: return_updated_client
 
 return_updated_client:
-  status: 200
-  return: ${update_result.response.body}
+  status: 204
+  return:
   next: end
 
 return_bad_request:
   status: 400
-  return: "Client name, cookie and all fields are required"
+  return: "Client ID, name, kubernetesClusterAddress, kubernetesClusterNamespace, argoAppDeploymentName, authenticationCertificate, fields are required"
   next: end

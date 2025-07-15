@@ -29,7 +29,15 @@ list_clusters:
       page_size: ${page_size}
   result: clusters_result
 
+construct_response:
+  assign:
+    response:
+      response: ${clusters_result.response.body.map(({totalPages, ...rest}) => rest)}
+      totalPages: ${clusters_result.response.body[0].totalPages}
+      page: ${page}
+      limit: ${page_size}
+
 return_clusters:
   status: 200
-  return: ${clusters_result.response.body}
+  return: ${response}
   next: end

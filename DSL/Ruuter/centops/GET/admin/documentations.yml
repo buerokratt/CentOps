@@ -6,27 +6,11 @@ declaration:
   accepts: json
   returns: json
   namespace: centops
-  allowlist:
-    params:
-      - field: page
-        type: number
-        description: "Page number for pagination"
-      - field: pageSize
-        type: number
-        description: "Number of items per page"
-
-extractRequestData:
-  assign:
-    page: ${incoming.params.page ?? 1}
-    page_size: ${incoming.params.pageSize ?? 10}
 
 get_documentation_list:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-documentation-list"
-    query:
-      page: ${page}
-      page_size: ${page_size}
   result: docs_result
 
 return_documentation_list:
