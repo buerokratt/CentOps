@@ -8,32 +8,22 @@ declaration:
   namespace: centops
   endpoint: /clients/{name}
   allowlist:
+    params:
+      - field: clientId
+        type: string
     headers:
       - field: cookie
         type: string
         description: "Cookie field"
 
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
-    headers:
-      cookie: "customJwtCookie=${incoming.headers.cookie}"
-    plaintext:
-      "customJwtCookie"
-  result: user_info_response
-  next: check_user_info_response
+extract_request_data:
+  assign:
+    client_id: ${incoming.params.clientId}
+  next: validate_input
 
-check_user_info_response:
+validate_input:
   switch:
-    - condition: ${200 <= user_info_response.response.statusCodeValue && user_info_response.response.statusCodeValue < 300}
-      next: validate_name
-  next: return_incorrect_request
-
-validate_name:
-  switch:
-    - condition: ${incoming.params.name == null || incoming.headers == null || incoming.headers.cookie == null}
+    - condition: ${client_id == null || incoming.headers.cookie == null}
       next: return_bad_request
   next: call_create_user_log_template
 
@@ -53,8 +43,7 @@ delete_client:
   args:
     url: "[#CENTOPS_RESQL]/delete-client"
     body:
-      name: ${incoming.params.name}
-      created: ${new Date().toISOString()}
+      client_id: ${incoming.params.clientId}
   result: delete_result
   next: return_deleted_client
 
@@ -65,5 +54,5 @@ return_deleted_client:
 
 return_bad_request:
   status: 400
-  return: "Client name and cookie are required"
+  return: "Client ID and cookie are required"
   next: end

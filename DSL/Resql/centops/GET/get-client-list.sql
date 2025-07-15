@@ -1,12 +1,12 @@
-SELECT id,
+SELECT client_id,
        name,
        kubernetes_cluster_address,
        kubernetes_cluster_namespace,
        authentication_certificate,
-       created,
+       created_at,
        CEIL(COUNT(*) OVER() / :page_size::DECIMAL) AS total_pages
-FROM clients
-WHERE id IN (SELECT max(id) from clients GROUP BY name)
+FROM clients c
+WHERE id = (SELECT max(id) FROM clients WHERE client_id = c.client_id)
   AND deleted = FALSE
 ORDER BY id
 OFFSET ((GREATEST(:page::INTEGER, 1) - 1) * :page_size::INTEGER ) LIMIT :page_size::INTEGER;

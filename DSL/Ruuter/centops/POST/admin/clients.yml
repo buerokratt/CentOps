@@ -24,23 +24,6 @@ declaration:
         type: string
         description: "Cookie field"
 
-get_user_info:
-  call: http.post
-  args:
-    url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
-    contentType: plaintext
-    headers:
-      cookie: "customJwtCookie=${incoming.headers.cookie}"
-    plaintext: "customJwtCookie"
-  result: res
-  next: check_user_info_response
-
-check_user_info_response:
-  switch:
-    - condition: ${200 <= res.response.statusCodeValue && res.response.statusCodeValue < 300}
-      next: extract_request_data
-  next: return_incorrect_request
-
 extract_request_data:
   assign:
     name: ${incoming.body.name}
@@ -70,20 +53,20 @@ call_create_user_log_template:
 create_client:
   call: http.post
   args:
-    url: "[#CENTOPS_RESQL]/create-or-update-client"
+    url: "[#CENTOPS_RESQL]/create-client"
     body:
       name: ${name}
       kubernetes_cluster_address: ${kubernetes_cluster_address}
       kubernetes_cluster_namespace: ${kubernetes_cluster_namespace}
       authentication_certificate: ${authentication_certificate}
       argo_app_deployment_name: ${argo_app_deployment_name}
-      created: ${new Date().toISOString()}
+      created_at: ${new Date().toISOString()}
   result: create_result
   next: return_created_client
 
 return_created_client:
   status: 201
-  return: ${create_result.response.body}
+  return: "Client created successfully"
   next: end
 
 return_bad_request:
