@@ -11,4 +11,4 @@ VALUES (:client_id,
         :secret_key,
         :status_code,
         :error_message,
-        :user_agent) RETURNING id, timestamp;
+        :user_agent) RETURNING id, created_at;

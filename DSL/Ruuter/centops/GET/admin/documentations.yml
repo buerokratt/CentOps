@@ -1,19 +1,31 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Get documentation list"
+  description: "Get documentation"
   method: get
   accepts: json
   returns: json
   namespace: centops
 
-get_documentation_list:
+send_request:
   call: http.get
   args:
-    url: "[#CENTOPS_RESQL]/get-documentation-list"
+    url: "[#CENTOPS_RESQL]/get-documentation"
   result: docs_result
+  next: check_result
 
-return_documentation_list:
+check_result:
+  switch:
+    - condition: ${docs_result.response.body[0] == null}
+      next: return_not_found
+  next: return_documentation
+
+return_documentation:
   status: 200
-  return: ${docs_result.response.body}
+  return: ${docs_result.response.body[0]}
+  next: end
+
+return_not_found:
+  status: 404
+  return: "Documentation not found"
   next: end

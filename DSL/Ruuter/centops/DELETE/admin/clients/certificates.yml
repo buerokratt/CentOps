@@ -1,25 +1,45 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Delete/revoke a certificate"
+  description: "Delete a certificate"
   method: delete
   accepts: json
   returns: json
   namespace: centops
+  allowlist:
+    params:
+      - field: clientId
+        type: string
+      - field: certificateId
+        type: string
+    headers:
+      - field: cookie
+        type: string
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.clientId == null || incoming.params.certificateId == null || incoming.headers == null || incoming.headers.cookie == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     client_id: ${incoming.params.clientId}
     certificate_id: ${incoming.params.certificateId}
-  next: validate_input
+  next: call_create_user_log_template
 
-validate_input:
-  switch:
-    - condition: ${client_id == null || certificate_id == null}
-      next: return_bad_request
-  next: delete_certificate
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "DELETE"
+    path: "admin/clients/certificates"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: log_cluster
+  next: send_request
 
-delete_certificate:
+send_request:
   call: http.post
   args:
     url: "[#CENTOPS_RESQL]/delete-certificate"
@@ -36,5 +56,5 @@ return_success:
 
 return_bad_request:
   status: 400
-  return: "Client ID and Certificate ID are required"
+  return: "clientId, certificateId and cookie are required"
   next: end

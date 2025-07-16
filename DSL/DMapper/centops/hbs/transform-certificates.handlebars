@@ -1,0 +1,18 @@
+{
+"items": [
+{{#each entries}}
+    {
+    "certificateId": "{{certificateId}}",
+    "clientId": "{{clientId}}",
+    "certificateValue": "{{certificateValue}}",
+    "serialNumber": "{{serialNumber}}",
+    "createdAt": "{{createdAt}}",
+    "validUntil": "{{validUntil}}",
+    "isActive": {{isActive}}
+    }{{#unless @last}},{{/unless}}
+{{/each}}
+],
+"page": {{page}},
+"pageSize": {{pageSize}},
+"totalPages": {{#if entries.[0]}}{{entries.[0].totalPages}}{{else}}0{{/if}}
+}

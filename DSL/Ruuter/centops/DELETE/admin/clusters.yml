@@ -13,17 +13,16 @@ declaration:
     headers:
       - field: cookie
         type: string
-        description: "Cookie field"
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.clusterId == null || incoming.headers == null || incoming.headers.cookie == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     cluster_id: ${incoming.params.clusterId}
-  next: validate_input
-
-validate_input:
-  switch:
-    - condition: ${cluster_id == null || incoming.headers == null || incoming.headers.cookie == null}
-      next: return_bad_request
   next: call_create_user_log_template
 
 call_create_user_log_template:
@@ -35,9 +34,9 @@ call_create_user_log_template:
   headers:
     cookie: ${incoming.headers.cookie}
   result: log_cluster
-  next: delete_cluster
+  next: send_request
 
-delete_cluster:
+send_request:
   call: http.post
   args:
     url: "[#CENTOPS_RESQL]/delete-cluster"
@@ -53,5 +52,5 @@ return_success:
 
 return_bad_request:
   status: 400
-  return: "Cluster ID and cookie are required"
+  return: "clusterId and cookie are required"
   next: end

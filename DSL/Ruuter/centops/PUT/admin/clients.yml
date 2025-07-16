@@ -6,7 +6,6 @@ declaration:
   accepts: json
   returns: json
   namespace: centops
-  endpoint: /clients/{name}
   allowlist:
     body:
       - field: name
@@ -23,7 +22,13 @@ declaration:
       - field: clientId
         type: string
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.clientId == null || incoming.body.name == null || incoming.body.kubernetesClusterAddress == null || incoming.body.kubernetesClusterNamespace == null || incoming.body.argoAppDeploymentName == null || incoming.body.authenticationCertificate == null || incoming.headers == null || incoming.headers.cookie == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     client_id: ${incoming.params.clientId}
     name: ${incoming.body.name}
@@ -31,12 +36,6 @@ extract_request_data:
     kubernetes_cluster_namespace: ${incoming.body.kubernetesClusterNamespace}
     argo_app_deployment_name: ${incoming.body.argoAppDeploymentName}
     authentication_certificate: ${incoming.body.authenticationCertificate}
-  next: validate_input
-
-validate_input:
-  switch:
-    - condition: ${client_id == null || name == null || kubernetes_cluster_address == null || kubernetes_cluster_namespace == null || argo_app_deployment_name == null || authentication_certificate == null || incoming.headers == null || incoming.headers.cookie == null}
-      next: return_bad_request
   next: call_create_user_log_template
 
 call_create_user_log_template:
@@ -48,9 +47,9 @@ call_create_user_log_template:
   headers:
     cookie: ${incoming.headers.cookie}
   result: log_result
-  next: update_client
+  next: send_request
 
-update_client:
+send_request:
   call: http.post
   args:
     url: "[#CENTOPS_RESQL]/update-client"
@@ -61,16 +60,15 @@ update_client:
       kubernetes_cluster_namespace: ${kubernetes_cluster_namespace}
       argo_app_deployment_name: ${argo_app_deployment_name}
       authentication_certificate: ${authentication_certificate}
-      created_at: ${new Date().toISOString()}
   result: update_result
-  next: return_updated_client
+  next: return_updated
 
-return_updated_client:
+return_updated:
   status: 204
   return:
   next: end
 
 return_bad_request:
   status: 400
-  return: "Client ID, name, kubernetesClusterAddress, kubernetesClusterNamespace, argoAppDeploymentName, authenticationCertificate, fields are required"
+  return: "clientId, name, kubernetesClusterAddress, kubernetesClusterNamespace, argoAppDeploymentName, authenticationCertificate and cookie are required"
   next: end

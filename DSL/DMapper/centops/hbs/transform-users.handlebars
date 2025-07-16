@@ -1,0 +1,16 @@
+{
+"items": [
+{{#each entries}}
+    {
+    "userId": "{{userId}}",
+    "firstName": "{{firstName}}",
+    "lastName": "{{lastName}}",
+    "idCode": "{{idCode}}",
+    "createdAt": "{{createdAt}}"
+    }{{#unless @last}},{{/unless}}
+{{/each}}
+],
+"page": {{page}},
+"pageSize": {{pageSize}},
+"totalPages": {{#if entries.[0]}}{{entries.[0].totalPages}}{{else}}0{{/if}}
+}
