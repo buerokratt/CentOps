@@ -17,12 +17,12 @@ declaration:
 
 extract_request_data:
   assign:
-    client_id: ${incoming.params.clientId}
+    clientId: ${incoming.params.clientId}
   next: validate_input
 
 validate_input:
   switch:
-    - condition: ${client_id == null || incoming.headers == null || incoming.headers.cookie == null}
+    - condition: ${incoming.params.clientId == null || incoming.headers == null || incoming.headers.cookie == null}
       next: return_bad_request
   next: get_client_data
 
@@ -31,13 +31,13 @@ get_client_data:
   args:
     url: "[#CENTOPS_RESQL]/get-client-by-id"
     query:
-      id: ${clientId}
+      client_id: ${clientId}
   result: client_result
   next: check_client_data
 
 check_client_data:
   switch:
-    - condition: ${client_result.response.body[0].kubernetesClusterNamespace == null || client_result.response.body[0].name == null}
+    - condition: ${client_result.response.body[0].name == null}
       next: return_certificate_generation_failed
   next: extract_client_data
 
@@ -62,7 +62,7 @@ generate_certificates:
   args:
     url: "[#CENTOPS_DMAPPER]/certificates/generate"
   result: generate_result
-  next: return_certificates
+  next: check_generated_certificate_response
 
 check_generated_certificate_response:
   switch:
@@ -74,7 +74,7 @@ assign_certificate_data:
   assign:
     publicKey: ${generate_result.response.body.publicKey}
     privateKey: ${generate_result.response.body.privateKey}
-  next: check_for_required_parameters
+  next: validate_certificates
 
 validate_certificates:
   switch:
@@ -85,12 +85,13 @@ validate_certificates:
 save_private_key_to_vault:
   call: http.post
   args:
-    url: "[#VAULT_ADDR]/v1/[#VAULT_BASE_PATH]/certificates/${environment}/${clientName}"
+    url: "[#VAULT_ADDR]/v1/[#VAULT_BASE_PATH]/certificates/${clientName}"
     headers:
       X-Vault-Token: "[#VAULT_TOKEN]"
       Content-Type: application/json
     body:
-      data: ${privateKey}
+      data:
+        private_key: ${privateKey}
   result: vault_result
   error: return_certificate_generation_failed
   next: save_certificate_metadata
@@ -101,13 +102,13 @@ save_certificate_metadata:
     url: "[#CENTOPS_RESQL]/create-certificate"
     body:
       client_id: ${clientId}
-      publicKey: ${publicKey}
+      public_key: ${publicKey}
   result: certificate_metadata_result
   next: return_certificates
 
 return_certificates:
   status: 200
-  return: ${certificates_result.response.body[0].publicKey}
+  return: ${certificate_metadata_result}
   next: end
 
 return_bad_request:
