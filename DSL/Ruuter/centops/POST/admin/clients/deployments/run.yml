@@ -68,7 +68,7 @@ get_client_data:
 check_client_data:
   switch:
     - condition: ${client_result.response.body[0].kubernetesClusterNamespace == null || client_result.response.body[0].name == null}
-      next: create_error_log
+      next: return_incorrect_request
   next: extract_client_data
 
 extract_client_data:
@@ -98,18 +98,16 @@ extract_manifest_data:
   assign:
     helm_version: ${manifest_result.response.body[0].helmVersion}
     helm_values: ${manifest_result.response.body[0].helmValues}
-  next: create_log
+  next: call_create_user_log_template
 
-create_log:
-  call: http.post
-  args:
-    url: "[#CENTOPS_RESQL]/create-user-log"
-    body:
-      method: "POST"
-      path: "admin/clients/deployments/run"
-      user_id_code: ${userIdCode}
-      first_name: ${firstName}
-      last_name: ${lastName}
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "POST"
+    path: "admin/clients/deployments/run"
+  headers:
+    cookie: ${incoming.headers.cookie}
   result: create_log_result
   next: trigger_argo_cd_deployment
 

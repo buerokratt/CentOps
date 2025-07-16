@@ -1,0 +1,121 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Generate RSA key pair for a client"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: clientId
+        type: string
+    headers:
+      - field: cookie
+        type: string
+        description: "Cookie field"
+
+extract_request_data:
+  assign:
+    client_id: ${incoming.params.clientId}
+  next: validate_input
+
+validate_input:
+  switch:
+    - condition: ${client_id == null || incoming.headers == null || incoming.headers.cookie == null}
+      next: return_bad_request
+  next: get_client_data
+
+get_client_data:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-client-by-id"
+    query:
+      id: ${clientId}
+  result: client_result
+  next: check_client_data
+
+check_client_data:
+  switch:
+    - condition: ${client_result.response.body[0].kubernetesClusterNamespace == null || client_result.response.body[0].name == null}
+      next: return_certificate_generation_failed
+  next: extract_client_data
+
+extract_client_data:
+  assign:
+    clientName: ${client_result.response.body[0].name}
+  next: call_create_user_log_template
+
+call_create_user_log_template:
+  template: "[#CENTOPS_PROJECT_LAYER]/log-user-request"
+  requestType: templates
+  body:
+    method: "POST"
+    path: "admin/clients/certificates/generate"
+  headers:
+    cookie: ${incoming.headers.cookie}
+  result: create_log_result
+  next: generate_certificates
+
+generate_certificates:
+  call: http.get
+  args:
+    url: "[#CENTOPS_DMAPPER]/certificates/generate"
+  result: generate_result
+  next: return_certificates
+
+check_generated_certificate_response:
+  switch:
+    - condition: ${200 <= generate_result.response.statusCodeValue && generate_result.response.statusCodeValue < 300}
+      next: assign_certificate_data
+  next: return_certificate_generation_failed
+
+assign_certificate_data:
+  assign:
+    publicKey: ${generate_result.response.body.publicKey}
+    privateKey: ${generate_result.response.body.privateKey}
+  next: check_for_required_parameters
+
+validate_certificates:
+  switch:
+    - condition: ${publicKey == null || privateKey == null }
+      next: return_certificate_generation_failed
+  next: save_private_key_to_vault
+
+save_private_key_to_vault:
+  call: http.post
+  args:
+    url: "[#VAULT_ADDR]/v1/[#VAULT_BASE_PATH]/certificates/${environment}/${clientName}"
+    headers:
+      X-Vault-Token: "[#VAULT_TOKEN]"
+      Content-Type: application/json
+    body:
+      data: ${privateKey}
+  result: vault_result
+  error: return_certificate_generation_failed
+  next: save_certificate_metadata
+
+save_certificate_metadata:
+  call: http.post
+  args:
+    url: "[#CENTOPS_RESQL]/create-certificate"
+    body:
+      client_id: ${clientId}
+      publicKey: ${publicKey}
+  result: certificate_metadata_result
+  next: return_certificates
+
+return_certificates:
+  status: 200
+  return: ${certificates_result.response.body[0].publicKey}
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "Client ID or cookie are required"
+  next: end
+
+return_certificate_generation_failed:
+  status: 500
+  return: "Generation of certificates was failed"
+  next: end
