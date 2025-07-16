@@ -1,0 +1,17 @@
+{
+"items": [
+{{#each entries}}
+    {
+    "clientId": "{{clientId}}",
+    "name": "{{name}}",
+    "kubernetesClusterAddress": "{{kubernetesClusterAddress}}",
+    "kubernetesClusterNamespace": "{{kubernetesClusterNamespace}}",
+    "authenticationCertificate": "{{escapeCertificate authenticationCertificate}}",
+    "createdAt": "{{createdAt}}"
+    }{{#unless @last}},{{/unless}}
+{{/each}}
+],
+"page": {{page}},
+"pageSize": {{pageSize}},
+"totalPages": {{#if entries.[0]}}{{entries.[0].totalPages}}{{else}}0{{/if}}
+}

@@ -1,6 +1,6 @@
 SELECT
     id,
-    timestamp,
+    created_at,
     user_id_code,
     ip_address,
     action,

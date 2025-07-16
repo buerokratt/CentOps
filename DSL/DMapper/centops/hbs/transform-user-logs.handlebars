@@ -1,0 +1,15 @@
+{
+"items": [
+{{#each entries}}
+    {
+    "logId": "{{logId}}",
+    "method": "{{method}}",
+    "path": "{{path}}",
+    "createdAt": "{{createdAt}}"
+    }{{#unless @last}},{{/unless}}
+{{/each}}
+],
+"page": {{page}},
+"pageSize": {{pageSize}},
+"totalPages": {{#if entries.[0]}}{{entries.[0].totalPages}}{{else}}0{{/if}}
+}

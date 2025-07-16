@@ -1,4 +1,4 @@
-SELECT id,
+SELECT client_id,
        name,
        kubernetes_cluster_namespace,
        argo_app_deployment_name
