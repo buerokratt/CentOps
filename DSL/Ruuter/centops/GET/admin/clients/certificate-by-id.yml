@@ -13,19 +13,19 @@ declaration:
       - field: certificateId
         type: number
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.clientId == null || incoming.params.certificateId == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     client_id: ${incoming.params.clientId}
     certificate_id: ${incoming.params.certificateId}
-  next: validate_input
+  next: send_request
 
-validate_input:
-  switch:
-    - condition: ${client_id == null || certificate_id == null}
-      next: return_bad_request
-  next: get_certificate
-
-get_certificate:
+send_request:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-certificate"
@@ -33,14 +33,25 @@ get_certificate:
       client_id: ${client_id}
       certificate_id: ${certificate_id}
   result: certificate_result
+  next: check_result
+
+check_result:
+  switch:
+    - condition: ${certificate_result.response.body[0] == null}
+      next: return_not_found
   next: return_certificate
 
 return_certificate:
   status: 200
-  return: ${certificate_result.response.body}
+  return: ${certificate_result.response.body[0]}
   next: end
 
 return_bad_request:
   status: 400
-  return: "Client ID and Certificate ID are required"
+  return: "clientId and certificateId are required"
+  next: end
+
+return_not_found:
+  status: 404
+  return: "Certificate not found"
   next: end

@@ -1,8 +1,6 @@
-SELECT id,
-       cluster_id,
+SELECT cluster_id,
        name,
        ip_address,
-       argo_api_url,
        created_at
 FROM clusters
 WHERE cluster_id = :cluster_id::uuid

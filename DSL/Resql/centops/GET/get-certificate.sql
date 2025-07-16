@@ -1,5 +1,4 @@
-SELECT id,
-       certificate_id,
+SELECT certificate_id,
        client_id,
        certificate_value,
        serial_number,

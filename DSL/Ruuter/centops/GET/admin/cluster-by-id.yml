@@ -11,32 +11,43 @@ declaration:
       - field: clusterId
         type: string
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.clusterId == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     cluster_id: ${incoming.params.clusterId}
-  next: validate_input
+  next: send_request
 
-validate_input:
-  switch:
-    - condition: ${cluster_id == null}
-      next: return_bad_request
-  next: get_cluster
-
-get_cluster:
+send_request:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-cluster"
     query:
       cluster_id: ${cluster_id}
   result: cluster_result
-  next: return_cluster
+  next: check_result
 
-return_cluster:
+check_result:
+  switch:
+    - condition: ${cluster_result.response.body[0] == null}
+      next: return_not_found
+  next: return_client
+
+return_client:
   status: 200
   return: ${cluster_result.response.body[0]}
   next: end
 
 return_bad_request:
   status: 400
-  return: "Cluster ID is required"
+  return: "clusterId is required"
+  next: end
+
+return_not_found:
+  status: 404
+  return: "Cluster not found"
   next: end

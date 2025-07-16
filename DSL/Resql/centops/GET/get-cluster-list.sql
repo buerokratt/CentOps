@@ -1,8 +1,6 @@
-SELECT id,
-       cluster_id,
+SELECT cluster_id,
        name,
        ip_address,
-       argo_api_url,
        created_at,
        CEIL(COUNT(*) OVER() / :page_size::DECIMAL) AS total_pages
 FROM clusters c

@@ -20,20 +20,19 @@ declaration:
     headers:
       - field: cookie
         type: string
-        description: "Cookie field"
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.userId == null || incoming.body.firstName == null || incoming.body.lastName == null || incoming.body.idCode == null || incoming.headers == null || incoming.headers.cookie == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     user_id: ${incoming.params.userId}
     first_name: ${incoming.body.firstName}
     last_name: ${incoming.body.lastName}
     id_code: ${incoming.body.idCode}
-  next: validate_input
-
-validate_input:
-  switch:
-    - condition: ${user_id == null || first_name == null || last_name == null || id_code == null || incoming.headers == null || incoming.headers.cookie == null}
-      next: return_bad_request
   next: call_create_user_log_template
 
 call_create_user_log_template:
@@ -45,9 +44,9 @@ call_create_user_log_template:
   headers:
     cookie: ${incoming.headers.cookie}
   result: log_result
-  next: update_user
+  next: send_request
 
-update_user:
+send_request:
   call: http.post
   args:
     url: "[#CENTOPS_RESQL]/update-user"
@@ -57,14 +56,14 @@ update_user:
       last_name: ${last_name}
       id_code: ${id_code}
   result: update_result
-  next: return_updated_user
+  next: return_updated
 
-return_updated_user:
+return_updated:
   status: 204
   return:
   next: end
 
 return_bad_request:
   status: 400
-  return: "User ID, firstName and lastName, cookie are required"
+  return: "userId, firstName, lastName, idCode, and cookie are required"
   next: end

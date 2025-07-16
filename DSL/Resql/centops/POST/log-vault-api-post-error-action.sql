@@ -13,4 +13,4 @@ VALUES (:client_id,
         :request_payload::jsonb,
         :status_code,
         :error_message,
-        :user_agent) RETURNING id, timestamp;
+        :user_agent) RETURNING id, created_at;
