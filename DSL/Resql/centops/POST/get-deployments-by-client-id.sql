@@ -7,5 +7,5 @@ SELECT id,
        status,
        created_at
 FROM deployments
-WHERE client_id = CAST(:client_id AS BIGINT)
+WHERE client_id = :client_id::uuid
 ORDER BY created_at DESC;

@@ -11,5 +11,5 @@ SELECT name,
        TRUE,
        NOW()
 FROM manifests
-WHERE manifest_id = CAST(:manifest_id AS BIGINT) AND client_id = :client_id
+WHERE manifest_id = CAST(:manifest_id AS BIGINT) AND client_id = :client_id::uuid
 
