@@ -10,17 +10,15 @@ declaration:
     params:
       - field: page
         type: number
-        description: "Page number for pagination"
       - field: pageSize
         type: number
-        description: "Number of items per page"
 
-extractRequestData:
+assign_parameters:
   assign:
     page: ${incoming.params.page ?? 1}
     page_size: ${incoming.params.pageSize ?? 10}
 
-list_users:
+send_request:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-user-list"
@@ -29,7 +27,19 @@ list_users:
       page_size: ${page_size}
   result: users_result
 
+transform:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER_HBS]/transform-users"
+    headers:
+      type: "json"
+    body:
+      entries: ${users_result.response.body}
+      page: ${page}
+      pageSize: ${page_size}
+  result: users
+
 return_users:
   status: 200
-  return: ${users_result.response.body}
+  return: ${users.response.body}
   next: end

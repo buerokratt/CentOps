@@ -9,4 +9,4 @@ VALUES (:client_id,
         :action,
         :secret_key,
         :status_code,
-        :user_agent) RETURNING id, timestamp;
+        :user_agent) RETURNING id, created_at;

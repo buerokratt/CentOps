@@ -10,17 +10,15 @@ declaration:
     params:
       - field: page
         type: number
-        description: "Page number for pagination"
       - field: pageSize
         type: number
-        description: "Number of items per page"
 
-extractRequestData:
+assign_parameters:
   assign:
     page: ${incoming.params.page ?? 1}
     page_size: ${incoming.params.pageSize ?? 10}
 
-list_clusters:
+send_request:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-cluster-list"
@@ -29,15 +27,19 @@ list_clusters:
       page_size: ${page_size}
   result: clusters_result
 
-construct_response:
-  assign:
-    response:
-      response: ${clusters_result.response.body.map(({totalPages, ...rest}) => rest)}
-      totalPages: ${clusters_result.response.body[0].totalPages}
+transform:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER_HBS]/transform-clusters"
+    headers:
+      type: "json"
+    body:
+      entries: ${clusters_result.response.body}
       page: ${page}
-      limit: ${page_size}
+      pageSize: ${page_size}
+  result: clusters
 
 return_clusters:
   status: 200
-  return: ${response}
+  return: ${clusters.response.body}
   next: end

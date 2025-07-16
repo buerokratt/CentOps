@@ -11,32 +11,43 @@ declaration:
       - field: userId
         type: string
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.userId == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     user_id: ${incoming.params.userId}
-  next: validate_input
+  next: send_request
 
-validate_input:
-  switch:
-    - condition: ${user_id == null}
-      next: return_bad_request
-  next: get_user
-
-get_user:
+send_request:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-user"
     query:
       user_id: ${user_id}
   result: user_result
+  next: check_result
+
+check_result:
+  switch:
+    - condition: ${user_result.response.body[0] == null}
+      next: return_not_found
   next: return_user
 
 return_user:
   status: 200
-  return: ${user_result.response.body}
+  return: ${user_result.response.body[0]}
   next: end
 
 return_bad_request:
   status: 400
-  return: "User ID is required"
+  return: "userId is required"
+  next: end
+
+return_not_found:
+  status: 404
+  return: "User not found"
   next: end
