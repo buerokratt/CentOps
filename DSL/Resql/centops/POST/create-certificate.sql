@@ -1,3 +1,3 @@
 INSERT INTO certificates (client_id, public_key)
 VALUES (:client_id::uuid, :public_key)
-RETURNING id;
+RETURNING certificate_id;
