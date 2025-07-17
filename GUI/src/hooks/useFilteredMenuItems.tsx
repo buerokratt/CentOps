@@ -23,7 +23,7 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   const { isSuccess, data } = useQuery<{ response: Role[] }>({
-    queryKey: ['account/user-role', 'prod']
+    queryKey: ['account/user-role', 'prod'],
   });
 
   useEffect(() => {
