@@ -1,10 +1,10 @@
-INSERT INTO vault_api_action_log (client_id,
+INSERT INTO vault_api_action_log (user_id_code,
                                   ip_address,
                                   action,
                                   secret_key,
                                   status_code,
                                   user_agent)
-VALUES (:client_id,
+VALUES (:user_id_code,
         :ip_address,
         :action,
         :secret_key,

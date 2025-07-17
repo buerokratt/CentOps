@@ -1,7 +1,7 @@
 SELECT
     id,
     created_at,
-    client_id,
+    user_id_code,
     ip_address,
     action,
     user_agent,
