@@ -23,9 +23,7 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   const { isSuccess, data } = useQuery<{ response: Role[] }>({
-    queryKey: ['account/user-role', 'prod'],
-    // TODO, hardcode the tole, because api returns 300 status code
-    initialData: { response: [ROLES.ROLE_ADMINISTRATOR] },
+    queryKey: ['account/user-role', 'prod']
   });
 
   useEffect(() => {
