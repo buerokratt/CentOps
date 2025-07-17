@@ -47,7 +47,7 @@ the curl request is as follows:
 curl -X POST -H "Content-Type: application/json" -d '{
   "login": "EE30303039914",
   "password": "OK"
-}' http://localhost:8050/centops/login-user
+}' http://localhost:8050/centops/auth/login
 ```
 
 ### Vault Setup 

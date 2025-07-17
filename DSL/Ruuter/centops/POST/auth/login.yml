@@ -1,7 +1,7 @@
 declaration:
   call: declare
   version: 0.1
-  description: "Decription placeholder for 'login-user'"
+  description: "Decription placeholder for 'LOGIN'"
   method: post
   accepts: json
   returns: json
@@ -13,15 +13,19 @@ declaration:
         description: "Body field 'login'"
       - field: password
         type: string
-        description: "Body field 'password'" 
+        description: "Body field 'password'"
 
-check_for_required_parameters:
+getIsPasswordAuthEnabled:
+  assign:
+    isPasswordAuthEnabled: "[#PASSWORD_AUTH_ENABLED]"
+
+checkPasswordLoginEnabled:
   switch:
-    - condition: ${incoming.body.login == null || incoming.body.password == null}
-      next: return_incorrect_request
-  next: extract_request_data
+    - condition: ${isPasswordAuthEnabled === true || isPasswordAuthEnabled.toLowerCase() === "true"}
+      next: extractRequestData
+  next: return_password_login_disabled
 
-extract_request_data:
+extractRequestData:
   assign:
     login: ${incoming.body.login}
     password: ${incoming.body.password}
@@ -76,6 +80,7 @@ assign_cookie:
       Domain: "[#DOMAIN]"
       Secure: false
       HttpOnly: false
+      SameSite: "[#COOKIE_SAME_SITE]"
   next: return_value
 
 return_value:
@@ -94,7 +99,7 @@ return_user_not_found:
   return: "User Not Found"
   next: end
 
-return_incorrect_request:
+return_password_login_disabled:
   status: 400
-  return: "Required parameter(s) missing"
+  return: "Password login is disabled"
   next: end
