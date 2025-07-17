@@ -9,7 +9,7 @@ declaration:
   allowlist:
     body:
       - field: clientId
-        type: text
+        type: string
         description: "Unique client id"
       - field: manifestId
         type: number
@@ -61,7 +61,7 @@ get_client_data:
   args:
     url: "[#CENTOPS_RESQL]/get-client-by-id"
     query:
-      id: ${clientId}
+      client_id: ${clientId}
   result: client_result
   next: check_client_data
 
