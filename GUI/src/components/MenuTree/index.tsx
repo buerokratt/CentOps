@@ -99,8 +99,8 @@ export const MenuTree: FC<MenuTreeProps> = ({
             return (
               <a
                 href={
-                  (menuData.find((dataItem) => dataItem.id === menuItem.id)?.url ??
-                    '') + menuItem.path
+                  (menuData.find((dataItem) => dataItem.id === menuItem.id)
+                    ?.url ?? '') + menuItem.path
                 }
               >
                 <MenuItemLabel
