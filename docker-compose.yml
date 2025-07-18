@@ -126,6 +126,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - REACT_APP_API_URL=http://localhost:8050/centops
       - REACT_APP_PUBLIC_URL=http://localhost:8058/centops
+      - REACT_APP_SERVICE_ID=centops
       - PORT=8057
     build:
       context: GUI
