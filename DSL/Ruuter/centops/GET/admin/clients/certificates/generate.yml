@@ -115,7 +115,7 @@ save_private_key_to_vault:
         private_key: ${privateKey}
   result: vault_result
   error: return_certificate_generation_failed
-  next: save_certificate_metadata
+  next: return_certificates
 
 return_certificates:
   wrapper: false
