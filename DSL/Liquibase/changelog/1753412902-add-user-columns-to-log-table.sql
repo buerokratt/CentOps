@@ -1,5 +1,5 @@
 -- liquibase formatted sql
--- changeset bodax:1751722253
+-- changeset bodax:1753412902
 
 
 ALTER TABLE user_logs

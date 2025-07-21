@@ -12,25 +12,23 @@ declaration:
         type: string
       - field: page
         type: number
-        description: "Page number for pagination"
       - field: pageSize
         type: number
-        description: "Number of items per page"
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.clientId == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     client_id: ${incoming.params.clientId}
     page: ${incoming.params.page ?? 1}
     page_size: ${incoming.params.pageSize ?? 10}
-  next: validate_input
+  next: send_request
 
-validate_input:
-  switch:
-    - condition: ${client_id == null}
-      next: return_bad_request
-  next: get_certificates
-
-get_certificates:
+send_request:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-certificate-list"
@@ -39,14 +37,27 @@ get_certificates:
       page: ${page}
       page_size: ${page_size}
   result: certificates_result
+  next: transform
+
+transform:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER_HBS]/transform-certificates"
+    headers:
+      type: "json"
+    body:
+      entries: ${certificates_result.response.body}
+      page: ${page}
+      pageSize: ${page_size}
+  result: certificates
   next: return_certificates
 
 return_certificates:
   status: 200
-  return: ${certificates_result.response.body}
+  return: ${certificates.response.body}
   next: end
 
 return_bad_request:
   status: 400
-  return: "Client ID is required"
+  return: "clientId is required"
   next: end

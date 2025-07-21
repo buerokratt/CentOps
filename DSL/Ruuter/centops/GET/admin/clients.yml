@@ -10,17 +10,15 @@ declaration:
     params:
       - field: page
         type: number
-        description: "Page number for pagination"
       - field: pageSize
         type: number
-        description: "Number of items per page"
 
-extractRequestData:
+assign_parameters:
   assign:
     page: ${incoming.params.page ?? 1}
     page_size: ${incoming.params.pageSize ?? 10}
 
-get_clients:
+send_request:
   call: http.get
   args:
     url: "[#CENTOPS_RESQL]/get-client-list"
@@ -28,14 +26,20 @@ get_clients:
       page: ${page}
       page_size: ${page_size}
   result: clients_result
-  next: return_clients
+
+transform:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER_HBS]/transform-clients"
+    headers:
+      type: "json"
+    body:
+      entries: ${clients_result.response.body}
+      page: ${page}
+      pageSize: ${page_size}
+  result: clients
 
 return_clients:
   status: 200
-  return: ${clients_result.response.body}
-  next: end
-
-return_incorrect_request:
-  status: 400
-  return: "Incorrect request"
+  return: ${clients.response.body}
   next: end

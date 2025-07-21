@@ -8,47 +8,20 @@ import {
 import { TransTableHead } from 'i18n/trans/table';
 import { TransTitle } from 'i18n/trans/title';
 import { Trans } from 'react-i18next';
-import type { AuditUserActivity } from 'types/audit';
-import type { LabelProps } from 'components/Label';
+import { type AuditUserActivity, methodMap } from 'types/audit';
 import type { Method } from 'axios';
 import { formatDate } from 'utils/date';
 import { withAuthorization } from 'hoc/withAuthorization';
-
-const methodMap = new Map<Method, LabelProps['type']>([
-  ['post', 'info'],
-  ['put', 'info'],
-  ['patch', 'warning'],
-  ['delete', 'error'],
-  ['get', 'success'],
-]);
+import { useQuery } from '@tanstack/react-query';
 
 export const UserActivityPage = withAuthorization(() => {
-  const [clients] = useState<AuditUserActivity[]>([
-    {
-      id: '1',
-      user: 'User 1',
-      method: 'delete',
-      path: '/admin/clients',
-      meta: 'data',
-      timestamp: '2025-06-25T10:38:14.643Z',
-    },
-    {
-      id: '1',
-      user: 'User 1',
-      method: 'get',
-      path: '/admin/clients',
-      meta: 'data',
-      timestamp: '2025-06-25T10:38:14.643Z',
-    },
-    {
-      id: '1',
-      user: 'User 1',
-      method: 'post',
-      path: '/admin/clients',
-      meta: 'data',
-      timestamp: '2025-06-25T10:38:14.643Z',
-    },
-  ]);
+  const {
+    data: { response: logs },
+  } = useQuery<{ response: AuditUserActivity[] }>({
+    queryKey: ['admin/logs/user'],
+    initialData: { response: [] },
+  });
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -58,11 +31,6 @@ export const UserActivityPage = withAuthorization(() => {
   const columnHelper = createColumnHelper<AuditUserActivity>();
   const columns = useMemo(
     () => [
-      columnHelper.accessor('user', {
-        id: 'user',
-        header: () => <TransTableHead i18nKey="user" />,
-        cell: (message) => message.getValue(),
-      }),
       columnHelper.accessor('method', {
         id: 'method',
         header: () => <TransTableHead i18nKey="method" />,
@@ -84,13 +52,8 @@ export const UserActivityPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="path" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('meta', {
-        id: 'meta',
-        header: () => <TransTableHead i18nKey="metaData" />,
-        cell: (message) => message.getValue(),
-      }),
-      columnHelper.accessor('timestamp', {
-        id: 'timestamp',
+      columnHelper.accessor('createdAt', {
+        id: 'createdAt',
         header: () => <TransTableHead i18nKey="dateTime" />,
         cell: (message) => formatDate(message.getValue(), 'dateTime'),
       }),
@@ -112,7 +75,7 @@ export const UserActivityPage = withAuthorization(() => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={clients}
+            data={logs ?? []}
             columns={columns}
             sortable
             pagination={pagination}

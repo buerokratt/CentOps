@@ -24,6 +24,7 @@ export const TransTableHead = createTrans({
     />
   ),
   image: <Trans i18nKey="table.head.image" defaults="Image" />,
+  ipAddress: <Trans i18nKey="table.head.ipAddress" defaults="Ip Address" />,
   manifestVersion: (
     <Trans i18nKey="table.head.manifestVersion" defaults="Manifest ver." />
   ),
@@ -35,6 +36,7 @@ export const TransTableHead = createTrans({
   path: <Trans i18nKey="table.head.path" defaults="Path" />,
   updatedAt: <Trans i18nKey="table.head.updatedAt" defaults="Updated at" />,
   user: <Trans i18nKey="table.head.user" defaults="User" />,
+  userAgent: <Trans i18nKey="table.head.userAgent" defaults="User Agent" />,
   usersDb: <Trans i18nKey="table.head.usersDb" defaults="UsersDB" />,
   usersName: <Trans i18nKey="table.head.usersName" defaults="User name" />,
 });

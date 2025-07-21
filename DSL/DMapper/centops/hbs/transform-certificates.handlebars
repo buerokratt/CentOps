@@ -1,0 +1,15 @@
+{
+"items": [
+{{#each entries}}
+    {
+    "certificateId": "{{certificateId}}",
+    "clientId": "{{clientId}}",
+    "createdAt": "{{createdAt}}",
+    "deleted": {{deleted}}
+    }{{#unless @last}},{{/unless}}
+{{/each}}
+],
+"page": {{page}},
+"pageSize": {{pageSize}},
+"totalPages": {{#if entries.[0]}}{{entries.[0].totalPages}}{{else}}0{{/if}}
+}

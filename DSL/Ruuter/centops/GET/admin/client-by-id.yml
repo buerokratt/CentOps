@@ -6,22 +6,20 @@ declaration:
   accepts: json
   returns: json
   namespace: centops
-  endpoint: /client/get-client/{name}
   allowlist:
     params:
-      - field: name
+      - field: clientId
         type: string
-        description: "Client name"
 
-validate_name:
+validate_request_param:
   switch:
-    - condition: ${incoming.params.name == null}
+    - condition: ${incoming.params.clientId == null}
       next: return_bad_request
   next: assign_parameters
 
 assign_parameters:
   assign:
-    name: ${incoming.params.name}
+    client_id: ${incoming.params.clientId}
   next: send_request
 
 send_request:
@@ -29,16 +27,27 @@ send_request:
   args:
     url: "[#CENTOPS_RESQL]/get-client"
     query:
-      name: ${name}
+      client_id: ${client_id}
   result: client_result
+  next: check_result
+
+check_result:
+  switch:
+    - condition: ${client_result.response.body[0] == null}
+      next: return_not_found
   next: return_client
 
 return_client:
   status: 200
-  return: ${client_result.response.body}
+  return: ${client_result.response.body[0]}
   next: end
 
 return_bad_request:
   status: 400
-  return: "Client name is required"
+  return: "clientId is required"
+  next: end
+
+return_not_found:
+  status: 404
+  return: "Client not found"
   next: end

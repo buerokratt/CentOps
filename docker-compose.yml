@@ -126,6 +126,9 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - REACT_APP_API_URL=http://localhost:8050/centops
       - REACT_APP_PUBLIC_URL=http://localhost:8058/centops
+      - REACT_APP_SERVICE_ID=users,clients,clusters,audit,documentation
+      - REACT_APP_PROJECT_LAYER=centops
+      - REACT_APP_BASE=/centops
       - PORT=8057
     build:
       context: GUI
@@ -172,6 +175,8 @@ services:
       - "${VAULT_DATA_PATH}/.vault-token:/vault/secrets/.vault-token:ro"
       - "${VAULT_DATA_PATH}:/vault/secrets"
     command: vault agent -config=/vault/vault-agent.hcl
+    networks:
+      - bykstack
 
   vault-unseal:
     image: curlimages/curl:8.1.0

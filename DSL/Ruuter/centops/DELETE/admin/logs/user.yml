@@ -11,18 +11,18 @@ declaration:
       - field: logId
         type: string
 
-extract_request_data:
+validate_request_param:
+  switch:
+    - condition: ${incoming.params.logId == null}
+      next: return_bad_request
+  next: assign_parameters
+
+assign_parameters:
   assign:
     log_id: ${incoming.params.logId}
-  next: validate_input
+  next: send_request
 
-validate_input:
-  switch:
-    - condition: ${log_id == null}
-      next: return_bad_request
-  next: delete_log
-
-delete_log:
+send_request:
   call: http.post
   args:
     url: "[#CENTOPS_RESQL]/delete-user-log"
@@ -38,5 +38,5 @@ return_success:
 
 return_bad_request:
   status: 400
-  return: "Log ID is required"
+  return: "logId is required"
   next: end
