@@ -25,7 +25,7 @@ get_user_info:
     url: "[#CENTOPS_TIM]/jwt/custom-jwt-userinfo"
     contentType: plaintext
     headers:
-      cookie: "customJwtCookie=${incoming.headers.cookie}"
+      cookie: ${incoming.headers.cookie}
     plaintext: "customJwtCookie"
   result: user_info_response
   next: check_cookie_info_response
