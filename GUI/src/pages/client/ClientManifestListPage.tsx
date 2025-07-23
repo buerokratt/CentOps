@@ -1,11 +1,14 @@
-import { Button, Card, DataTable, Icon, Track } from 'components';
-import { useMemo, useState } from 'react';
-import type { ClientManifest } from 'types/client';
 import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+  Button,
+  Card,
+  ConfirmDeleteButton,
+  DataTable,
+  Icon,
+  Track,
+} from 'components';
+import { useCallback, useMemo, useState } from 'react';
+import type { ApiClientManifest } from 'types/client';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { Trans } from 'react-i18next';
 import { TransTableHead } from 'i18n/trans/table';
@@ -14,27 +17,35 @@ import { ROUTES } from 'resources/routes-constants';
 import { TransTitle } from 'i18n/trans/title';
 import { formatDate } from 'utils/date';
 import { withAuthorization } from 'hoc/withAuthorization';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import api from 'services/api';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
 
 export const ClientManifestListPage = withAuthorization(() => {
-  const [clients] = useState<ClientManifest[]>([
-    {
-      id: '1',
-      name: 'Manifest 1',
-      updatedAt: '2025-06-07T14:11:00.107Z',
-    },
-    {
-      id: '2',
-      name: 'Manifest 2',
-      updatedAt: '2025-06-07T14:11:00.107Z',
-    },
-  ]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  const [pagination, setPagination] = usePagination();
+
+  const { clientId } = useParams<{ clientId: string }>();
+  const { data: manifests, refetch } = useQuery<Pagination<ApiClientManifest>>({
+    meta: { pagination },
+    queryKey: [
+      `admin/clients/manifests/all?clientId=${clientId}`,
+      ...Object.values(pagination),
+    ],
+    initialData: initialPaginationData<ApiClientManifest>(),
   });
+  const handleDelete = useCallback(
+    async ({ manifestId }: ApiClientManifest) => {
+      await api.delete(`/admin/clients/manifests?manifestId=${manifestId}`);
+      refetch();
+    },
+    []
+  );
+
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columnHelper = createColumnHelper<ClientManifest>();
+  const columnHelper = createColumnHelper<ApiClientManifest>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
@@ -42,32 +53,47 @@ export const ClientManifestListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="usersDb" />,
         cell: (message) => message.getValue(),
       }),
+      columnHelper.accessor('helmVersion', {
+        id: 'helmVersion',
+        header: () => <TransTableHead i18nKey="helmVersion" />,
+        cell: (message) => message.getValue(),
+      }),
       columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
         cell: (message) => formatDate(message.getValue()),
       }),
-      columnHelper.accessor('id', {
+      columnHelper.accessor('manifestId', {
         id: 'actions',
         header: '',
         enableSorting: false,
         meta: {
           size: 0,
         },
-        cell: () => (
+        cell: (props) => (
           <Track gap={8}>
             <Button appearance="text">
               <Icon name="copy" />
               <TransButton i18nKey="duplicate" />
             </Button>
-            <Button appearance="text">
+            <Button
+              component={Link}
+              to={ROUTES.CLIENT_MANIFESTS_DETAILS_ROUTE}
+              params={{ manifestId: props.row.original.manifestId }}
+              appearance="text"
+            >
               <Icon name="edit" />
               <TransButton i18nKey="edit" />
             </Button>
-            <Button appearance="text">
+            <ConfirmDeleteButton
+              appearance="text"
+              entity={props.row.original}
+              entityName="name"
+              onConfirm={handleDelete}
+            >
               <Icon name="delete" />
               <TransButton i18nKey="delete" />
-            </Button>
+            </ConfirmDeleteButton>
           </Track>
         ),
       }),
@@ -96,13 +122,22 @@ export const ClientManifestListPage = withAuthorization(() => {
         </Link>
       </Track>
 
-      <Card>
+      <Card
+        footer={
+          <Link to={ROUTES.CLIENT_DETAILS_ROUTE}>
+            <Button appearance="primary" outlined>
+              <TransButton i18nKey="backToClient" />
+            </Button>
+          </Link>
+        }
+      >
         <Card disablePadding>
           <DataTable
-            data={clients}
+            data={manifests.items}
             columns={columns}
             sortable
             pagination={pagination}
+            pagesCount={manifests.totalPages}
             setPagination={setPagination}
             sorting={sorting}
             setSorting={setSorting}

@@ -1,11 +1,14 @@
-import { Button, Card, DataTable, Icon, Track } from 'components';
-import { useMemo, useState } from 'react';
-import type { ClientSecret } from 'types/client';
 import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+  Button,
+  Card,
+  ConfirmDeleteButton,
+  DataTable,
+  Icon,
+  Track,
+} from 'components';
+import { useCallback, useMemo, useState } from 'react';
+import type { ApiClientSecret } from 'types/client';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { Trans } from 'react-i18next';
 import { TransTableHead } from 'i18n/trans/table';
@@ -13,25 +16,32 @@ import { Link } from 'components/Router/Link';
 import { ROUTES } from 'resources/routes-constants';
 import { TransTitle } from 'i18n/trans/title';
 import { withAuthorization } from 'hoc/withAuthorization';
+import { useQuery } from '@tanstack/react-query';
+import api from 'services/api';
+import { useParams } from 'react-router-dom';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
 
 export const ClientSecretListPage = withAuthorization(() => {
-  const [clients] = useState<ClientSecret[]>([
-    {
-      id: '1',
-      name: 'Client 1',
-    },
-    {
-      id: '2',
-      name: 'Client 2',
-    },
-  ]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  const [pagination, setPagination] = usePagination();
+
+  const { clientId } = useParams<{ clientId: string }>();
+  const { data: secrets, refetch } = useQuery<Pagination<ApiClientSecret>>({
+    meta: { pagination },
+    queryKey: [
+      `admin/clients/secrets/all?clientId=${clientId}`,
+      ...Object.values(pagination),
+    ],
+    initialData: initialPaginationData<ApiClientSecret>(),
   });
+  const handleDelete = useCallback(async ({ secretId }: ApiClientSecret) => {
+    await api.delete(`/admin/clients/secrets?secretId=${secretId}`);
+    refetch();
+  }, []);
+
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columnHelper = createColumnHelper<ClientSecret>();
+  const columnHelper = createColumnHelper<ApiClientSecret>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
@@ -48,23 +58,36 @@ export const ClientSecretListPage = withAuthorization(() => {
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
-        },
-        cell: () => (
+        meta: { size: 0 },
+        cell: (props) => (
           <Track gap={8}>
-            <Button appearance="text">
+            <Button
+              component={Link}
+              to={ROUTES.CLIENT_SECRETS_DIFF_ROUTE}
+              params={{ secretId: props.row.original.secretId }}
+              appearance="text"
+            >
               <Icon name="diff" />
               <TransButton i18nKey="difference" />
             </Button>
-            <Button appearance="text">
+            <Button
+              component={Link}
+              to={ROUTES.CLIENT_SECRETS_DETAILS_ROUTE}
+              params={{ secretId: props.row.original.secretId }}
+              appearance="text"
+            >
               <Icon name="edit" />
               <TransButton i18nKey="edit" />
             </Button>
-            <Button appearance="text">
+            <ConfirmDeleteButton
+              appearance="text"
+              entity={props.row.original}
+              entityName="name"
+              onConfirm={handleDelete}
+            >
               <Icon name="delete" />
               <TransButton i18nKey="delete" />
-            </Button>
+            </ConfirmDeleteButton>
           </Track>
         ),
       }),
@@ -93,13 +116,22 @@ export const ClientSecretListPage = withAuthorization(() => {
         </Link>
       </Track>
 
-      <Card>
+      <Card
+        footer={
+          <Link to={ROUTES.CLIENT_DETAILS_ROUTE}>
+            <Button appearance="primary" outlined>
+              <TransButton i18nKey="backToClient" />
+            </Button>
+          </Link>
+        }
+      >
         <Card disablePadding>
           <DataTable
-            data={clients}
+            data={secrets.items}
             columns={columns}
             sortable
             pagination={pagination}
+            pagesCount={secrets.totalPages}
             setPagination={setPagination}
             sorting={sorting}
             setSorting={setSorting}

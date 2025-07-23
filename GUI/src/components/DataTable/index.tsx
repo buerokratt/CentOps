@@ -112,7 +112,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 export const DataTable: FC<DataTableProps> = ({
   data,
   columns,
-  isClientSide = true,
+  isClientSide,
   tableBodyPrefix,
   sortable,
   filterable,
@@ -149,10 +149,10 @@ export const DataTable: FC<DataTableProps> = ({
         right: [],
       },
       columnVisibility,
-      ...{ pagination },
-      ...{ columnFilters },
+      pagination,
+      columnFilters,
     },
-    enableColumnPinning: columnPinning != undefined ? true : false,
+    enableColumnPinning: columnPinning != undefined,
     meta,
     onColumnFiltersChange: (updater) => {
       if (typeof updater !== 'function') return;

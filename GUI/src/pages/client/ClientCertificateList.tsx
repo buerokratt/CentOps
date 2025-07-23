@@ -1,11 +1,7 @@
 import { Button, Card, DataTable, Icon, Label, Track } from 'components';
-import { useMemo, useState } from 'react';
-import type { ClientCertificate } from 'types/client';
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+import { type MouseEventHandler, useCallback, useMemo, useState } from 'react';
+import type { ApiClientCertificate } from 'types/client';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { Trans } from 'react-i18next';
 import { TransTableHead } from 'i18n/trans/table';
@@ -18,25 +14,33 @@ import { DeleteCertificateDialog } from 'pages/client/dialog/DeleteCertificateDi
 import { ConfirmChangesDialog } from 'pages/client/dialog/ConfirmChangesDialog';
 import { CertificateDetailsDialog } from 'pages/client/dialog/CertificateDetailsDialog';
 import { withAuthorization } from 'hoc/withAuthorization';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
+import api from 'services/api';
 
 export const ClientCertificateList = withAuthorization(() => {
-  const [clients] = useState<ClientCertificate[]>([
-    {
-      id: '1',
-      name: 'Client 1',
-    },
-    {
-      id: '2',
-      name: 'Client 2',
-    },
-  ]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  const [pagination, setPagination] = usePagination();
+  const { clientId } = useParams<{ clientId: string }>();
+  const { data: certificates } = useQuery<Pagination<ApiClientCertificate>>({
+    meta: { pagination },
+    queryKey: [
+      `admin/clients/certificates?clientId=${clientId}`,
+      ...Object.values(pagination),
+    ],
+    initialData: initialPaginationData<ApiClientCertificate>(),
   });
+  const handleGenerateCertificate = useCallback<
+    MouseEventHandler<HTMLButtonElement>
+  >(async (e) => {
+    e.preventDefault();
+    await api.get(`admin/clients/certificates/generate?clientId=${clientId}`);
+  }, []);
+
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columnHelper = createColumnHelper<ClientCertificate>();
+  const columnHelper = createColumnHelper<ApiClientCertificate>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
@@ -102,14 +106,9 @@ export const ClientCertificateList = withAuthorization(() => {
             <Trans i18nKey="title.clientCertificates" defaults="Certificates" />
           </h1>
         </Track>
-        <Link
-          to={ROUTES.CLIENT_SECRETS_DETAILS_ROUTE}
-          params={{ secretId: 'create' }}
-        >
-          <Button appearance="primary">
-            <TransButton i18nKey="generateCertificate" />
-          </Button>
-        </Link>
+        <Button appearance="primary" onClick={handleGenerateCertificate}>
+          <TransButton i18nKey="generateCertificate" />
+        </Button>
       </Track>
 
       <Card
@@ -123,10 +122,11 @@ export const ClientCertificateList = withAuthorization(() => {
       >
         <Card disablePadding>
           <DataTable
-            data={clients}
+            data={certificates.items}
             columns={columns}
             sortable
             pagination={pagination}
+            pagesCount={certificates.totalPages}
             setPagination={setPagination}
             sorting={sorting}
             setSorting={setSorting}

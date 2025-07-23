@@ -16,13 +16,36 @@ export interface ApiClient extends Client {
 }
 
 export interface ClientSecret {
-  id: string;
+  id: number;
   name: string;
+  environment: string;
+  json: string;
+}
+
+export interface ApiClientSecret extends ClientSecret {
+  clientId: string;
+  secretId: string;
+  createdAt: string;
+  updatedAt: string;
+  deleted: boolean;
 }
 
 export interface ClientCertificate {
   id: string;
   name: string;
+}
+
+export interface ApiClientCertificate extends ClientCertificate {
+  certificateId: string;
+  certificateValue: string;
+  serialNumber: string;
+  validUntil: string;
+  isActive: string;
+  privateKeyEncrypted: string;
+  clientId: string;
+  createdAt: string;
+  updatedAt: string;
+  deleted: boolean;
 }
 
 export enum ClientDeploymentStatuses {
@@ -36,7 +59,22 @@ export interface ClientDeployment {
   manifestVersion: string;
   deployedBy: string;
   deployedAt: string;
+}
+
+export interface ApiClientDeployment extends ClientDeployment {
+  deploymentId: string;
+  manifestId: string;
   status: ClientDeploymentStatus;
+  argoDeploymentId: string;
+  argoDeployAppName: string;
+  argoDeployErrMessage: string;
+  deployedByIdCode: string;
+  deployedByUsername: string;
+  deployedByLastname: string;
+  clientId: string;
+  createdAt: string;
+  updatedAt: string;
+  deleted: boolean;
 }
 
 export enum ClientPodStatuses {
@@ -54,7 +92,14 @@ export interface ClientPod {
 }
 
 export interface ClientManifest {
-  id: string;
   name: string;
+  helmVersion: string;
+  helmValues: string;
+}
+export interface ApiClientManifest extends ClientManifest {
+  clientId: string;
+  manifestId: string;
+  createdAt: string;
   updatedAt: string;
+  deleted: boolean;
 }

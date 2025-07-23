@@ -21,12 +21,10 @@ export const UserDetailsPage = withAuthorization(() => {
   const { userId } = useParams<{ userId: 'create' | string }>();
   const isCreateMode = userId === 'create';
 
-  const {
-    data: { response: user },
-  } = useQuery<{ response: ApiUser | object }>({
+  const { data: user } = useQuery<ApiUser | object>({
     enabled: !isCreateMode,
     queryKey: [`admin/user-by-id?userId=${userId}`],
-    initialData: { response: {} },
+    initialData: {},
   });
   const { register, control, handleSubmit, reset } = useForm<ApiUser>({
     defaultValues: user,

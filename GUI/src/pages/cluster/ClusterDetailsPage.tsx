@@ -21,12 +21,10 @@ export const ClusterDetailsPage = withAuthorization(() => {
   const { clusterId } = useParams<{ clusterId: 'create' | string }>();
   const isCreateMode = clusterId === 'create';
 
-  const {
-    data: { response: cluster },
-  } = useQuery<{ response: ApiCluster | object }>({
+  const { data: cluster } = useQuery<ApiCluster | object>({
     enabled: !isCreateMode,
     queryKey: [`admin/cluster-by-id?clusterId=${clusterId}`],
-    initialData: { response: {} },
+    initialData: {},
   });
 
   const { register, control, handleSubmit, reset } = useForm<ApiCluster>({
