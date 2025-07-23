@@ -1,3 +1,11 @@
+### First, try to execute the following script. If it works correctly, you won’t need to configure anything else in Vault.###
+### Success message should be -> SUCCESS: Vault automation completed and all secrets are configured. ###
+
+`./vault/vault-automation.sh`
+
+### If the script above fails, you can run the following commands manually. ###
+
+
 ### Use Vault HashiCorp storage for a docker compose
 
 1. Add vault path for persistence storage as env variable:

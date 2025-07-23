@@ -175,6 +175,8 @@ services:
       - "${VAULT_DATA_PATH}/.vault-token:/vault/secrets/.vault-token:ro"
       - "${VAULT_DATA_PATH}:/vault/secrets"
     command: vault agent -config=/vault/vault-agent.hcl
+    networks:
+      - bykstack
 
   vault-unseal:
     image: curlimages/curl:8.1.0
