@@ -1,0 +1,45 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "List all clients with minimal info"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: page
+        type: number
+      - field: pageSize
+        type: number
+
+assign_parameters:
+  assign:
+    page: ${incoming.params.page ?? 1}
+    page_size: ${incoming.params.pageSize ?? 10}
+
+send_request:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-client-list-with-minimal-info"
+    query:
+      page: ${page}
+      page_size: ${page_size}
+  result: clients_result
+
+transform:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER_HBS]/transform-clients-with-minimal-info"
+    headers:
+      type: "json"
+    body:
+      entries: ${clients_result.response.body}
+      page: ${page}
+      pageSize: ${page_size}
+  result: clients
+
+return_clients:
+  status: 200
+  return: ${clients.response.body}
+  next: end

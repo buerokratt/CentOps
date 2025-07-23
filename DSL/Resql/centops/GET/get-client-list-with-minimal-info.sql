@@ -1,7 +1,5 @@
 SELECT client_id,
        name,
-       kubernetes_cluster_address,
-       kubernetes_cluster_namespace,
        authentication_certificate,
        created_at,
        updated_at,
