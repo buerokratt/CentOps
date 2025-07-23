@@ -1,10 +1,6 @@
 import { Card, DataTable, Label, Track } from 'components';
 import { useMemo, useState } from 'react';
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransTableHead } from 'i18n/trans/table';
 import { TransTitle } from 'i18n/trans/title';
 import { Trans } from 'react-i18next';
@@ -13,18 +9,16 @@ import type { Method } from 'axios';
 import { formatDate } from 'utils/date';
 import { withAuthorization } from 'hoc/withAuthorization';
 import { useQuery } from '@tanstack/react-query';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
 
 export const UserActivityPage = withAuthorization(() => {
-  const {
-    data: { response: logs },
-  } = useQuery<{ response: AuditUserActivity[] }>({
-    queryKey: ['admin/logs/user'],
-    initialData: { response: [] },
-  });
+  const [pagination, setPagination] = usePagination();
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  const { data: logs } = useQuery<Pagination<AuditUserActivity>>({
+    meta: { pagination },
+    queryKey: ['admin/logs/user', ...Object.values(pagination)],
+    initialData: initialPaginationData<AuditUserActivity>(),
   });
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -35,7 +29,7 @@ export const UserActivityPage = withAuthorization(() => {
         id: 'method',
         header: () => <TransTableHead i18nKey="method" />,
         cell: (message) => {
-          const value = message.getValue<Method>();
+          const value = message.getValue<Method>().toLowerCase() as Method;
           const type = methodMap.get(value);
 
           if (!type) return null;
@@ -75,10 +69,11 @@ export const UserActivityPage = withAuthorization(() => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={logs ?? []}
+            data={logs.items}
             columns={columns}
             sortable
             pagination={pagination}
+            pagesCount={logs.totalPages}
             setPagination={setPagination}
             sorting={sorting}
             setSorting={setSorting}

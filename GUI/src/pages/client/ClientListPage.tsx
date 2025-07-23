@@ -8,11 +8,7 @@ import {
 } from 'components';
 import { useCallback, useMemo, useState } from 'react';
 import type { ApiClient } from 'types/client';
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { TransNav } from 'i18n/trans/nav';
 import { TransTableHead } from 'i18n/trans/table';
@@ -21,18 +17,16 @@ import { Link } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
 import { useQuery } from '@tanstack/react-query';
 import api from 'services/api';
+import { initialPaginationData, type Pagination } from 'types/pagination';
+import { usePagination } from 'hooks/usePagination';
 
 export const ClientListPage = withAuthorization(() => {
-  const {
-    data: { response: clients },
-    refetch,
-  } = useQuery<{ response: ApiClient[] }>({
-    queryKey: ['admin/clients'],
-    initialData: { response: [] },
-  });
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  const [pagination, setPagination] = usePagination();
+
+  const { data: clients, refetch } = useQuery<Pagination<ApiClient>>({
+    meta: { pagination },
+    queryKey: [`/admin/clients`, ...Object.values(pagination)],
+    initialData: initialPaginationData<ApiClient>(),
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const handleDelete = useCallback(async ({ clientId }: ApiClient) => {
@@ -119,10 +113,11 @@ export const ClientListPage = withAuthorization(() => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={clients}
+            data={clients.items}
             columns={columns}
             sortable
             pagination={pagination}
+            pagesCount={clients.totalPages}
             setPagination={setPagination}
             sorting={sorting}
             setSorting={setSorting}

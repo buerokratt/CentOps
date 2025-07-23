@@ -29,7 +29,6 @@ import { UserDetailsPage } from 'pages/user/UserDetailsPage';
 import { ClusterListPage } from 'pages/cluster/ClusterListPage';
 import { ClusterDetailsPage } from 'pages/cluster/ClusterDetailsPage';
 import { DocumentationPage } from 'pages/documentation/DocumentationPage';
-import { DocumentationEditPage } from 'pages/documentation/DocumentationEditPage';
 import { ClientManifestDetailsPage } from 'pages/client/ClientManifestDetailsPage';
 import { ClientCertificateList } from 'pages/client/ClientCertificateList';
 import { ClientCertificateCreatePage } from 'pages/client/ClientCertificateCreatePage';
@@ -96,10 +95,6 @@ export const RootComponent: FC = () => {
         <Route
           path={ROUTES.DOCUMENTATION_ROUTE}
           Component={DocumentationPage}
-        />
-        <Route
-          path={ROUTES.DOCUMENTATION_EDIT_ROUTE}
-          Component={DocumentationEditPage}
         />
         <Route
           path={ROUTES.AUDIT_USER_ACTIVITY_ROUTE}

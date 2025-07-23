@@ -1,10 +1,6 @@
 import { Card, DataTable, Label, Track } from 'components';
 import { useMemo, useState } from 'react';
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransTableHead } from 'i18n/trans/table';
 import { TransTitle } from 'i18n/trans/title';
 import { Trans } from 'react-i18next';
@@ -13,19 +9,18 @@ import { formatDate } from 'utils/date';
 import { withAuthorization } from 'hoc/withAuthorization';
 import type { Method } from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
 
 export const SecretAccessPage = withAuthorization(() => {
-  const {
-    data: { response: logs },
-  } = useQuery<{ response: AuditSecretsAccess[] }>({
-    queryKey: ['admin/logs/secrets'],
-    initialData: { response: [] },
+  const [pagination, setPagination] = usePagination();
+
+  const { data: logs } = useQuery<Pagination<AuditSecretsAccess>>({
+    meta: { pagination },
+    queryKey: ['admin/logs/secrets', ...Object.values(pagination)],
+    initialData: initialPaginationData<AuditSecretsAccess>(),
   });
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const columnHelper = createColumnHelper<AuditSecretsAccess>();
@@ -85,10 +80,11 @@ export const SecretAccessPage = withAuthorization(() => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={logs ?? []}
+            data={logs.items}
             columns={columns}
             sortable
             pagination={pagination}
+            pagesCount={logs.totalPages}
             setPagination={setPagination}
             sorting={sorting}
             setSorting={setSorting}

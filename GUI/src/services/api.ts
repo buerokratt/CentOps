@@ -11,9 +11,9 @@ const instance = axios.create({
 });
 
 instance.interceptors.response.use(
-  (axiosResponse) => {
-    process.env.DEBUG_ENABLED && console.log(axiosResponse);
-    return axiosResponse;
+  ({ data, ...res }) => {
+    process.env.DEBUG_ENABLED && console.log(res);
+    return { ...res, data: data?.response ?? data };
   },
   (error: AxiosError) => {
     process.env.DEBUG_ENABLED && console.log(error);

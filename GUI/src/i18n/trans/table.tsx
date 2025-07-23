@@ -25,6 +25,9 @@ export const TransTableHead = createTrans({
   ),
   image: <Trans i18nKey="table.head.image" defaults="Image" />,
   ipAddress: <Trans i18nKey="table.head.ipAddress" defaults="Ip Address" />,
+  helmVersion: (
+    <Trans i18nKey="table.head.helmVersion" defaults="Helm Chart Ver" />
+  ),
   manifestVersion: (
     <Trans i18nKey="table.head.manifestVersion" defaults="Manifest ver." />
   ),

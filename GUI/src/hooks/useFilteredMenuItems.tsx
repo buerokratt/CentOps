@@ -22,13 +22,15 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
   const items = useMenuItems(countConf);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
-  const { isSuccess, data } = useQuery<{ response: Role[] }>({
+  const { isSuccess, data } = useQuery<Role[]>({
     queryKey: ['account/user-role', 'prod'],
+    // TODO, hardcode the tole, because api returns 300 status code
+    initialData: [ROLES.ROLE_ADMINISTRATOR],
   });
 
   useEffect(() => {
     if (isSuccess && data) {
-      accountStore.setState({ userRoles: data.response });
+      accountStore.setState({ userRoles: data });
     }
   }, [data, isSuccess]);
 
@@ -37,7 +39,7 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
       return;
     }
 
-    const roles = data.response;
+    const roles = data;
 
     const permissions = new Set<string>();
 
