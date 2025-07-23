@@ -2,7 +2,7 @@ declaration:
   call: declare
   version: 0.1
   description: "Generate RSA key pair for a client"
-  method: get
+  method: post
   accepts: json
   returns: json
   namespace: centops
