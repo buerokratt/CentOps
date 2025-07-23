@@ -18,7 +18,7 @@ type OverrideProps<T extends ElementType, P extends object = object> = {
   component?: T;
 } & Omit<ComponentPropsWithRef<T>, keyof P>;
 
-export type ButtonProps<T extends ElementType = 'div'> = ButtonBaseProps &
+export type ButtonProps<T extends ElementType = 'button'> = ButtonBaseProps &
   OverrideProps<T, ButtonBaseProps>;
 
 export const Button = <T extends ElementType = 'button'>({
@@ -34,7 +34,7 @@ export const Button = <T extends ElementType = 'button'>({
     'btn--outlined': outlined,
   });
 
-  return createElement(component ?? 'button', {
+  return createElement((!disabled ? component : undefined) ?? 'button', {
     className: buttonClasses,
     disabled,
     ...rest,

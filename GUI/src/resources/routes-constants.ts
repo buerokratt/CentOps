@@ -20,7 +20,6 @@ export const ROUTES = {
   CLUSTER_LIST_ROUTE: '/clusters',
   CLUSTER_DETAILS_ROUTE: '/clusters/:clusterId',
   DOCUMENTATION_ROUTE: '/documentation',
-  DOCUMENTATION_EDIT_ROUTE: '/documentation/edit',
   AUDIT_USER_ACTIVITY_ROUTE: '/audit/user-activity',
   AUDIT_SECRET_ACCESS_ROUTE: '/audit/secret-access',
 

@@ -8,11 +8,7 @@ import {
 } from 'components';
 import { useCallback, useMemo, useState } from 'react';
 import type { ApiUser } from 'types/user';
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { TransNav } from 'i18n/trans/nav';
 import { TransTableHead } from 'i18n/trans/table';
@@ -22,20 +18,18 @@ import { withAuthorization } from 'hoc/withAuthorization';
 import { useQuery } from '@tanstack/react-query';
 import api from 'services/api';
 import { userName } from 'utils/user';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
 
 export const UserListPage = withAuthorization(() => {
-  const {
-    data: { response: users },
-    refetch,
-  } = useQuery<{ response: ApiUser[] }>({
-    queryKey: ['admin/users'],
-    initialData: { response: [] },
+  const [pagination, setPagination] = usePagination();
+
+  const { data: users, refetch } = useQuery<Pagination<ApiUser>>({
+    meta: { pagination },
+    queryKey: ['/admin/users', ...Object.values(pagination)],
+    initialData: initialPaginationData<ApiUser>(),
   });
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
   const [sorting, setSorting] = useState<SortingState>([]);
   const handleDelete = useCallback(async ({ userId }: ApiUser) => {
     await api.delete(`/admin/users?userId=${userId}`);
@@ -67,7 +61,7 @@ export const UserListPage = withAuthorization(() => {
               appearance="text"
               component={Link}
               to={ROUTES.USER_DETAILS_ROUTE}
-              params={{ clusterId: props.row.original.userId }}
+              params={{ userId: props.row.original.userId }}
             >
               <Icon name="edit" />
               <TransButton i18nKey="edit" />
@@ -109,11 +103,12 @@ export const UserListPage = withAuthorization(() => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={users}
+            data={users.items}
             columns={columns}
             sortable
             pagination={pagination}
             setPagination={setPagination}
+            pagesCount={users.totalPages}
             sorting={sorting}
             setSorting={setSorting}
           />

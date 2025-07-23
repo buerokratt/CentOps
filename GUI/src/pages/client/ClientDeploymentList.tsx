@@ -1,15 +1,11 @@
 import { Button, Card, DataTable, Icon, Label, Track } from 'components';
 import { useMemo, useState } from 'react';
 import {
-  type ClientDeployment,
+  type ApiClientDeployment,
   type ClientDeploymentStatus,
   ClientDeploymentStatuses,
 } from 'types/client';
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { Trans } from 'react-i18next';
 import { TransTableHead } from 'i18n/trans/table';
@@ -21,6 +17,10 @@ import { formatDate } from 'utils/date';
 import type { LabelProps } from 'components/Label';
 import type { IconName } from 'components/Icon';
 import { withAuthorization } from 'hoc/withAuthorization';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
 
 const statusMap = new Map<
   ClientDeploymentStatus,
@@ -32,36 +32,21 @@ const statusMap = new Map<
 ]);
 
 export const ClientDeploymentList = withAuthorization(() => {
-  const [deployments] = useState<ClientDeployment[]>([
-    {
-      id: '1',
-      manifestVersion: 'ghr.io/buerokratt/ruuter:v2.2.1',
-      deployedBy: 'abc',
-      deployedAt: '2025-06-25T10:38:14.643Z',
-      status: 'DEPLOYING',
-    },
-    {
-      id: '2',
-      manifestVersion: 'ghr.io/buerokratt',
-      deployedBy: 'abc',
-      deployedAt: '2025-06-27T14:38:04.643Z',
-      status: 'DEPLOYED',
-    },
-    {
-      id: '3',
-      manifestVersion: 'ghr.io/buerokratt',
-      deployedBy: 'abc',
-      deployedAt: '2025-06-28T22:18:24.643Z',
-      status: 'FAILED',
-    },
-  ]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  const [pagination, setPagination] = usePagination();
+
+  const { clientId } = useParams<{ clientId: string }>();
+  const { data: deployments } = useQuery<Pagination<ApiClientDeployment>>({
+    meta: { pagination },
+    queryKey: [
+      `admin/clients/deployments/all?clientId=${clientId}`,
+      ...Object.values(pagination),
+    ],
+    initialData: initialPaginationData<ApiClientDeployment>(),
   });
+
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columnHelper = createColumnHelper<ClientDeployment>();
+  const columnHelper = createColumnHelper<ApiClientDeployment>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('manifestVersion', {
@@ -115,10 +100,7 @@ export const ClientDeploymentList = withAuthorization(() => {
             <Trans i18nKey="title.clientDeployments" defaults="Deployments" />
           </h1>
         </Track>
-        <Link
-          to={ROUTES.CLIENT_SECRETS_DETAILS_ROUTE}
-          params={{ secretId: 'create' }}
-        >
+        <Link to={ROUTES.CLIENT_DEPLOYMENTS_CREATE_ROUTE} params={{ clientId }}>
           <Button appearance="primary">
             <TransButton i18nKey="newDeployment" />
           </Button>

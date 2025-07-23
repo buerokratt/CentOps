@@ -22,12 +22,10 @@ export const ClientDetailsPage = withAuthorization(() => {
   const { clientId } = useParams<{ clientId: 'create' | string }>();
   const isCreateMode = clientId === 'create';
 
-  const {
-    data: { response: client },
-  } = useQuery<{ response: ApiClient | object }>({
+  const { data: client } = useQuery<ApiClient | object>({
     enabled: !isCreateMode,
     queryKey: [`admin/client-by-id?clientId=${clientId}`],
-    initialData: { response: {} },
+    initialData: {},
   });
   const { register, control, reset, handleSubmit } = useForm<ApiClient>({
     defaultValues: client,
@@ -99,19 +97,39 @@ export const ClientDetailsPage = withAuthorization(() => {
         slots={{ header: <CardHeader filled={false} bordered={false} /> }}
         header={
           <Track justify="end" gap={8}>
-            <Button appearance="text" disabled={isCreateMode}>
+            <Button
+              component={Link}
+              to={ROUTES.CLIENT_CERTIFICATES_ROUTE}
+              appearance="text"
+              disabled={isCreateMode}
+            >
               <Icon name="certificate-add" />
               <TransButton i18nKey="certificates" />
             </Button>
-            <Button appearance="text" disabled={isCreateMode}>
+            <Button
+              component={Link}
+              to={ROUTES.CLIENT_SECRETS_ROUTE}
+              appearance="text"
+              disabled={isCreateMode}
+            >
               <Icon name="key" />
               <TransButton i18nKey="secrets" />
             </Button>
-            <Button appearance="text" disabled={isCreateMode}>
+            <Button
+              component={Link}
+              to={ROUTES.CLIENT_MANIFESTS_ROUTE}
+              appearance="text"
+              disabled={isCreateMode}
+            >
               <Icon name="manifest" />
               <TransButton i18nKey="manifests" />
             </Button>
-            <Button appearance="text" disabled={isCreateMode}>
+            <Button
+              component={Link}
+              to={ROUTES.CLIENT_DEPLOYMENTS_ROUTE}
+              appearance="text"
+              disabled={isCreateMode}
+            >
               <Icon name="flag" />
               <TransButton i18nKey="deployment" />
             </Button>
@@ -119,11 +137,14 @@ export const ClientDetailsPage = withAuthorization(() => {
         }
         footer={
           <Track justify="between">
-            <Link to={ROUTES.CLIENT_LIST_ROUTE}>
-              <Button appearance="primary" outlined>
-                <TransButton i18nKey="cancel" />
-              </Button>
-            </Link>
+            <Button
+              component={Link}
+              to={ROUTES.CLIENT_LIST_ROUTE}
+              appearance="primary"
+              outlined
+            >
+              <TransButton i18nKey="cancel" />
+            </Button>
             <Button appearance="primary">
               <TransButton i18nKey="save" />
             </Button>

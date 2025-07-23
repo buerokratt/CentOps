@@ -8,11 +8,7 @@ import {
 } from 'components';
 import { useCallback, useMemo, useState } from 'react';
 import type { ApiCluster } from 'types/cluster';
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { TransNav } from 'i18n/trans/nav';
 import { TransTableHead } from 'i18n/trans/table';
@@ -21,18 +17,16 @@ import { Link } from 'components/Router/Link';
 import { useQuery } from '@tanstack/react-query';
 import { withAuthorization } from 'hoc/withAuthorization';
 import api from 'services/api';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
 
 export const ClusterListPage = withAuthorization(() => {
-  const {
-    data: { response: clusters },
-    refetch,
-  } = useQuery<{ response: ApiCluster[] }>({
-    queryKey: ['admin/clusters'],
-    initialData: { response: [] },
-  });
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  const [pagination, setPagination] = usePagination();
+
+  const { data: clusters, refetch } = useQuery<Pagination<ApiCluster>>({
+    meta: { pagination },
+    queryKey: ['admin/clusters', ...Object.values(pagination)],
+    initialData: initialPaginationData<ApiCluster>(),
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const handleDelete = useCallback(async ({ clusterId }: ApiCluster) => {
@@ -104,10 +98,11 @@ export const ClusterListPage = withAuthorization(() => {
       <Card>
         <Card disablePadding>
           <DataTable
-            data={clusters}
+            data={clusters.items}
             columns={columns}
             sortable
             pagination={pagination}
+            pagesCount={clusters.totalPages}
             setPagination={setPagination}
             sorting={sorting}
             setSorting={setSorting}
