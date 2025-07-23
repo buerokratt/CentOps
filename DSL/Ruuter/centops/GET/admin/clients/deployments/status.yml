@@ -35,19 +35,35 @@ query_deployment_status:
 
 check_response:
   switch:
-    - condition: ${deployment_result.response.statusCodeValue >= 200 && deployment_result.response.statusCodeValue < 300}
+    - condition: ${deployment_result.response.statusCodeValue >= 200 && deployment_result.response.statusCodeValue < 300 && (deployment_result.response.body.status.conditions == null || deployment_result.response.body.status.conditions.length == 0)}
       next: merge_json_objects
+    - condition: ${deployment_result.response.statusCodeValue >= 200 && deployment_result.response.statusCodeValue < 300 && deployment_result.response.body.status.conditions != null && deployment_result.response.body.status.conditions.length > 0}
+      next: merge_json_objects_with_err_message
   next: return_error
 
 merge_json_objects:
   call: http.post
   args:
-    url: "[#CENTOPS_DMAPPER]/merge/objects"
+    url: "[#CENTOPS_DMAPPER]/merge/multi-objects"
     body:
       object1:
         health: ${deployment_result.response.body.status.health}
       object2:
         status: ${deployment_result.response.body.status.sync.status}
+  result: merge_json_result
+  next: return_success
+
+merge_json_objects_with_err_message:
+  call: http.post
+  args:
+    url: "[#CENTOPS_DMAPPER]/merge/multi-objects"
+    body:
+      object1:
+        health: ${deployment_result.response.body.status.health}
+      object2:
+        status: ${deployment_result.response.body.status.sync.status}
+      object3:
+        errors: ${deployment_result.response.body.status.conditions}
   result: merge_json_result
   next: return_success
 
