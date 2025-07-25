@@ -180,7 +180,7 @@ services:
 
   vault-unseal:
     image: alpine:3.20
-    container_name: vault-unseal-tool-test
+    container_name: vault-unseal-tool
     depends_on:
       - vault
     networks:
@@ -190,15 +190,18 @@ services:
     entrypoint: sh
     command: -c '
       apk add --no-cache curl jq;
+     
       echo "Waiting for Vault to be initialized...";
       until [ "$(curl -s http://vault:8200/v1/sys/health | jq -r ".initialized")" = "true" ]; do
       sleep 2;
       done;
-      echo "Waiting for Vault to be sealed...";
-      until [ "$(curl -s http://vault:8200/v1/sys/health | jq -r ".sealed")" = "true" ]; do
-      echo "Vault already unsealed or not ready yet...";
-      sleep 2;
-      done;
+      
+      echo "Checking if Vault is already unsealed...";
+      if [ "$(curl -s http://vault:8200/v1/sys/health | jq -r '.sealed')" = "false" ]; then
+      echo "Vault is already unsealed. Skipping unseal step.";
+      exit 0;
+      fi;
+      
       echo "Sending unseal key...";
       curl --silent --request PUT --data "{\"key\":\"$VAULT_UNSEAL_KEY\"}" http://vault:8200/v1/sys/unseal;
       echo "Vault Unseal done.";'
