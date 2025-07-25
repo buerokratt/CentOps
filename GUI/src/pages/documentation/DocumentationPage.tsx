@@ -37,7 +37,7 @@ export const DocumentationPage = withAuthorization(() => {
   const { t } = useTranslation();
   const mutation = useMutation<ApiDocumentation, AxiosError, ApiDocumentation>({
     mutationFn: async (data) =>
-      api.post(`admin/documentations`, { content: data.content }),
+      await api.post(`admin/documentations`, { content: data.content }),
     onSuccess: () => {
       toast.open({
         type: 'success',
@@ -63,7 +63,13 @@ export const DocumentationPage = withAuthorization(() => {
     []
   );
 
-  const { register, control, reset, handleSubmit } = useForm<ApiDocumentation>({
+  const {
+    register,
+    control,
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<ApiDocumentation>({
     defaultValues: {},
   });
   useEffect(() => {
@@ -97,7 +103,11 @@ export const DocumentationPage = withAuthorization(() => {
               >
                 <TransButton i18nKey="cancel" />
               </Button>
-              <Button appearance="primary" type="submit">
+              <Button
+                appearance="primary"
+                type="submit"
+                disabled={isSubmitting}
+              >
                 <TransButton i18nKey="save" />
               </Button>
             </Track>

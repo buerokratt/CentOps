@@ -1,5 +1,4 @@
 export interface Client {
-  id: string;
   name: string;
   clientId: string;
   // https://k8s.example.com:6443
@@ -16,10 +15,9 @@ export interface ApiClient extends Client {
 }
 
 export interface ClientSecret {
-  id: number;
   name: string;
   environment: string;
-  json: string;
+  data: string;
 }
 
 export interface ApiClientSecret extends ClientSecret {
@@ -30,21 +28,10 @@ export interface ApiClientSecret extends ClientSecret {
   deleted: boolean;
 }
 
-export interface ClientCertificate {
-  id: string;
-  name: string;
-}
-
-export interface ApiClientCertificate extends ClientCertificate {
+export interface ApiClientCertificate {
   certificateId: string;
-  certificateValue: string;
-  serialNumber: string;
-  validUntil: string;
-  isActive: string;
-  privateKeyEncrypted: string;
   clientId: string;
   createdAt: string;
-  updatedAt: string;
   deleted: boolean;
 }
 
@@ -75,20 +62,6 @@ export interface ApiClientDeployment extends ClientDeployment {
   createdAt: string;
   updatedAt: string;
   deleted: boolean;
-}
-
-export enum ClientPodStatuses {
-  BOOTING = 'BOOTING',
-  RUNNING = 'RUNNING',
-  NOT_RUNNING = 'NOT_RUNNING',
-}
-export type ClientPodStatus = keyof typeof ClientPodStatuses;
-export interface ClientPod {
-  id: string;
-  name: string;
-  image: string;
-  createdAt: string;
-  status: ClientPodStatus;
 }
 
 export interface ClientManifest {

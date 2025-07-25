@@ -35,14 +35,11 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
   }>();
   const isCreateMode = secretId === 'create';
 
-  const {
-    data: { response: secret },
-  } = useQuery<{ response: ApiClientSecret | object }>({
+  const { data: secret } = useQuery<ApiClientSecret | object>({
     enabled: !isCreateMode,
     queryKey: [
-      `admin/clients/manifests/get?clientId=${clientId}&secretId=${secretId}`,
+      `admin/clients/secrets/get?clientId=${clientId}&secretId=${secretId}`,
     ],
-    initialData: { response: {} },
   });
   const toast = useToast();
   const { t } = useTranslation();
@@ -51,15 +48,9 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
       (
         await {
           post: async () =>
-            api.post(
-              `admin/clients/manifests/create?clientId=${clientId}`,
-              data
-            ),
+            api.post(`admin/clients/secrets/create?clientId=${clientId}`, data),
           put: async () =>
-            api.put(
-              `admin/clients/manifests/update?clientId=${clientId}`,
-              data
-            ),
+            api.put(`admin/clients/secrets/update?clientId=${clientId}`, data),
         }[data.secretId ? 'put' : 'post']()
       ).data,
 
@@ -68,11 +59,11 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
         type: 'success',
         title: t('toast.notification'),
         message: {
-          post: t('toast.manifestCreated', {
-            defaultValue: 'Manifest Created Successfully',
+          post: t('toast.secretCreated', {
+            defaultValue: 'Secret Created Successfully',
           }),
-          put: t('toast.manifestUpdated', {
-            defaultValue: 'Manifest Updated Successfully',
+          put: t('toast.secrettUpdated', {
+            defaultValue: 'Secret Updated Successfully',
           }),
         }[secretId ? 'put' : 'post'],
       });
@@ -85,19 +76,24 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
       });
     },
   });
-  const onSubmit: SubmitHandler<ApiClientSecret> = useCallback(async (data) => {
-    await mutation.mutateAsync(data);
-  }, []);
-
-  const { register, control, reset, handleSubmit } = useForm<ApiClientSecret>({
-    defaultValues: {
-      name: 'Super secret',
-      environment: 'production',
-      json: '{}',
-      createdAt: '2025-06-07T14:11:00.107Z',
-      updatedAt: '2025-06-07T14:11:00.107Z',
+  const onSubmit: SubmitHandler<ApiClientSecret> = useCallback(
+    async (secret) => {
+      await mutation.mutateAsync({
+        ...secret,
+        data: JSON.parse(secret.data),
+        clientId: clientId as string,
+      });
     },
-  });
+    [clientId]
+  );
+
+  const {
+    register,
+    control,
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<ApiClientSecret>();
   useEffect(() => {
     if (secret) reset(secret);
   }, [secret]);
@@ -127,7 +123,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
                 <TransButton i18nKey="cancel" />
               </Button>
             </Link>
-            <Button appearance="primary">
+            <Button appearance="primary" type="submit" disabled={isSubmitting}>
               <TransButton i18nKey="save" />
             </Button>
           </Track>
@@ -140,7 +136,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
           style={{ width: '90%', marginLeft: 'auto' }}
         >
           <FormInput
-            {...register('name')}
+            {...register('name', { required: true })}
             label={<TransField i18nKey="name" />}
             type="text"
           />
@@ -152,21 +148,30 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
                 {...field}
                 placeholder="-"
                 label={<TransField i18nKey="environment" />}
-                options={[{ label: 'production', value: 'production' }]}
+                options={[
+                  { label: 'Test', value: 'test' },
+                  { label: 'Stage', value: 'stage' },
+                  { label: 'Production', value: 'production' },
+                ]}
               />
             )}
+            rules={{ required: true }}
           />
-          <FormTextarea
-            {...register('json')}
-            label={<TransField i18nKey="json" />}
+          <Controller
+            name="data"
+            control={control}
+            render={({ field }) => (
+              <FormTextarea {...field} label={<TransField i18nKey="json" />} />
+            )}
+            rules={{ required: true }}
           />
           <FormElement label={null}>
             <Track>
               <Controller
-                name="json"
+                name="data"
                 control={control}
                 render={({ field }) => {
-                  const isValid = validate(field.value);
+                  const isValid = validate(JSON.stringify(field.value));
                   return isValid ? (
                     <>
                       <Label type="success">

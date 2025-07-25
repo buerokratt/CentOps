@@ -44,6 +44,7 @@ export const ConfirmDeleteButton = <T,>({
         title: t('toast.deletion'),
         message: t('toast.deletionSuccessfully'),
       });
+      closeConfirmDeleteModal();
     } catch {
       toast.open({
         type: 'error',

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { ROUTES } from 'resources/routes-constants';
 
-const NotFoundPage: FC = () => {
+export const NotFoundPage: FC = () => {
   const { t } = useTranslation();
 
   return (
@@ -14,5 +14,3 @@ const NotFoundPage: FC = () => {
     </>
   );
 };
-
-export default NotFoundPage;

@@ -22,7 +22,7 @@ export const Dialog: FC<PropsWithChildren<DialogProps>> = ({
   ...rest
 }) => {
   return (
-    <RadixDialog.Root defaultOpen={true} onOpenChange={onClose} {...rest}>
+    <RadixDialog.Root onOpenChange={onClose} {...rest}>
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="dialog__overlay" />
         <RadixDialog.Content className="dialog" style={style}>

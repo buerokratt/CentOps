@@ -48,7 +48,7 @@ export const UserListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="identificationNo" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('id', {
+      columnHelper.accessor('userId', {
         id: 'actions',
         header: '',
         enableSorting: false,
