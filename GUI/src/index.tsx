@@ -11,6 +11,7 @@ import { ToastProvider } from 'context/ToastContext';
 import 'i18n';
 import qs from 'qs';
 import type { PaginationState } from '@tanstack/react-table';
+import { type QueryFunctionContext } from '@tanstack/query-core';
 
 if (import.meta.env.DEV) {
   try {
@@ -20,10 +21,14 @@ if (import.meta.env.DEV) {
   }
 }
 
-const defaultQueryFn: QueryFunction = async ({ queryKey: [url], meta }) => {
+const defaultQueryFn: QueryFunction = async (context) => {
+  let {
+    queryKey: [url],
+  } = context as QueryFunctionContext<string[]>;
+  const { meta } = context;
   const pagination = meta?.pagination as PaginationState;
   if (pagination) {
-    url = `${url}?${qs.stringify({
+    url = `${url}${url.includes('?') ? '&' : '?'}${qs.stringify({
       page: pagination.pageIndex + 1,
       pageSize: pagination.pageSize,
     })}`;

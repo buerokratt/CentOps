@@ -56,22 +56,13 @@ export const ClientListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="updatedAt" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('id', {
+      columnHelper.accessor('clientId', {
         id: 'actions',
         header: '',
         enableSorting: false,
         meta: { size: 0 },
         cell: (props) => (
           <Track gap={8}>
-            <Button
-              appearance="text"
-              component={Link}
-              to={ROUTES.CLIENT_PODS_ROUTE}
-              params={{ clientId: props.row.original.clientId }}
-            >
-              <Icon name="pods" />
-              <TransButton i18nKey="pods" />
-            </Button>
             <Button
               appearance="text"
               component={Link}

@@ -16,7 +16,6 @@ import { useToast } from 'hooks';
 import { useTranslation } from 'react-i18next';
 import type { AxiosError } from 'axios';
 import api from 'services/api';
-import FormTextarea from 'components/FormElements/FormTextarea';
 
 export const ClientDetailsPage = withAuthorization(() => {
   const { clientId } = useParams<{ clientId: 'create' | string }>();
@@ -27,7 +26,13 @@ export const ClientDetailsPage = withAuthorization(() => {
     queryKey: [`admin/client-by-id?clientId=${clientId}`],
     initialData: {},
   });
-  const { register, control, reset, handleSubmit } = useForm<ApiClient>({
+  const {
+    register,
+    control,
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<ApiClient>({
     defaultValues: client,
   });
   useEffect(() => {
@@ -58,10 +63,10 @@ export const ClientDetailsPage = withAuthorization(() => {
         type: 'success',
         title: t('toast.notification'),
         message: {
-          post: t('toast.userCreated', {
+          post: t('toast.clientCreated', {
             defaultValue: 'Client Created Successfully',
           }),
-          put: t('toast.userUpdated', {
+          put: t('toast.clientUpdated', {
             defaultValue: 'Client Updated Successfully',
           }),
         }[method],
@@ -75,8 +80,11 @@ export const ClientDetailsPage = withAuthorization(() => {
       });
     },
   });
-  const onSubmit: SubmitHandler<ApiClient> = useCallback((data) => {
-    clusterMutation.mutate({ method: data.id ? 'put' : 'post', data });
+  const onSubmit: SubmitHandler<ApiClient> = useCallback(async (data) => {
+    await clusterMutation.mutateAsync({
+      method: data.clientId ? 'put' : 'post',
+      data,
+    });
   }, []);
 
   return (
@@ -145,7 +153,7 @@ export const ClientDetailsPage = withAuthorization(() => {
             >
               <TransButton i18nKey="cancel" />
             </Button>
-            <Button appearance="primary">
+            <Button appearance="primary" type="submit" disabled={isSubmitting}>
               <TransButton i18nKey="save" />
             </Button>
           </Track>
@@ -172,11 +180,7 @@ export const ClientDetailsPage = withAuthorization(() => {
           />
           <FormInput
             {...register('argoAppDeploymentName', { required: true })}
-            label={<TransField i18nKey="argoAppDeploymentName" />}
-          />
-          <FormTextarea
-            {...register('authenticationCertificate', { required: true })}
-            label={<TransField i18nKey="certificate" />}
+            label={<TransField i18nKey="argoApplicationName" />}
           />
           {!isCreateMode && (
             <>

@@ -5,7 +5,6 @@ export interface Cluster {
 }
 
 export interface ApiCluster extends Cluster {
-  id: string;
   clusterId: string;
   createdAt: string;
   updatedAt: string;

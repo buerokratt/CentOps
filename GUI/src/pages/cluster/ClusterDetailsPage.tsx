@@ -27,7 +27,13 @@ export const ClusterDetailsPage = withAuthorization(() => {
     initialData: {},
   });
 
-  const { register, control, handleSubmit, reset } = useForm<ApiCluster>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<ApiCluster>({
     defaultValues: cluster,
   });
   useEffect(() => {
@@ -76,8 +82,11 @@ export const ClusterDetailsPage = withAuthorization(() => {
       });
     },
   });
-  const onSubmit: SubmitHandler<ApiCluster> = useCallback((data) => {
-    clusterMutation.mutate({ method: data.id ? 'put' : 'post', data });
+  const onSubmit: SubmitHandler<ApiCluster> = useCallback(async (data) => {
+    await clusterMutation.mutateAsync({
+      method: data.clusterId ? 'put' : 'post',
+      data,
+    });
   }, []);
 
   return (
@@ -110,7 +119,11 @@ export const ClusterDetailsPage = withAuthorization(() => {
               <Button appearance="primary" type="button" outlined>
                 <TransButton i18nKey="testConnection" />
               </Button>
-              <Button appearance="primary" type="submit">
+              <Button
+                appearance="primary"
+                type="submit"
+                disabled={isSubmitting}
+              >
                 <TransButton i18nKey="save" />
               </Button>
             </Track>

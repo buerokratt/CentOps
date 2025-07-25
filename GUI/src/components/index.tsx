@@ -2,7 +2,6 @@ export { Button } from 'components/Button';
 export { Collapsible } from 'components/Collapsible';
 export { Box } from 'components/Box';
 export { Card } from 'components/Card';
-export { Certificate } from 'components/Certificate';
 export { Dialog } from 'components/Dialog';
 export { Drawer } from 'components/Drawer';
 export { DataTable } from 'components/DataTable';

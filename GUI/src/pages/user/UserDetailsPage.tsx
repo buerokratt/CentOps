@@ -26,7 +26,13 @@ export const UserDetailsPage = withAuthorization(() => {
     queryKey: [`admin/user-by-id?userId=${userId}`],
     initialData: {},
   });
-  const { register, control, handleSubmit, reset } = useForm<ApiUser>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<ApiUser>({
     defaultValues: user,
   });
   useEffect(() => {
@@ -74,8 +80,11 @@ export const UserDetailsPage = withAuthorization(() => {
       });
     },
   });
-  const onSubmit: SubmitHandler<ApiUser> = useCallback((data) => {
-    clusterMutation.mutate({ method: data.id ? 'put' : 'post', data });
+  const onSubmit: SubmitHandler<ApiUser> = useCallback(async (data) => {
+    await clusterMutation.mutateAsync({
+      method: data.userId ? 'put' : 'post',
+      data,
+    });
   }, []);
 
   return (
@@ -103,7 +112,7 @@ export const UserDetailsPage = withAuthorization(() => {
                 <TransButton i18nKey="cancel" />
               </Button>
             </Link>
-            <Button appearance="primary" type="submit">
+            <Button appearance="primary" type="submit" disabled={isSubmitting}>
               <TransButton i18nKey="save" />
             </Button>
           </Track>

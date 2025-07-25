@@ -26,6 +26,7 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
     queryKey: ['account/user-role', 'prod'],
     // TODO, hardcode the tole, because api returns 300 status code
     initialData: [ROLES.ROLE_ADMINISTRATOR],
+    retryDelay: 1000 * 60 * 60 * 24,
   });
 
   useEffect(() => {
