@@ -1,21 +1,10 @@
 import {describe, expect, it} from 'vitest';
 import {CLIENT_TEST_DATA, ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS} from './config';
-import {getAuthHeaders} from './helpers/auth.helper';
+import {makeRequest} from "./helpers/request.helper";
 
 describe('Client Management E2E', () => {
     let testClientId: string;
     let clientName = `vitest-e2e-client-${Date.now()}`;
-
-    const makeRequest = async (endpoint: string, method: string, body?: any) => {
-        return await fetch(
-            `${GLOBAL_CONSTANTS.BASE_URL}${GLOBAL_CONSTANTS.API_PREFIX}${endpoint}`,
-            {
-                method,
-                headers: await getAuthHeaders(),
-                body: body ? JSON.stringify(body) : undefined
-            }
-        );
-    };
 
     it('should create client', async () => {
         const response = await makeRequest(
