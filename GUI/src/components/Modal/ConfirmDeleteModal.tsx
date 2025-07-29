@@ -4,6 +4,7 @@ import { type FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ButtonProps } from 'components/Button';
 import { useToast } from 'hooks';
+import { TransButton } from 'i18n/trans/button';
 
 export interface ConfirmDeleteModalProps extends Omit<ModalProps, 'title'> {
   title?: string;
@@ -80,10 +81,10 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteModalProps> = (props) => {
     >
       <Track justify="end" gap={12}>
         <Button appearance="secondary" onClick={props.onClose}>
-          Cancel
+          <TransButton i18nKey="cancel" />
         </Button>
         <Button appearance="error" onClick={props.onConfirm}>
-          Delete
+          <TransButton i18nKey="delete" />
         </Button>
       </Track>
     </Modal>

@@ -170,9 +170,8 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
               <Controller
                 name="data"
                 control={control}
-                render={({ field }) => {
-                  const isValid = validate(JSON.stringify(field.value));
-                  return isValid ? (
+                render={({ field }) =>
+                  validate(field.value) ? (
                     <>
                       <Label type="success">
                         <Icon name="check" size="small" />
@@ -184,8 +183,8 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
                       <Icon name="danger" size="small" />
                       <TransLabel i18nKey="invalid" />
                     </Label>
-                  );
-                }}
+                  )
+                }
               />
             </Track>
           </FormElement>
