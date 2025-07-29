@@ -2,14 +2,11 @@
 "items": [
 {{#each entries}}
     {
-    "id": "{{id}}",
+    "certificateId": "{{certificateId}}",
     "clientId": "{{clientId}}",
-    "manifestVersion": "{{manifestVersion}}",
-    "deployedByIdCode": "{{deployedByIdCode}}",
-    "argoDeployAppName": "{{argoDeployAppName}}",
-    "deployedBy": "{{deployedBy}}",
-    "status": "{{status}}",
-    "createdAt": "{{createdAt}}"
+    "createdAt": "{{createdAt}}",
+    "revoked": "{{revoked}}",
+    "deleted": {{deleted}}
     }{{#unless @last}},{{/unless}}
 {{/each}}
 ],
@@ -17,3 +14,4 @@
 "pageSize": {{pageSize}},
 "totalPages": {{#if entries.[0]}}{{entries.[0].totalPages}}{{else}}0{{/if}}
 }
+
