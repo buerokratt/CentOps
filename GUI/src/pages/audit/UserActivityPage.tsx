@@ -62,7 +62,8 @@ export const UserActivityPage = withAuthorization(() => {
       columnHelper.accessor('createdAt', {
         id: 'createdAt',
         header: () => <TransTableHead i18nKey="dateTime" />,
-        cell: (message) => formatDate(message.getValue(), 'dateTime'),
+        cell: (message) => formatDate(message.getValue()),
+        meta: { size: 1 },
       }),
     ],
     []

@@ -47,7 +47,8 @@ export const ClientCertificateList = withAuthorization(() => {
   const handleGenerateCertificate = useCallback(async () => {
     try {
       await api.post(
-        `admin/clients/certificates/generate?clientId=${clientId}`
+        `admin/clients/certificates/generate?clientId=${clientId}`,
+        null
       );
       await refetch();
       toast.open({
@@ -90,15 +91,13 @@ export const ClientCertificateList = withAuthorization(() => {
       columnHelper.accessor('createdAt', {
         id: 'createdAt',
         header: () => <TransTableHead i18nKey="createdAt" />,
-        cell: (message) => formatDate(message.getValue(), 'dateTime'),
+        cell: (message) => formatDate(message.getValue()),
       }),
       columnHelper.accessor('deleted', {
         id: 'status',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
-        },
+        meta: { size: 1 },
         cell: (message) => {
           const deleted = message.getValue();
           return (
@@ -113,9 +112,7 @@ export const ClientCertificateList = withAuthorization(() => {
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
-        },
+        meta: { size: 1 },
         cell: ({ row: { original }, getValue }) => (
           <Track gap={8}>
             <ConfirmDeleteButton

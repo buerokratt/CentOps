@@ -61,15 +61,13 @@ export const ClientManifestListPage = withAuthorization(() => {
       columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
-        cell: (message) => formatDate(message.getValue()),
+        cell: (message) => formatDate(message.getValue(), 'dateTime'),
       }),
       columnHelper.accessor('manifestId', {
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
-        },
+        meta: { size: 1 },
         cell: (props) => (
           <Track gap={8}>
             <Button appearance="text">

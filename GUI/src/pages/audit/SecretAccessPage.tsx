@@ -55,12 +55,16 @@ export const SecretAccessPage = withAuthorization(() => {
       columnHelper.accessor('userAgent', {
         id: 'userAgent',
         header: () => <TransTableHead i18nKey="userAgent" />,
-        cell: (message) => message.getValue(),
+        cell: (message) => (
+          <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+            {message.getValue()}
+          </div>
+        ),
       }),
       columnHelper.accessor('timestamp', {
         id: 'timestamp',
         header: () => <TransTableHead i18nKey="dateTime" />,
-        cell: (message) => formatDate(message.getValue(), 'dateTime'),
+        cell: (message) => formatDate(message.getValue()),
       }),
     ],
     []

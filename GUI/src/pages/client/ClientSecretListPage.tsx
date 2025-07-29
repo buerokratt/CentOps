@@ -46,7 +46,7 @@ export const ClientSecretListPage = withAuthorization(() => {
     () => [
       columnHelper.accessor('name', {
         id: 'name',
-        header: () => <TransTableHead i18nKey="usersDb" />,
+        header: () => <TransTableHead i18nKey="name" />,
         cell: (message) => message.getValue(),
       }),
       columnHelper.accessor('name', {
@@ -58,7 +58,7 @@ export const ClientSecretListPage = withAuthorization(() => {
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: { size: 0 },
+        meta: { size: 1 },
         cell: (props) => (
           <Track gap={8}>
             <Button

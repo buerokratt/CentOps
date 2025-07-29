@@ -35,7 +35,6 @@ export { Tooltip } from 'components/Tooltip';
 export { Track } from 'components/Track';
 export { ExclamationBadge } from 'components/ExclamationBadge';
 export { OutputElementBox } from 'components/OutputElementBox';
-export { DynamicForm } from 'components/DynamicForm';
 
 export { MainNavigation } from 'components/MainNavigation';
 export { MenuTree } from 'components/MenuTree';
