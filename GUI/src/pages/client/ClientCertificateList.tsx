@@ -7,11 +7,11 @@ import {
   Label,
   Track,
 } from 'components';
-import { type MouseEventHandler, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { ApiClientCertificate } from 'types/client';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { TransTableHead } from 'i18n/trans/table';
 import { Link } from 'components/Router/Link';
 import { ROUTES } from 'resources/routes-constants';
@@ -25,6 +25,8 @@ import { initialPaginationData, type Pagination } from 'types/pagination';
 import api from 'services/api';
 import { formatDate } from 'utils/date';
 import { download } from 'utils/file';
+import { ConfirmButton } from 'components/Modal/ConfirmModal';
+import { useToast } from 'hooks';
 
 export const ClientCertificateList = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
@@ -39,12 +41,31 @@ export const ClientCertificateList = withAuthorization(() => {
     ],
     initialData: initialPaginationData<ApiClientCertificate>(),
   });
-  const handleGenerateCertificate = useCallback<
-    MouseEventHandler<HTMLButtonElement>
-  >(async (e) => {
-    e.preventDefault();
-    await api.get(`admin/clients/certificates/generate?clientId=${clientId}`);
-    await refetch();
+
+  const toast = useToast();
+  const { t } = useTranslation();
+  const handleGenerateCertificate = useCallback(async () => {
+    try {
+      await api.post(
+        `admin/clients/certificates/generate?clientId=${clientId}`
+      );
+      await refetch();
+      toast.open({
+        type: 'success',
+        title: t('toast.notification'),
+        message: t('toast.certificateCreated', {
+          defaultValue: 'Certificate Created Successfully',
+        }),
+      });
+    } catch {
+      toast.open({
+        type: 'error',
+        title: t('toast.notificationError'),
+        message: t('toast.certificateCreationFailed', {
+          defaultValue: 'Certificate Creation Failed',
+        }),
+      });
+    }
   }, []);
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -137,9 +158,18 @@ export const ClientCertificateList = withAuthorization(() => {
             <Trans i18nKey="title.clientCertificates" defaults="Certificates" />
           </h1>
         </Track>
-        <Button appearance="primary" onClick={handleGenerateCertificate}>
+        <ConfirmButton
+          appearance="primary"
+          title={
+            <Trans
+              i18nKey="dialog.confirtGenerateCertificate.title"
+              defaults="Are you sure you want to generate a new certificate?"
+            />
+          }
+          onConfirm={handleGenerateCertificate}
+        >
           <TransButton i18nKey="generateCertificate" />
-        </Button>
+        </ConfirmButton>
       </Track>
 
       <Card
