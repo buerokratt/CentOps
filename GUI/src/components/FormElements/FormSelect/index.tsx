@@ -25,6 +25,7 @@ type FormSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   onSelectionChange?: (
     selection: { label: string; value: string } | null
   ) => void;
+  onChange?: (value: string | null) => void;
 };
 
 const itemToString = (item: { label: string; value: string } | null) => {
@@ -42,6 +43,7 @@ export const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
       defaultValue,
       value,
       onSelectionChange,
+      onChange,
       ...rest
     },
     ref
@@ -69,7 +71,8 @@ export const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
       selectedItem,
       onSelectedItemChange: ({ selectedItem: newSelectedItem }) => {
         setSelectedItem(newSelectedItem ?? null);
-        if (onSelectionChange) onSelectionChange(newSelectedItem ?? null);
+        onSelectionChange?.(newSelectedItem ?? null);
+        onChange?.(newSelectedItem?.value ?? null);
       },
     });
 

@@ -1,12 +1,5 @@
 import { useParams } from 'react-router-dom';
-import {
-  Button,
-  Card,
-  FormInput,
-  FormSelect,
-  FormYamlEditor,
-  Track,
-} from 'components';
+import { Button, Card, FormInput, FormYamlEditor, Track } from 'components';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
@@ -140,17 +133,9 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
             label={<TransField i18nKey="name" />}
             type="text"
           />
-          <Controller
-            name="helmVersion"
-            control={control}
-            render={({ field }) => (
-              <FormSelect
-                {...field}
-                placeholder="-"
-                label={<TransField i18nKey="helm" />}
-                options={[{ label: '123', value: '123' }]}
-              />
-            )}
+          <FormInput
+            {...register('helmVersion')}
+            label={<TransField i18nKey="helm" />}
           />
           <Controller
             name="helmValues"

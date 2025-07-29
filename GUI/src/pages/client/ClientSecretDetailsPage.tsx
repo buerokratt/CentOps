@@ -92,8 +92,10 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
     control,
     reset,
     handleSubmit,
+    getValues,
     formState: { isSubmitting },
   } = useForm<ApiClientSecret>();
+  console.log(getValues());
   useEffect(() => {
     if (secret) reset(secret);
   }, [secret]);

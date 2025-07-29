@@ -62,16 +62,13 @@ export const ClientDeploymentList = withAuthorization(() => {
       columnHelper.accessor('deployedAt', {
         id: 'deployedAt',
         header: () => <TransTableHead i18nKey="deployedAt" />,
-        cell: (message) => formatDate(message.getValue(), 'dateTime'),
+        cell: (message) => formatDate(message.getValue()),
       }),
       columnHelper.accessor('status', {
         id: 'status',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
-          align: 'right',
-        },
+        meta: { size: 1, align: 'right' },
         cell: (message) => {
           const value = message.getValue<ClientDeploymentStatus>();
           const status = statusMap.get(value);

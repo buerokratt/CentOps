@@ -146,11 +146,6 @@ export const ClusterDetailsPage = withAuthorization(() => {
             label={<TransField i18nKey="clusterIp" />}
             type="text"
           />
-          <FormInput
-            {...register('argoApiUrl', { required: true })}
-            label={<TransField i18nKey="argoApiUrl" />}
-            type="text"
-          />
 
           {!isCreateMode && (
             <>

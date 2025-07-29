@@ -42,11 +42,16 @@ export const ClusterListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="clusterName" />,
         cell: (message) => message.getValue(),
       }),
+      columnHelper.accessor('updatedAt', {
+        id: 'updatedAt',
+        header: () => <TransTableHead i18nKey="updatedAt" />,
+        cell: (message) => message.getValue(),
+      }),
       columnHelper.display({
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: { size: 0 },
+        meta: { size: 1 },
         cell: (props) => (
           <Track gap={8}>
             <Button

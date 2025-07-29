@@ -46,12 +46,12 @@ export const ClientListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="nameSpace" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('kubernetesClusterNamespace', {
+      columnHelper.accessor('kubernetesClusterAddress', {
         id: 'clusterAddress',
         header: () => <TransTableHead i18nKey="clusterAddress" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('name', {
+      columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
         cell: (message) => message.getValue(),
@@ -60,7 +60,7 @@ export const ClientListPage = withAuthorization(() => {
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: { size: 0 },
+        meta: { size: 1 },
         cell: (props) => (
           <Track gap={8}>
             <Button
