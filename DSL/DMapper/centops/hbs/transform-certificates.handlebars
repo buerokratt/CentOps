@@ -2,10 +2,14 @@
 "items": [
 {{#each entries}}
     {
-    "certificateId": "{{certificateId}}",
+    "id": "{{id}}",
     "clientId": "{{clientId}}",
-    "createdAt": "{{createdAt}}",
-    "deleted": {{deleted}}
+    "manifestVersion": "{{manifestVersion}}",
+    "deployedByIdCode": "{{deployedByIdCode}}",
+    "argoDeployAppName": "{{argoDeployAppName}}",
+    "deployedBy": "{{deployedBy}}",
+    "status": "{{status}}",
+    "createdAt": "{{createdAt}}"
     }{{#unless @last}},{{/unless}}
 {{/each}}
 ],
