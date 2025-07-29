@@ -2,12 +2,12 @@
 "items": [
 {{#each entries}}
     {
-    "id": "{{id}}",
+    "manifestId": "{{manifestId}}",
+    "clientId": "{{clientId}}",
+    "name": "{{name}}",
+    "helmVersion": "{{helmVersion}}",
     "createdAt": "{{createdAt}}",
-    "userIdCode": "{{userIdCode}}",
-    "ipAddress": "{{ipAddress}}",
-    "action": "{{action}}",
-    "userAgent": "{{userAgent}}"
+    "updatedAt": {{#if updatedAt}}"{{updatedAt}}"{{else}}null{{/if}}
     }{{#unless @last}},{{/unless}}
 {{/each}}
 ],
