@@ -20,11 +20,50 @@ export const CLIENT_TEST_DATA = {
     ARGO_DEPLOYMENT_NAME: "testDeployment"
 };
 
+export const USER_TEST_DATA = {
+    DEFAULT_FIRST_NAME: "John",
+    DEFAULT_LAST_NAME: "Doe",
+    DEFAULT_ID_CODE: "1234567890",
+    UPDATED_FIRST_NAME: "Johnnnnnnnnn",
+    UPDATED_LAST_NAME: "SmithhhhhhhhhhhhhHHHHHHHHHHHH",
+    UPDATED_ID_CODE: "123123123"
+};
+
+export const CLUSTER_TEST_DATA = {
+    IP_ADDRESS: "192.168.1.100",
+    UPDATED_IP_ADDRESS: "192.168.1.200"
+};
+
+export const DOCUMENTATION_TEST_DATA = {
+    INITIAL_CONTENT: "aaaa123123",
+    UPDATED_CONTENT: "updated-documentation-content"
+};
+
 export const ENDPOINTS = {
     AUTH: '/auth/login',
     CLIENTS: {
         BASE: '/admin/clients',
         BY_ID: '/admin/client-by-id',
         MINIMAL: '/integration/clients'
+    },
+    USERS: {
+        BASE: '/admin/users',
+        BY_ID: '/admin/user-by-id'
+    },
+    CLUSTERS: {
+        BASE: '/admin/clusters',
+        BY_ID: '/admin/cluster-by-id'
+    },
+    DOCUMENTATION: {
+        BASE: '/admin/documentations'
+    },
+    CERTIFICATES: {
+        BASE: '/admin/clients/certificates',
+        DOWNLOAD: '/admin/clients/certificates/download',
+        GENERATE: '/admin/clients/certificates/generate'
+    },
+    LOGS: {
+        USER: '/admin/logs/user',
+        SECRETS: '/admin/logs/secrets'
     }
 };
