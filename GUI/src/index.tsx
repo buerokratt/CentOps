@@ -26,11 +26,12 @@ const defaultQueryFn: QueryFunction = async (context) => {
     queryKey: [url],
   } = context as QueryFunctionContext<string[]>;
   const { meta } = context;
-  const pagination = meta?.pagination as PaginationState;
+  const { pageIndex, ...pagination } =
+    (meta?.pagination as PaginationState) ?? {};
   if (pagination) {
     url = `${url}${url.includes('?') ? '&' : '?'}${qs.stringify({
-      page: pagination.pageIndex + 1,
-      pageSize: pagination.pageSize,
+      page: pageIndex + 1,
+      ...pagination,
     })}`;
   }
   return (await api.get(url as string)).data;
