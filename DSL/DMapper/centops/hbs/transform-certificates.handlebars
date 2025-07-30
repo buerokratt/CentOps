@@ -5,6 +5,7 @@
     "certificateId": "{{certificateId}}",
     "clientId": "{{clientId}}",
     "createdAt": "{{createdAt}}",
+    "revoked": "{{revoked}}",
     "deleted": {{deleted}}
     }{{#unless @last}},{{/unless}}
 {{/each}}
@@ -13,3 +14,4 @@
 "pageSize": {{pageSize}},
 "totalPages": {{#if entries.[0]}}{{entries.[0].totalPages}}{{else}}0{{/if}}
 }
+
