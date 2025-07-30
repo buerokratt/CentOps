@@ -50,7 +50,7 @@ export const ClientManifestListPage = withAuthorization(() => {
     () => [
       columnHelper.accessor('name', {
         id: 'name',
-        header: () => <TransTableHead i18nKey="usersDb" />,
+        header: () => <TransTableHead i18nKey="name" />,
         cell: (message) => message.getValue(),
       }),
       columnHelper.accessor('helmVersion', {
@@ -61,7 +61,12 @@ export const ClientManifestListPage = withAuthorization(() => {
       columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
-        cell: (message) => formatDate(message.getValue(), 'dateTime'),
+        cell: (message) => formatDate(message.getValue()),
+      }),
+      columnHelper.accessor('deployedAt', {
+        id: 'deployedAt',
+        header: () => <TransTableHead i18nKey="deployedAt" />,
+        cell: (message) => formatDate(message.getValue()),
       }),
       columnHelper.accessor('manifestId', {
         id: 'actions',

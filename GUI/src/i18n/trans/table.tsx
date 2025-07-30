@@ -15,8 +15,8 @@ export const TransTableHead = createTrans({
   ),
   createdAt: <Trans i18nKey="table.head.createdAt" defaults="Created at" />,
   dateTime: <Trans i18nKey="table.head.dateTime" defaults="Date and time" />,
-  deployedAt: <Trans i18nKey="table.head.deployedAt" defaults="Deployet at" />,
-  deployedBy: <Trans i18nKey="table.head.deployedBy" defaults="Deployet by" />,
+  deployedAt: <Trans i18nKey="table.head.deployedAt" defaults="Deployed at" />,
+  deployedBy: <Trans i18nKey="table.head.deployedBy" defaults="Deployed by" />,
   identificationNo: (
     <Trans
       i18nKey="table.head.identificationNo"
