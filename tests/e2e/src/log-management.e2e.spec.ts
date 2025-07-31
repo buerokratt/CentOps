@@ -27,7 +27,10 @@ describe('Log Management E2E', () => {
                 logId: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX),
                 method: expect.any(String),
                 path: expect.any(String),
-                createdAt: expect.any(String)
+                createdAt: expect.any(String),
+                firstName: expect.any(String),
+                lastName: expect.any(String),
+                userIdCode: expect.any(String)
             });
         }
     });

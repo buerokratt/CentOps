@@ -1,20 +1,54 @@
 import { describe, expect, it } from 'vitest';
-import { ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS } from './config';
+import { CLIENT_TEST_DATA, ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS } from './config';
 import { makeRequest } from './helpers/request.helper';
 
 describe('Certificate Management E2E', () => {
-    const testClientId = '2142aa11-d31c-4cb1-9ca1-9260fd8c7349'; // From your example
+    let testClientId: string;
     let testCertificateId: string;
+    const clientName = `test-client-${Date.now()}`;
 
-    it('should generate new certificate (200)', async () => {
+    it('should create client', async () => {
         const response = await makeRequest(
-            `${ENDPOINTS.CERTIFICATES.GENERATE}?clientId=${testClientId}`,
+            ENDPOINTS.CLIENTS.BASE,
+            HTTP_METHODS.POST,
+            {
+                name: clientName,
+                kubernetesClusterAddress: CLIENT_TEST_DATA.CLUSTER_ADDRESS,
+                kubernetesClusterNamespace: CLIENT_TEST_DATA.CLUSTER_NAMESPACE,
+                argoAppDeploymentName: CLIENT_TEST_DATA.ARGO_DEPLOYMENT_NAME,
+                authenticationCertificate: CLIENT_TEST_DATA.CERTIFICATE,
+                partOfNetwork: CLIENT_TEST_DATA.PART_OF_NETWORK
+            }
+        );
+
+        expect(response.status).toBe(201);
+        expect(await response.json()).toEqual({
+            response: "Client created successfully"
+        });
+    });
+
+    it('should get first client ID from list', async () => {
+        const response = await makeRequest(
+            `${ENDPOINTS.CLIENTS.BASE}?page=${GLOBAL_CONSTANTS.PAGE}&pageSize=${GLOBAL_CONSTANTS.PAGE_SIZE}`,
             HTTP_METHODS.GET
         );
 
         expect(response.status).toBe(200);
+        const { response: data } = await response.json();
+        testClientId = data.items[0]?.clientId;
+
+        expect(testClientId).toMatch(GLOBAL_CONSTANTS.UUID_REGEX);
+    });
+
+    it('should generate new certificate (200)', async () => {
+        const response = await makeRequest(
+            `${ENDPOINTS.CERTIFICATES.GENERATE}?clientId=${testClientId}`,
+            HTTP_METHODS.POST
+        );
+
+        expect(response.status).toBe(200);
         const data = await response.json();
-        testCertificateId = data.certificateId; // Store for subsequent tests
+        testCertificateId = data.certificateId;
 
         expect(data).toEqual({
             certificateId: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX)
