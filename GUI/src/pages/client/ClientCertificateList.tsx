@@ -1,29 +1,39 @@
-import { Button, Card, DataTable, Icon, Label, Track } from 'components';
-import { type MouseEventHandler, useCallback, useMemo, useState } from 'react';
+import {
+  Button,
+  Card,
+  ConfirmDeleteButton,
+  DataTable,
+  Icon,
+  Label,
+  Track,
+} from 'components';
+import { useCallback, useMemo, useState } from 'react';
 import type { ApiClientCertificate } from 'types/client';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { TransTableHead } from 'i18n/trans/table';
 import { Link } from 'components/Router/Link';
 import { ROUTES } from 'resources/routes-constants';
 import { TransTitle } from 'i18n/trans/title';
 import { TransLabel } from 'i18n/trans/label';
-import { GenerateCertificateDialog } from 'pages/client/dialog/GenerateCertificateDialog';
-import { DeleteCertificateDialog } from 'pages/client/dialog/DeleteCertificateDialog';
-import { ConfirmChangesDialog } from 'pages/client/dialog/ConfirmChangesDialog';
-import { CertificateDetailsDialog } from 'pages/client/dialog/CertificateDetailsDialog';
 import { withAuthorization } from 'hoc/withAuthorization';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { usePagination } from 'hooks/usePagination';
 import { initialPaginationData, type Pagination } from 'types/pagination';
 import api from 'services/api';
+import { formatDate } from 'utils/date';
+import { download } from 'utils/file';
+import { ConfirmButton } from 'components/Modal/ConfirmModal';
+import { useToast } from 'hooks';
 
 export const ClientCertificateList = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
   const { clientId } = useParams<{ clientId: string }>();
-  const { data: certificates } = useQuery<Pagination<ApiClientCertificate>>({
+  const { data: certificates, refetch } = useQuery<
+    Pagination<ApiClientCertificate>
+  >({
     meta: { pagination },
     queryKey: [
       `admin/clients/certificates?clientId=${clientId}`,
@@ -31,59 +41,103 @@ export const ClientCertificateList = withAuthorization(() => {
     ],
     initialData: initialPaginationData<ApiClientCertificate>(),
   });
-  const handleGenerateCertificate = useCallback<
-    MouseEventHandler<HTMLButtonElement>
-  >(async (e) => {
-    e.preventDefault();
-    await api.get(`admin/clients/certificates/generate?clientId=${clientId}`);
+
+  const toast = useToast();
+  const { t } = useTranslation();
+  const handleGenerateCertificate = useCallback(async () => {
+    try {
+      await api.post(
+        `admin/clients/certificates/generate?clientId=${clientId}`,
+        null
+      );
+      await refetch();
+      toast.open({
+        type: 'success',
+        title: t('toast.notification'),
+        message: t('toast.certificateCreated', {
+          defaultValue: 'Certificate Created Successfully',
+        }),
+      });
+    } catch {
+      toast.open({
+        type: 'error',
+        title: t('toast.notificationError'),
+        message: t('toast.certificateCreationFailed', {
+          defaultValue: 'Certificate Creation Failed',
+        }),
+      });
+    }
   }, []);
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  const handleDelete = useCallback(
+    async ({ clientId, certificateId }: ApiClientCertificate) => {
+      await api.delete(
+        `admin/clients/certificates?clientId=${clientId}&certificateId=${certificateId}`
+      );
+      await refetch();
+    },
+    []
+  );
   const columnHelper = createColumnHelper<ApiClientCertificate>();
   const columns = useMemo(
     () => [
-      columnHelper.accessor('name', {
-        id: 'name',
+      columnHelper.accessor('certificateId', {
+        id: 'certificateId',
         header: () => <TransTableHead i18nKey="certificate" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('name', {
+      columnHelper.accessor('createdAt', {
         id: 'createdAt',
         header: () => <TransTableHead i18nKey="createdAt" />,
-        cell: (message) => message.getValue(),
+        cell: (message) => formatDate(message.getValue()),
       }),
-      columnHelper.accessor('name', {
-        id: 'updatedAt',
-        header: () => <TransTableHead i18nKey="updatedAt" />,
-        cell: (message) => message.getValue(),
-      }),
-      columnHelper.accessor('id', {
+      columnHelper.accessor('deleted', {
         id: 'status',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
+        meta: { size: 1 },
+        cell: (message) => {
+          const deleted = message.getValue();
+          return (
+            <Label type={deleted ? 'error' : 'success'}>
+              <Icon name={deleted ? 'danger' : 'check'} size="small" />
+              <TransLabel i18nKey={deleted ? 'revoked' : 'valid'} />
+            </Label>
+          );
         },
-        cell: () => (
-          <Label type="error">
-            <Icon name="danger" size="small" />
-            <TransLabel i18nKey="revoked" />
-          </Label>
-        ),
       }),
-      columnHelper.accessor('id', {
+      columnHelper.accessor('deleted', {
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: {
-          size: 0,
-        },
-        cell: () => (
-          <Button appearance="text">
-            <Icon name="delete" />
-            <TransButton i18nKey="delete" />
-          </Button>
+        meta: { size: 1 },
+        cell: ({ row: { original }, getValue }) => (
+          <Track gap={8}>
+            <ConfirmDeleteButton
+              appearance="text"
+              entity={original}
+              entityName="certificateId"
+              onConfirm={handleDelete}
+              disabled={getValue()}
+            >
+              <Icon name="delete" />
+              <TransButton i18nKey="delete" />
+            </ConfirmDeleteButton>
+            <Button
+              appearance="text"
+              component="a"
+              href={`/admin/clients/certificates/download?clientId=${clientId}&certificateId=${original.certificateId}`}
+              download={original.certificateId}
+              data-type={`application/x-x509-ca-cert`}
+              data-path="publicKey"
+              disabled={getValue()}
+              onClick={download}
+            >
+              <TransButton i18nKey="download" />
+            </Button>
+          </Track>
         ),
       }),
     ],
@@ -92,11 +146,6 @@ export const ClientCertificateList = withAuthorization(() => {
 
   return (
     <>
-      <CertificateDetailsDialog />
-      <GenerateCertificateDialog />
-      <DeleteCertificateDialog />
-      <ConfirmChangesDialog />
-
       <Track justify="between">
         <Track direction="vertical" align="left">
           <h6>
@@ -106,9 +155,18 @@ export const ClientCertificateList = withAuthorization(() => {
             <Trans i18nKey="title.clientCertificates" defaults="Certificates" />
           </h1>
         </Track>
-        <Button appearance="primary" onClick={handleGenerateCertificate}>
+        <ConfirmButton
+          appearance="primary"
+          title={
+            <Trans
+              i18nKey="dialog.confirtGenerateCertificate.title"
+              defaults="Are you sure you want to generate a new certificate?"
+            />
+          }
+          onConfirm={handleGenerateCertificate}
+        >
           <TransButton i18nKey="generateCertificate" />
-        </Button>
+        </ConfirmButton>
       </Track>
 
       <Card

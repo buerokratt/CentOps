@@ -24,7 +24,8 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       disabled,
       hideLabel,
       showMaxLength,
-      defaultValue,
+      value,
+      defaultValue = value,
       onChange,
       ...rest
     },

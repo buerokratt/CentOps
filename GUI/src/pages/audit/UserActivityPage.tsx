@@ -13,14 +13,27 @@ import { usePagination } from 'hooks/usePagination';
 import { initialPaginationData, type Pagination } from 'types/pagination';
 
 export const UserActivityPage = withAuthorization(() => {
-  const [pagination, setPagination] = usePagination();
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      desc: true,
+      id: 'createdAt',
+    },
+  ]);
+  const [sortBy] = sorting;
+  const [pagination, setPagination] = usePagination({
+    ...(sortBy.desc && {
+      order: 'desc',
+    }),
+    sort: sortBy.id,
+  });
 
   const { data: logs } = useQuery<Pagination<AuditUserActivity>>({
-    meta: { pagination },
+    meta: {
+      pagination,
+    },
     queryKey: ['admin/logs/user', ...Object.values(pagination)],
     initialData: initialPaginationData<AuditUserActivity>(),
   });
-  const [sorting, setSorting] = useState<SortingState>([]);
 
   const columnHelper = createColumnHelper<AuditUserActivity>();
   const columns = useMemo(
@@ -49,7 +62,8 @@ export const UserActivityPage = withAuthorization(() => {
       columnHelper.accessor('createdAt', {
         id: 'createdAt',
         header: () => <TransTableHead i18nKey="dateTime" />,
-        cell: (message) => formatDate(message.getValue(), 'dateTime'),
+        cell: (message) => formatDate(message.getValue()),
+        meta: { size: 1 },
       }),
     ],
     []

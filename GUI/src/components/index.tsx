@@ -2,7 +2,6 @@ export { Button } from 'components/Button';
 export { Collapsible } from 'components/Collapsible';
 export { Box } from 'components/Box';
 export { Card } from 'components/Card';
-export { Certificate } from 'components/Certificate';
 export { Dialog } from 'components/Dialog';
 export { Drawer } from 'components/Drawer';
 export { DataTable } from 'components/DataTable';
@@ -36,7 +35,6 @@ export { Tooltip } from 'components/Tooltip';
 export { Track } from 'components/Track';
 export { ExclamationBadge } from 'components/ExclamationBadge';
 export { OutputElementBox } from 'components/OutputElementBox';
-export { DynamicForm } from 'components/DynamicForm';
 
 export { MainNavigation } from 'components/MainNavigation';
 export { MenuTree } from 'components/MenuTree';

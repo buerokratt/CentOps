@@ -2,22 +2,7 @@ import 'styles/main.scss';
 import type { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Layout, MainNavigation } from 'components';
-import {
-  CreateInvitationPage,
-  EditParticipantPage,
-  NotFoundPage,
-  OverviewPage,
-  ParticipantsPage,
-} from 'pages';
 import { ROUTES } from 'resources/routes-constants';
-import InstitutionsPages from 'pages/InstitutionsPage';
-import MessagesPage from 'pages/MessagesPage';
-import ManifestsOverviewPage from 'pages/manifests/ManifestsOverviewPage';
-import NewManifestsPage from 'pages/manifests/NewManifestsPage';
-import ManifestsUpdatesPage from 'pages/manifests/ManifestsUpdatesPage';
-import ManifestsHistoryPage from 'pages/manifests/ManifestsHistoryPage';
-import ManifestsHistoryDetailsPage from 'pages/manifests/ManifestsDetailsPage';
-import CreateEditManifestPage from 'pages/manifests/CreateEditManifestPage';
 import { ClientListPage } from 'pages/client/ClientListPage';
 import { ClientDetailsPage } from 'pages/client/ClientDetailsPage';
 import { ClientSecretListPage } from 'pages/client/ClientSecretListPage';
@@ -34,9 +19,10 @@ import { ClientCertificateList } from 'pages/client/ClientCertificateList';
 import { ClientCertificateCreatePage } from 'pages/client/ClientCertificateCreatePage';
 import { ClientDeploymentList } from 'pages/client/ClientDeploymentList';
 import { ClientDeploymentCreatePage } from 'pages/client/ClientDeploymentCreatePage';
-import { ClientPodsList } from 'pages/client/ClientPodsList';
 import { UserActivityPage } from 'pages/audit/UserActivityPage';
 import { SecretAccessPage } from 'pages/audit/SecretAccessPage';
+import { NotFoundPage } from 'pages/NotFoundPage';
+import OverviewPage from 'pages/OverviewPage';
 
 export const RootComponent: FC = () => {
   return (
@@ -76,7 +62,6 @@ export const RootComponent: FC = () => {
           path={ROUTES.CLIENT_DEPLOYMENTS_CREATE_ROUTE}
           Component={ClientDeploymentCreatePage}
         />
-        <Route path={ROUTES.CLIENT_PODS_ROUTE} Component={ClientPodsList} />
         <Route
           path={ROUTES.CLIENT_MANIFESTS_ROUTE}
           Component={ClientManifestListPage}
@@ -105,56 +90,7 @@ export const RootComponent: FC = () => {
           Component={SecretAccessPage}
         />
 
-        <Route
-          path={ROUTES.INVITATION_ROUTE}
-          element={<CreateInvitationPage />}
-        />
         <Route path={ROUTES.OVERVIEW_ROUTE} element={<OverviewPage />} />
-        <Route
-          path={ROUTES.PARTICIPANTS_ROUTE}
-          element={<ParticipantsPage />}
-        />
-        <Route
-          path={ROUTES.PARTICIPANTS_REQUESTS_ROUTE}
-          element={<ParticipantsPage />}
-        />
-        <Route
-          path={ROUTES.PARTICIPANTS_EDIT_ROUTE}
-          element={<EditParticipantPage />}
-        />
-        <Route
-          path={ROUTES.PARTICIPANTS_REQUESTS_EDIT_ROUTE}
-          element={<EditParticipantPage />}
-        />
-        <Route path={ROUTES.MESSAGES_PAGE_ROUTE} element={<MessagesPage />} />
-        <Route
-          path={ROUTES.INSTITUTIONS_ROUTE}
-          element={<InstitutionsPages />}
-        />
-        <Route
-          path={ROUTES.MANIFESTS_OVERVIEW_ROUTE}
-          element={<ManifestsOverviewPage />}
-        />
-        <Route
-          path={ROUTES.MANIFESTS_NEW_MANIFESTS_ROUTE}
-          element={<NewManifestsPage />}
-        />
-        <Route
-          path={ROUTES.MANIFESTS_UPDATES_ROUTE}
-          element={<ManifestsUpdatesPage />}
-        />
-        <Route
-          path={ROUTES.MANIFESTS_HISTORY_ROUTE}
-          element={<ManifestsHistoryPage />}
-        />
-        <Route
-          path={ROUTES.MANIFESTS_DETAILS_ROUTE}
-          element={<ManifestsHistoryDetailsPage />}
-        />
-        <Route
-          path={ROUTES.MANIFESTS_CREATE_EDIT_ROUTE}
-          element={<CreateEditManifestPage />}
-        />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

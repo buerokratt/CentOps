@@ -4,7 +4,7 @@ import { Track } from 'components';
 import './Modal.scss';
 
 export interface ModalProps {
-  title: string;
+  title: ReactNode;
   footer?: ReactNode;
   onClose: () => void;
 }

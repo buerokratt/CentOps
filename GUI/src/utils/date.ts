@@ -7,8 +7,8 @@ export const locales = { et, en } as const;
 export const localesMap = new Map(Object.entries(locales));
 
 const formatPatterns = {
+  default: 'dd-MM-yyyy hh:mm:ss',
   dateTime: 'dd-MM-yyyy hh:mm a',
-  default: 'dd.MM.yyyy',
 } as const;
 
 type DateFormatPattern = keyof typeof formatPatterns;

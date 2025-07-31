@@ -1,12 +1,5 @@
 import { useParams } from 'react-router-dom';
-import {
-  Button,
-  Card,
-  FormInput,
-  FormSelect,
-  FormYamlEditor,
-  Track,
-} from 'components';
+import { Button, Card, FormInput, FormYamlEditor, Track } from 'components';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
@@ -35,7 +28,6 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
     queryKey: [
       `admin/clients/manifests/get?clientId=${clientId}&manifestId=${manifestId}`,
     ],
-    initialData: {},
   });
   const toast = useToast();
   const { t } = useTranslation();
@@ -88,36 +80,13 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
     },
     []
   );
-  const { register, control, reset, handleSubmit } = useForm<ApiClientManifest>(
-    {
-      defaultValues: {
-        name: 'Manifest_20250606',
-        helmVersion: '123',
-        helmValues: `---
-doe: "a deer, a female deer"
->>,,,
-ray: "a drop of golden sun"
-pi: 3.14159
-xmas: true
-french-hens: 3
-calling-birds:
-  - huey
-  - dewey
-  - louie
-  - fred
-xmas-fifth-day:
-  calling-birds: four
-  french-hens: 3
-  golden-rings: 5
-  partridges:
-    count: 1
-    location: "a pear tree"
-  turtle-doves: two`,
-        createdAt: '2025-06-07T14:11:00.107Z',
-        updatedAt: '2025-06-07T14:11:00.107Z',
-      },
-    }
-  );
+  const {
+    register,
+    control,
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<ApiClientManifest>({});
   useEffect(() => {
     if (manifest) reset(manifest);
   }, [manifest]);
@@ -147,7 +116,7 @@ xmas-fifth-day:
                 <TransButton i18nKey="cancel" />
               </Button>
             </Link>
-            <Button appearance="primary">
+            <Button appearance="primary" type="button" disabled={isSubmitting}>
               <TransButton i18nKey="save" />
             </Button>
           </Track>
@@ -164,17 +133,9 @@ xmas-fifth-day:
             label={<TransField i18nKey="name" />}
             type="text"
           />
-          <Controller
-            name="helmVersion"
-            control={control}
-            render={({ field }) => (
-              <FormSelect
-                {...field}
-                placeholder="-"
-                label={<TransField i18nKey="helm" />}
-                options={[{ label: '123', value: '123' }]}
-              />
-            )}
+          <FormInput
+            {...register('helmVersion')}
+            label={<TransField i18nKey="helm" />}
           />
           <Controller
             name="helmValues"
@@ -183,38 +144,27 @@ xmas-fifth-day:
               <FormYamlEditor
                 label={<TransField i18nKey="yaml" />}
                 {...field}
-                // TODO, tmp height
+                minHeight="340px"
                 maxHeight="640px"
               />
             )}
           />
 
-          <Controller
-            name="helmVersion"
-            control={control}
-            render={({ field }) => (
-              <FormInput
-                {...field}
-                value={field.value}
-                label={<TransField i18nKey="version" />}
-                type="text"
-                readOnly
-              />
-            )}
-          />
-          <Controller
-            name="updatedAt"
-            control={control}
-            render={({ field }) => (
-              <FormInput
-                {...field}
-                value={formatDate(field.value)}
-                label={<TransField i18nKey="updatedAt" />}
-                type="text"
-                readOnly
-              />
-            )}
-          />
+          {!isCreateMode && (
+            <Controller
+              name="updatedAt"
+              control={control}
+              render={({ field }) => (
+                <FormInput
+                  {...field}
+                  value={formatDate(field.value)}
+                  label={<TransField i18nKey="updatedAt" />}
+                  type="text"
+                  readOnly
+                />
+              )}
+            />
+          )}
         </Track>
       </Card>
     </>

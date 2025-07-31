@@ -46,32 +46,23 @@ export const ClientListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="nameSpace" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('kubernetesClusterNamespace', {
+      columnHelper.accessor('kubernetesClusterAddress', {
         id: 'clusterAddress',
         header: () => <TransTableHead i18nKey="clusterAddress" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('name', {
+      columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('id', {
+      columnHelper.accessor('clientId', {
         id: 'actions',
         header: '',
         enableSorting: false,
-        meta: { size: 0 },
+        meta: { size: 1 },
         cell: (props) => (
           <Track gap={8}>
-            <Button
-              appearance="text"
-              component={Link}
-              to={ROUTES.CLIENT_PODS_ROUTE}
-              params={{ clientId: props.row.original.clientId }}
-            >
-              <Icon name="pods" />
-              <TransButton i18nKey="pods" />
-            </Button>
             <Button
               appearance="text"
               component={Link}
