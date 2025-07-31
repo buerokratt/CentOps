@@ -6,7 +6,7 @@ import {
   Icon,
   Track,
 } from 'components';
-import { useCallback, useMemo, useState } from 'react';
+import { type MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import type { ApiClientManifest } from 'types/client';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
@@ -45,12 +45,27 @@ export const ClientManifestListPage = withAuthorization(() => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  const handleDuplicate = useCallback<MouseEventHandler<HTMLButtonElement>>(
+    async (e) => {
+      const { data: manifest } = await api.get<ApiClientManifest>(
+        `admin/clients/manifests/get?clientId=${clientId}&manifestId=${e.currentTarget.dataset.id}`
+      );
+      await api.post(`admin/clients/manifests/create?clientId=${clientId}`, {
+        clientId,
+        name: `${manifest.name} copy`,
+        helmVersion: manifest.helmVersion,
+        helmValues: manifest.helmValues,
+      });
+      await refetch();
+    },
+    []
+  );
   const columnHelper = createColumnHelper<ApiClientManifest>();
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
         id: 'name',
-        header: () => <TransTableHead i18nKey="usersDb" />,
+        header: () => <TransTableHead i18nKey="name" />,
         cell: (message) => message.getValue(),
       }),
       columnHelper.accessor('helmVersion', {
@@ -61,7 +76,12 @@ export const ClientManifestListPage = withAuthorization(() => {
       columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
-        cell: (message) => formatDate(message.getValue(), 'dateTime'),
+        cell: (message) => formatDate(message.getValue()),
+      }),
+      columnHelper.accessor('deployedAt', {
+        id: 'deployedAt',
+        header: () => <TransTableHead i18nKey="deployedAt" />,
+        cell: (message) => formatDate(message.getValue()),
       }),
       columnHelper.accessor('manifestId', {
         id: 'actions',
@@ -70,7 +90,11 @@ export const ClientManifestListPage = withAuthorization(() => {
         meta: { size: 1 },
         cell: (props) => (
           <Track gap={8}>
-            <Button appearance="text">
+            <Button
+              appearance="text"
+              data-id={props.getValue()}
+              onClick={handleDuplicate}
+            >
               <Icon name="copy" />
               <TransButton i18nKey="duplicate" />
             </Button>

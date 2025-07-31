@@ -13,6 +13,8 @@ export interface AuditUserActivity {
   /** @format uuid */
   logId: string;
   method: Method;
+  firstName: string;
+  lastName: string;
   path: string;
   createdAt: string;
 }

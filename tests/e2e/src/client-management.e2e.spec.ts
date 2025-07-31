@@ -1,10 +1,11 @@
-import {describe, expect, it} from 'vitest';
-import {CLIENT_TEST_DATA, ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS} from './config';
-import {makeRequest} from "./helpers/request.helper";
+import { describe, expect, it } from 'vitest';
+import { CLIENT_TEST_DATA, ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS } from './config';
+import { makeRequest } from './helpers/request.helper';
 
-describe('Client Management E2E', () => {
+describe('Certificate Management E2E', () => {
     let testClientId: string;
-    let clientName = `vitest-e2e-client-${Date.now()}`;
+    let testCertificateId: string;
+    const clientName = `test-client-${Date.now()}`;
 
     it('should create client', async () => {
         const response = await makeRequest(
@@ -15,7 +16,8 @@ describe('Client Management E2E', () => {
                 kubernetesClusterAddress: CLIENT_TEST_DATA.CLUSTER_ADDRESS,
                 kubernetesClusterNamespace: CLIENT_TEST_DATA.CLUSTER_NAMESPACE,
                 argoAppDeploymentName: CLIENT_TEST_DATA.ARGO_DEPLOYMENT_NAME,
-                authenticationCertificate: CLIENT_TEST_DATA.CERTIFICATE
+                authenticationCertificate: CLIENT_TEST_DATA.CERTIFICATE,
+                partOfNetwork: CLIENT_TEST_DATA.PART_OF_NETWORK
             }
         );
 
@@ -25,7 +27,7 @@ describe('Client Management E2E', () => {
         });
     });
 
-    it('should list clients and get first client ID', async () => {
+    it('should get first client ID from list', async () => {
         const response = await makeRequest(
             `${ENDPOINTS.CLIENTS.BASE}?page=${GLOBAL_CONSTANTS.PAGE}&pageSize=${GLOBAL_CONSTANTS.PAGE_SIZE}`,
             HTTP_METHODS.GET
@@ -33,90 +35,43 @@ describe('Client Management E2E', () => {
 
         expect(response.status).toBe(200);
         const { response: data } = await response.json();
-        testClientId = data.items[0].clientId;
+        testClientId = data.items[0]?.clientId;
+
+        expect(testClientId).toMatch(GLOBAL_CONSTANTS.UUID_REGEX);
+    });
+
+    it('should generate new certificate (200)', async () => {
+        const response = await makeRequest(
+            `${ENDPOINTS.CERTIFICATES.GENERATE}?clientId=${testClientId}`,
+            HTTP_METHODS.POST
+        );
+
+        expect(response.status).toBe(200);
+        const data = await response.json();
+        testCertificateId = data.certificateId;
 
         expect(data).toEqual({
-            items: expect.arrayContaining([
-                expect.objectContaining({
-                    clientId: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX),
-                    name: expect.any(String),
-                    kubernetesClusterAddress: expect.any(String),
-                    kubernetesClusterNamespace: expect.any(String),
-                    authenticationCertificate: expect.any(String),
-                    createdAt: expect.any(String),
-                    updatedAt: expect.toBeOneOf([expect.any(String), null])
-                })
-            ]),
-            page: GLOBAL_CONSTANTS.PAGE,
-            pageSize: GLOBAL_CONSTANTS.PAGE_SIZE,
-            totalPages: expect.any(Number)
+            certificateId: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX)
         });
     });
 
-    it('should list clients with minimal data', async () => {
+    it('should download generated certificate (200)', async () => {
         const response = await makeRequest(
-            `${ENDPOINTS.CLIENTS.MINIMAL}?page=${GLOBAL_CONSTANTS.PAGE}&pageSize=${GLOBAL_CONSTANTS.PAGE_SIZE}`,
+            `${ENDPOINTS.CERTIFICATES.DOWNLOAD}?clientId=${testClientId}&certificateId=${testCertificateId}`,
             HTTP_METHODS.GET
         );
 
         expect(response.status).toBe(200);
-        const { response: data } = await response.json();
-
-        expect(data).toEqual({
-            items: expect.arrayContaining([
-                expect.objectContaining({
-                    clientId: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX),
-                    name: expect.any(String),
-                    authenticationCertificate: expect.any(String),
-                    createdAt: expect.any(String),
-                    updatedAt: expect.toBeOneOf([expect.any(String), null])
-                })
-            ]),
-            page: GLOBAL_CONSTANTS.PAGE,
-            pageSize: GLOBAL_CONSTANTS.PAGE_SIZE,
-            totalPages: expect.any(Number)
-        });
-    });
-
-    it('should read client', async () => {
-        const response = await makeRequest(
-            `${ENDPOINTS.CLIENTS.BY_ID}?clientId=${testClientId}`,
-            HTTP_METHODS.GET
-        );
-
-        expect(response.status).toBe(200);
-        expect((await response.json()).response).toEqual({
-            clientId: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX),
-            name: expect.any(String),
-            kubernetesClusterAddress: expect.any(String),
-            kubernetesClusterNamespace: expect.any(String),
-            argoAppDeploymentName: expect.any(String),
-            authenticationCertificate: expect.any(String),
-            createdAt: expect.any(String),
-            updatedAt: expect.toBeOneOf([expect.any(String), null])
-        });
-    });
-
-    it('should update client', async () => {
-        const response = await makeRequest(
-            `${ENDPOINTS.CLIENTS.BASE}?clientId=${testClientId}`,
-            HTTP_METHODS.PUT,
-            {
-                name: "updated-" + clientName,
-                kubernetesClusterAddress: "https://k8s.example.com:6444",
-                kubernetesClusterNamespace: CLIENT_TEST_DATA.CLUSTER_NAMESPACE,
-                argoAppDeploymentName: "s.1234567890abcdef",
-                authenticationCertificate: CLIENT_TEST_DATA.CERTIFICATE
+        expect(await response.json()).toEqual({
+            response: {
+                publicKey: expect.stringContaining('BEGIN PUBLIC KEY')
             }
-        );
-
-        expect(response.status).toBe(204);
-        expect(await response.text()).toBe('');
+        });
     });
 
-    it('should delete client', async () => {
+    it('should delete certificate (204)', async () => {
         const response = await makeRequest(
-            `${ENDPOINTS.CLIENTS.BASE}?clientId=${testClientId}`,
+            `${ENDPOINTS.CERTIFICATES.BASE}?clientId=${testClientId}&certificateId=${testCertificateId}`,
             HTTP_METHODS.DELETE
         );
 

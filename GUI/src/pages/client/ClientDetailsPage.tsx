@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, FormInput, Icon, Track } from 'components';
+import { Button, Card, FormCheckbox, FormInput, Icon, Track } from 'components';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
@@ -58,7 +58,7 @@ export const ClientDetailsPage = withAuthorization(() => {
         }[method]()
       ).data,
     onSuccess: (_, { method }) => {
-      navigate(-1);
+      navigate(ROUTES.CLIENT_LIST_ROUTE);
       toast.open({
         type: 'success',
         title: t('toast.notification'),
@@ -181,6 +181,10 @@ export const ClientDetailsPage = withAuthorization(() => {
           <FormInput
             {...register('argoAppDeploymentName', { required: true })}
             label={<TransField i18nKey="argoApplicationName" />}
+          />
+          <FormCheckbox
+            {...register('partOfNetwork')}
+            label={<TransField i18nKey="burokrattNetwork" />}
           />
           {!isCreateMode && (
             <>

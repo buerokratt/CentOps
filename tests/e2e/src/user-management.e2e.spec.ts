@@ -76,7 +76,8 @@ describe('User Management E2E', () => {
             firstName: USER_TEST_DATA.UPDATED_FIRST_NAME,
             lastName: USER_TEST_DATA.UPDATED_LAST_NAME,
             idCode: USER_TEST_DATA.UPDATED_ID_CODE,
-            createdAt: expect.any(String)
+            createdAt: expect.any(String),
+            updatedAt: expect.toBeOneOf([expect.any(String), null])
         });
     });
 

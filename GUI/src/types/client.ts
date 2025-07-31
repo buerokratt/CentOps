@@ -7,6 +7,7 @@ export interface Client {
   argoAppDeploymentName: string;
   // "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----"
   authenticationCertificate: string;
+  partOfNetwork: boolean;
 }
 
 export interface ApiClient extends Client {
@@ -21,6 +22,7 @@ export interface ClientSecret {
 }
 
 export interface ApiClientSecret extends ClientSecret {
+  id: string;
   clientId: string;
   secretId: string;
   createdAt: string;
@@ -74,5 +76,6 @@ export interface ApiClientManifest extends ClientManifest {
   manifestId: string;
   createdAt: string;
   updatedAt: string;
+  deployedAt: string;
   deleted: boolean;
 }

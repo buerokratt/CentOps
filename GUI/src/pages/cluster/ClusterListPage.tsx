@@ -19,6 +19,7 @@ import { withAuthorization } from 'hoc/withAuthorization';
 import api from 'services/api';
 import { usePagination } from 'hooks/usePagination';
 import { initialPaginationData, type Pagination } from 'types/pagination';
+import { formatDate } from 'utils/date';
 
 export const ClusterListPage = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
@@ -45,7 +46,7 @@ export const ClusterListPage = withAuthorization(() => {
       columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
-        cell: (message) => message.getValue(),
+        cell: (message) => formatDate(message.getValue()),
       }),
       columnHelper.display({
         id: 'actions',

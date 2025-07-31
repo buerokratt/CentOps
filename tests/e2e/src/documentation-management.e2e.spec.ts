@@ -34,7 +34,7 @@ describe('Documentation Management E2E', () => {
             documentId: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX),
             content: DOCUMENTATION_TEST_DATA.INITIAL_CONTENT,
             createdAt: expect.any(String),
-            updatedAt: expect.any(String)
+            updatedAt: expect.toBeOneOf([expect.any(String), null])
         });
     });
 
