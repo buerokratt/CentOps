@@ -38,6 +38,15 @@ export const UserActivityPage = withAuthorization(() => {
   const columnHelper = createColumnHelper<AuditUserActivity>();
   const columns = useMemo(
     () => [
+      columnHelper.accessor('logId', {
+        id: 'fullName',
+        header: () => <TransTableHead i18nKey="usersName" />,
+        cell: ({
+          row: {
+            original: { firstName, lastName },
+          },
+        }) => [firstName, lastName].filter(Boolean).join(' '),
+      }),
       columnHelper.accessor('method', {
         id: 'method',
         header: () => <TransTableHead i18nKey="method" />,

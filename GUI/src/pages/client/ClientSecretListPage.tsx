@@ -21,6 +21,7 @@ import api from 'services/api';
 import { useParams } from 'react-router-dom';
 import { usePagination } from 'hooks/usePagination';
 import { initialPaginationData, type Pagination } from 'types/pagination';
+import { formatDate } from 'utils/date';
 
 export const ClientSecretListPage = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
@@ -52,7 +53,7 @@ export const ClientSecretListPage = withAuthorization(() => {
       columnHelper.accessor('name', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
-        cell: (message) => message.getValue(),
+        cell: (message) => formatDate(message.getValue()),
       }),
       columnHelper.accessor('secretId', {
         id: 'actions',

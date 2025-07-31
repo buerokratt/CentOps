@@ -19,6 +19,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from 'services/api';
 import { initialPaginationData, type Pagination } from 'types/pagination';
 import { usePagination } from 'hooks/usePagination';
+import { formatDate } from 'utils/date';
 
 export const ClientListPage = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
@@ -54,7 +55,7 @@ export const ClientListPage = withAuthorization(() => {
       columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
-        cell: (message) => message.getValue(),
+        cell: (message) => formatDate(message.getValue()),
       }),
       columnHelper.accessor('clientId', {
         id: 'actions',

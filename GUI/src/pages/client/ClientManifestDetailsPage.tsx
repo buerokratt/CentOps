@@ -76,7 +76,7 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
   });
   const onSubmit: SubmitHandler<ApiClientManifest> = useCallback(
     async (data) => {
-      await mutation.mutateAsync(data);
+      await mutation.mutateAsync({ ...data, clientId: clientId as string });
     },
     []
   );
@@ -116,7 +116,7 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
                 <TransButton i18nKey="cancel" />
               </Button>
             </Link>
-            <Button appearance="primary" type="button" disabled={isSubmitting}>
+            <Button appearance="primary" type="submit" disabled={isSubmitting}>
               <TransButton i18nKey="save" />
             </Button>
           </Track>
