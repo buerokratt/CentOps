@@ -57,15 +57,6 @@ export const MenuTree: FC<MenuTreeProps> = ({
                   }
                   onClick={handleNavToggle}
                 >
-                  {menuItem.id && (
-                    <Icon
-                      icon={
-                        menuData.find((dataItem) => dataItem.id === menuItem.id)
-                          ?.icon
-                      }
-                      size="large"
-                    />
-                  )}
                   <span className="menu-item-title">
                     {menuItem.label[currentlySelectedLanguage]}
                   </span>
