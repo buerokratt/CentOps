@@ -42,7 +42,7 @@
     align-items: center;
     gap: get-spacing(paldiski);
     color: get-color(black-coral-0);
-    padding: 14px 8px 14px 32px;
+    padding: 14px 8px 14px 16px;
     box-shadow: inset 0 -1px 0 get-color(sapphire-blue-14);
 
     span:not(.icon) {
@@ -80,8 +80,6 @@
     }
 
     &.nav__toggle--icon {
-      padding-left: 8px;
-
       .icon:first-child {
         transform: none;
       }

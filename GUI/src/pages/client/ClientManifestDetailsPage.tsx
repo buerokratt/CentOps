@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, FormInput, FormYamlEditor, Track } from 'components';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
@@ -6,7 +6,7 @@ import { TransField } from 'i18n/trans/field';
 import { TransTitle } from 'i18n/trans/title';
 import { formatDate } from 'utils/date';
 import { ROUTES } from 'resources/routes-constants';
-import { Link } from 'components/Router/Link';
+import { Link, replaceLinkParams } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
 import type { ApiClientManifest } from 'types/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -29,6 +29,7 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
       `admin/clients/manifests/get?clientId=${clientId}&manifestId=${manifestId}`,
     ],
   });
+  const navigate = useNavigate();
   const toast = useToast();
   const { t } = useTranslation();
   const mutation = useMutation<
@@ -53,6 +54,7 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
       ).data,
 
     onSuccess: ({ manifestId }) => {
+      navigate(replaceLinkParams(ROUTES.CLIENT_MANIFESTS_ROUTE, { clientId }));
       toast.open({
         type: 'success',
         title: t('toast.notification'),

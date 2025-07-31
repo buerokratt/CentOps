@@ -12,6 +12,7 @@ import 'i18n';
 import qs from 'qs';
 import type { PaginationState } from '@tanstack/react-table';
 import { type QueryFunctionContext } from '@tanstack/query-core';
+import axios from 'axios';
 
 if (import.meta.env.DEV) {
   try {
@@ -28,7 +29,7 @@ const defaultQueryFn: QueryFunction = async (context) => {
   const { meta } = context;
   const { pageIndex, ...pagination } =
     (meta?.pagination as PaginationState) ?? {};
-  if (pagination) {
+  if (Object.keys(pagination).length) {
     url = `${url}${url.includes('?') ? '&' : '?'}${qs.stringify({
       page: pageIndex + 1,
       ...pagination,
@@ -42,6 +43,13 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnMount: true,
       queryFn: defaultQueryFn,
+      retry: (_, error) => {
+        // Check if the error is an Axios error and has a 401 status
+        const unauthorized =
+          axios.isAxiosError(error) && error.response?.status === 401;
+        // if (unauthorized) window.location.href = '/et/log-in';
+        return !unauthorized;
+      },
       // staleTime: 5 * 60 * 1000, // 5 minutes
     },
   },

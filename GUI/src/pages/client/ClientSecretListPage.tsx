@@ -74,7 +74,7 @@ export const ClientSecretListPage = withAuthorization(() => {
             <Button
               component={Link}
               to={ROUTES.CLIENT_SECRETS_DETAILS_ROUTE}
-              params={{ secretId: props.row.original.secretId }}
+              params={{ secretId: props.row.original.id }}
               appearance="text"
             >
               <Icon name="edit" />

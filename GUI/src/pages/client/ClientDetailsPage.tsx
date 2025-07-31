@@ -58,7 +58,7 @@ export const ClientDetailsPage = withAuthorization(() => {
         }[method]()
       ).data,
     onSuccess: (_, { method }) => {
-      navigate(-1);
+      navigate(ROUTES.CLIENT_LIST_ROUTE);
       toast.open({
         type: 'success',
         title: t('toast.notification'),

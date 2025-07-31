@@ -6,7 +6,7 @@ import {
   Icon,
   Track,
 } from 'components';
-import { useCallback, useMemo, useState } from 'react';
+import { type MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import type { ApiClientManifest } from 'types/client';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
@@ -45,6 +45,21 @@ export const ClientManifestListPage = withAuthorization(() => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  const handleDuplicate = useCallback<MouseEventHandler<HTMLButtonElement>>(
+    async (e) => {
+      const { data: manifest } = await api.get<ApiClientManifest>(
+        `admin/clients/manifests/get?clientId=${clientId}&manifestId=${e.currentTarget.dataset.id}`
+      );
+      await api.post(`admin/clients/manifests/create?clientId=${clientId}`, {
+        clientId,
+        name: `${manifest.name} copy`,
+        helmVersion: manifest.helmVersion,
+        helmValues: manifest.helmValues,
+      });
+      await refetch();
+    },
+    []
+  );
   const columnHelper = createColumnHelper<ApiClientManifest>();
   const columns = useMemo(
     () => [
@@ -75,7 +90,11 @@ export const ClientManifestListPage = withAuthorization(() => {
         meta: { size: 1 },
         cell: (props) => (
           <Track gap={8}>
-            <Button appearance="text">
+            <Button
+              appearance="text"
+              data-id={props.getValue()}
+              onClick={handleDuplicate}
+            >
               <Icon name="copy" />
               <TransButton i18nKey="duplicate" />
             </Button>

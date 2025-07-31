@@ -33,7 +33,7 @@
     "@tanstack/react-table": "^8.7.9",
     "@uiw/codemirror-theme-github": "^4.23.13",
     "@uiw/react-codemirror": "^4.23.13",
-    "axios": "^1.2.2",
+    "axios": "^1.11.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "downshift": "^7.2.0",
