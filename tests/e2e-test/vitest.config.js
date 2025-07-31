@@ -6,7 +6,7 @@ export default defineConfig({
         testTimeout: 10000,
         environment: 'node',
         globals: true,
-        include: ['./src/tests/*.test.js'],
+        include: ['./src/tests/*.test.ts'],
         globalSetup: './src/setup/global-testcontainer-setup.js',
         globalTeardown: './src/setup/global-testcontainer-setup.js',
     },

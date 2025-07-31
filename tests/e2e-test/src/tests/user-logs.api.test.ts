@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS } from './config';
+import { ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS } from '../setup/config';
 import { makeRequest } from './helpers/request.helper';
 
 describe('Log Management E2E', () => {

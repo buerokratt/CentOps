@@ -2,7 +2,6 @@ import {DockerComposeEnvironment, log} from 'testcontainers';
 
 let environment;
 
-
 export async function setup() {
     try {
         // Start the Docker Compose environment

@@ -1,5 +1,5 @@
 export const GLOBAL_CONSTANTS = {
-    BASE_URL: 'http://localhost:8050',
+    BASE_URL: 'http://localhost:9050',
     API_PREFIX: '/centops',
     PAGE: 1,
     PAGE_SIZE: 1,

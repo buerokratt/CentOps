@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CLIENT_TEST_DATA, ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS } from './config';
+import { CLIENT_TEST_DATA, ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS } from '../setup/config';
 import { makeRequest } from './helpers/request.helper';
 
 describe('Certificate Management E2E', () => {
@@ -16,7 +16,6 @@ describe('Certificate Management E2E', () => {
                 kubernetesClusterAddress: CLIENT_TEST_DATA.CLUSTER_ADDRESS,
                 kubernetesClusterNamespace: CLIENT_TEST_DATA.CLUSTER_NAMESPACE,
                 argoAppDeploymentName: CLIENT_TEST_DATA.ARGO_DEPLOYMENT_NAME,
-                authenticationCertificate: CLIENT_TEST_DATA.CERTIFICATE,
                 partOfNetwork: CLIENT_TEST_DATA.PART_OF_NETWORK
             }
         );
