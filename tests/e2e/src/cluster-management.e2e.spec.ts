@@ -58,7 +58,8 @@ describe('Cluster Management E2E', () => {
             clusterId: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX),
             name: expect.any(String),
             ipAddress: expect.any(String),
-            createdAt: expect.any(String)
+            createdAt: expect.any(String),
+            updatedAt: expect.toBeOneOf([expect.any(String), null])
         });
     });
 

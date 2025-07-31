@@ -17,7 +17,8 @@ export const CLIENT_TEST_DATA = {
     CERTIFICATE: "-----BEGIN CERTIFICATE-----\nMOCK\n-----END CERTIFICATE-----",
     CLUSTER_ADDRESS: "https://k8s.example.com:6443",
     CLUSTER_NAMESPACE: "default",
-    ARGO_DEPLOYMENT_NAME: "testDeployment"
+    ARGO_DEPLOYMENT_NAME: "testDeployment",
+    PART_OF_NETWORK: true
 };
 
 export const USER_TEST_DATA = {

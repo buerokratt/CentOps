@@ -37,7 +37,7 @@ get_client_data:
 
 check_client_data:
   switch:
-    - condition: ${client_result.response.body[0].name == null}
+    - condition: ${client_result.response.body[0] == null || client_result.response.body[0].name == null}
       next: return_certificate_generation_failed
   next: extract_client_data
 
