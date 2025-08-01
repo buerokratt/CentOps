@@ -47,5 +47,5 @@ jobs:
       - name: Run Vitest
         run: |
           cd tests/e2e-test 
-          npm vitest run
+          npm test
 
