@@ -1,4 +1,4 @@
-import { GLOBAL_CONSTANTS, HTTP_METHODS, ENDPOINTS } from '../config';
+import { GLOBAL_CONSTANTS, HTTP_METHODS, ENDPOINTS } from '../../setup/config';
 
 let authToken: string | null = null;
 

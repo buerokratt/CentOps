@@ -1,4 +1,4 @@
-import {GLOBAL_CONSTANTS} from '../config';
+import {GLOBAL_CONSTANTS} from '../../setup/config';
 import {getAuthHeaders} from './auth.helper';
 
 export const makeRequest = async (

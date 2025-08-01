@@ -1,0 +1,112 @@
+services:
+  ruuter-test:
+    container_name: ruuter-test
+    image: ruuter
+    environment:
+      - application.cors.allowedOrigins=http://localhost:9057
+      - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
+      - application.logging.displayRequestContent=true
+      - application.logging.displayResponseContent=true
+      - server.port=9050
+      - application.DSL.processedFiletypes=.yml,.yaml,.tmp
+      - application.incomingRequests.allowedMethodTypes=GET,POST,PUT,DELETE
+    volumes:
+      - ../../DSL/Ruuter:/DSL
+      - ./constants.ini:/app/constants.ini
+    ports:
+      - 9050:9050
+    networks:
+      - bykstack-test
+
+  resql-test:
+    container_name: resql-test
+    image: resql
+    depends_on:
+      - database-test
+    environment:
+      - logging.level.org.springframework.boot=INFO
+      - server.port=9052
+      - sqlms.datasources.[0].name=byk
+      - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database-test:5432/centops_db
+      - sqlms.datasources.[0].username=byk
+      - sqlms.datasources.[0].password=01234
+    ports:
+      - 9052:9052
+    volumes:
+      - ../../DSL/Resql:/DSL
+    networks:
+      - bykstack-test
+
+  database-test:
+    container_name: database-test
+    image: postgres:14.1
+    environment:
+      - POSTGRES_USER=byk
+      - POSTGRES_PASSWORD=01234
+      - POSTGRES_MULTIPLE_DATABASES=users_db,centops_db
+    ports:
+      - 9053:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ../../init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh
+    networks:
+      - bykstack-test
+
+  data-mapper-test:
+    container_name: data-mapper-test
+    image: data-mapper
+    environment:
+      - PORT=9054
+      - CONTENT_FOLDER=/data
+    volumes:
+      - ../../DSL/DMapper/centops/hbs:/workspace/app/views/centops
+      - ../../DSL/DMapper/centops/js:/workspace/app/js/centops
+      - ../../DSL/Data/Forms:/data/forms
+      - ../../DSL/Data/Validation:/data/validators
+    ports:
+      - 9054:9054
+    networks:
+      - bykstack-test
+
+  tim-mock-test:
+    container_name: tim-mock-test
+    build: ./tim-mock
+    environment:
+      - PORT=9085
+    ports:
+      - "9085:9085"
+    networks:
+      - bykstack-test
+
+  vault:
+    image: hashicorp/vault:1.18
+    container_name: vault-test
+    restart: on-failure
+    ports:
+      - "9200:9200"
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:9200"
+      VAULT_DEV_ROOT_TOKEN_ID: "root"  # Root token defined in the environment variable
+    cap_add:
+      - IPC_LOCK  # Prevents Vault from swapping to disk
+    networks:
+      - bykstack-test
+    command: "server -dev -dev-listen-address=0.0.0.0:9200"
+
+  liquibase-test:
+    container_name: liquibase-test
+    image: liquibase/liquibase
+    networks:
+      - bykstack-test
+    depends_on:
+      - database-test
+    volumes:
+      - ../../DSL/Liquibase/:/liquibase/changelog/
+      - ./liquibase.properties/:/liquibase/changelog/liquibase.properties
+    command: --defaultsFile=/liquibase/changelog/liquibase.properties update
+    restart: "no"
+
+networks:
+  bykstack-test:
+    name: bykstack-test
+    driver: bridge
