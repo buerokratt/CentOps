@@ -40,10 +40,12 @@ jobs:
           npm run format
 
       - name: Install E2E test dependencies
-        working-directory: tests/e2e-tests
-        run: npm ci
+        run: |
+          cd tests/e2e-test 
+          npm ci
 
       - name: Run Vitest
-        working-directory: tests/e2e-tests
-        run: npx vitest run
+        run: |
+          cd tests/e2e-test 
+          npm vitest run
 
