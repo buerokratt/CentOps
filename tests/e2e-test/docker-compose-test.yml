@@ -2,6 +2,8 @@ services:
   ruuter-test:
     container_name: ruuter-test
     image: bodax/ruuter:latest
+    depends_on:
+      - vault
     environment:
       - application.cors.allowedOrigins=http://localhost:9057
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
@@ -23,6 +25,7 @@ services:
     image: bodax/resql
     depends_on:
       - database-test
+      - ruuter-test
     environment:
       - logging.level.org.springframework.boot=INFO
       - server.port=9052
