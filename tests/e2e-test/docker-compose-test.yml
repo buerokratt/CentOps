@@ -20,7 +20,7 @@ services:
 
   resql-test:
     container_name: resql-test
-    image: resql
+    image: bodax/resql
     depends_on:
       - database-test
     environment:
