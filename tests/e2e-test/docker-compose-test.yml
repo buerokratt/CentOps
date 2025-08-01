@@ -2,8 +2,6 @@ services:
   ruuter-test:
     container_name: ruuter-test
     image: ruuter
-    depends_on:
-      - vault-agent
     environment:
       - application.cors.allowedOrigins=http://localhost:9057
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
@@ -25,13 +23,13 @@ services:
     image: resql
     depends_on:
       - database-test
-      - vault-agent
     environment:
       - logging.level.org.springframework.boot=INFO
       - server.port=9052
+      - sqlms.datasources.[0].name=byk
       - sqlms.datasources.[0].jdbcUrl=jdbc:postgresql://database-test:5432/centops_db
-    env_file:
-      - "${VAULT_DATA_PATH}/resql.env"
+      - sqlms.datasources.[0].username=byk
+      - sqlms.datasources.[0].password=01234
     ports:
       - 9052:9052
     volumes:
@@ -42,10 +40,10 @@ services:
   database-test:
     container_name: database-test
     image: postgres:14.1
-    depends_on:
-      - vault-agent
-    env_file:
-      - "${VAULT_DATA_PATH}/database.env"
+    environment:
+      - POSTGRES_USER=byk
+      - POSTGRES_PASSWORD=01234
+      - POSTGRES_MULTIPLE_DATABASES=users_db,centops_db
     ports:
       - 9053:5432
     volumes:
@@ -88,63 +86,12 @@ services:
       - "9200:9200"
     environment:
       VAULT_ADDR: "http://0.0.0.0:9200"
-    volumes:
-      - ./vault/config.hcl:/vault/config/config.hcl
-      - "${VAULT_DATA_PATH}/data:/vault/data"
-    entrypoint: >
-      vault server -config=/vault/config/config.hcl
+      VAULT_DEV_ROOT_TOKEN_ID: "root"  # Root token defined in the environment variable
     cap_add:
-      - IPC_LOCK
+      - IPC_LOCK  # Prevents Vault from swapping to disk
     networks:
       - bykstack-test
-
-  vault-agent:
-    image: hashicorp/vault:1.18
-    container_name: vault-agent-test
-    depends_on:
-      - vault
-    cap_add:
-      - IPC_LOCK
-    volumes:
-      - ../../vault/vault-agent.hcl:/vault/vault-agent.hcl
-      - ../../vault/templates/resql-template.ctmpl:/vault/templates/resql-template.ctmpl
-      - ../../vault/templates/resql-users-template.ctmpl:/vault/templates/resql-users-template.ctmpl
-      - ../../vault/templates/database-template.ctmpl:/vault/templates/database-template.ctmpl
-      - ../../vault/templates/tim-postgresql-template.ctmpl:/vault/templates/tim-postgresql-template.ctmpl
-      - "${VAULT_DATA_PATH}/.vault-token:/vault/secrets/.vault-token:ro"
-      - "${VAULT_DATA_PATH}:/vault/secrets"
-    command: vault agent -config=/vault/vault-agent.hcl
-    networks:
-      - bykstack-test
-
-  vault-unseal:
-    image: alpine:3.20
-    container_name: vault-unseal-tool-test
-    depends_on:
-      - vault
-    networks:
-      - bykstack-test
-    environment:
-      VAULT_UNSEAL_KEY: ${VAULT_UNSEAL_KEY}
-    entrypoint: sh
-    command: -c '
-      apk add --no-cache curl jq;
-      
-      echo "Waiting for Vault to be initialized...";
-      until [ "$(curl -s http://vault:9200/v1/sys/health | jq -r ".initialized")" = "true" ]; do
-      sleep 2;
-      done;
-      
-      echo "Checking if Vault is already unsealed...";
-      if [ "$(curl -s http://vault:9200/v1/sys/health | jq -r '.sealed')" = "false" ]; then
-      echo "Vault is already unsealed. Skipping unseal step.";
-      exit 0;
-      fi;
-      
-      echo "Sending unseal key...";
-      curl --silent --request PUT --data "{\"key\":\"$VAULT_UNSEAL_KEY\"}" http://vault:9200/v1/sys/unseal;
-      echo "Vault Unseal done.";'
-    restart: "no"
+    command: "server -dev -dev-listen-address=0.0.0.0:9200"
 
   liquibase-test:
     container_name: liquibase-test
@@ -158,10 +105,6 @@ services:
       - ./liquibase.properties/:/liquibase/changelog/liquibase.properties
     command: --defaultsFile=/liquibase/changelog/liquibase.properties update
     restart: "no"
-
-volumes:
-  opensearch-data1:
-  vault-data:
 
 networks:
   bykstack-test:
