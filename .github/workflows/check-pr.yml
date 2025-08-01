@@ -45,8 +45,7 @@ jobs:
           npm ci
 
       - name: Run E2E Vitest tests with testcontainers
-        working-directory: tests/e2e-tests
         run: |
+          cd tests/e2e-test 
           docker info  # Optional: verify Docker is running
           npx vitest run
-
