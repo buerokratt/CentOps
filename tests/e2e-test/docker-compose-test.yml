@@ -1,7 +1,7 @@
 services:
   ruuter-test:
     container_name: ruuter-test
-    image: ruuter
+    image: bodax/ruuter:latest
     environment:
       - application.cors.allowedOrigins=http://localhost:9057
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
@@ -54,7 +54,7 @@ services:
 
   data-mapper-test:
     container_name: data-mapper-test
-    image: data-mapper
+    image: bodax/data-mapper:latest
     environment:
       - PORT=9054
       - CONTENT_FOLDER=/data
@@ -70,7 +70,10 @@ services:
 
   tim-mock-test:
     container_name: tim-mock-test
-    build: ./tim-mock
+    build:
+      context: ./tim-mock
+      dockerfile: Dockerfile
+    image: bodax/tim-mock-test:latest
     environment:
       - PORT=9085
     ports:
