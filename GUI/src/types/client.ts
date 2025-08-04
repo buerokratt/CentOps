@@ -34,7 +34,7 @@ export interface ApiClientCertificate {
   certificateId: string;
   clientId: string;
   createdAt: string;
-  deleted: boolean;
+  revoked: boolean;
 }
 
 export enum ClientDeploymentStatuses {

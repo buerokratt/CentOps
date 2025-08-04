@@ -93,7 +93,7 @@ export const ClientCertificateList = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="createdAt" />,
         cell: (message) => formatDate(message.getValue()),
       }),
-      columnHelper.accessor('deleted', {
+      columnHelper.accessor('revoked', {
         id: 'status',
         header: '',
         enableSorting: false,
@@ -108,7 +108,7 @@ export const ClientCertificateList = withAuthorization(() => {
           );
         },
       }),
-      columnHelper.accessor('deleted', {
+      columnHelper.accessor('revoked', {
         id: 'actions',
         header: '',
         enableSorting: false,
