@@ -2,7 +2,7 @@ name: Code Check, Build
 
 on:
   pull_request:
-    branches: ["dev", "test", "stage", "main"]
+    branches: [ "dev", "test", "stage", "main" ]
 
 env:
   BRANCH: ${{ github.head_ref || github.ref_name }}
@@ -23,7 +23,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run:  |
+        run: |
           cd GUI 
           npm install
 
@@ -36,3 +36,14 @@ jobs:
         run: |
           cd GUI
           npm run format
+
+      - name: Install E2E test dependencies
+        run: |
+          cd tests/e2e-test 
+          npm ci
+
+      - name: Run E2E Vitest tests with testcontainers
+        run: |
+          cd tests/e2e-test 
+          docker info  # Optional: verify Docker is running
+          npx vitest run

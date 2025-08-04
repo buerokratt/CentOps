@@ -1,7 +1,9 @@
 services:
   ruuter-test:
     container_name: ruuter-test
-    image: ruuter
+    image: ghcr.io/buerokratt/ruuter:v2.2.2
+    depends_on:
+      - vault
     environment:
       - application.cors.allowedOrigins=http://localhost:9057
       - application.httpCodesAllowList=200,201,202,203,204,205,206,207,208,226
@@ -20,9 +22,10 @@ services:
 
   resql-test:
     container_name: resql-test
-    image: resql
+    image: ghcr.io/buerokratt/resql:v1.3.4
     depends_on:
       - database-test
+      - ruuter-test
     environment:
       - logging.level.org.springframework.boot=INFO
       - server.port=9052
@@ -54,7 +57,7 @@ services:
 
   data-mapper-test:
     container_name: data-mapper-test
-    image: data-mapper
+    image: ghcr.io/buerokratt/datamapper:v2.2.14
     environment:
       - PORT=9054
       - CONTENT_FOLDER=/data
@@ -70,7 +73,10 @@ services:
 
   tim-mock-test:
     container_name: tim-mock-test
-    build: ./tim-mock
+    build:
+      context: ./tim-mock
+      dockerfile: Dockerfile
+    image: bodax/tim-mock-test:latest
     environment:
       - PORT=9085
     ports:
