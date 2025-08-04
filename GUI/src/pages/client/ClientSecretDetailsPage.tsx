@@ -35,7 +35,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
   }>();
   const isCreateMode = secretId === 'create';
 
-  const { data: secret } = useQuery<ApiClientSecret | object>({
+  const { data: secret } = useQuery<ApiClientSecret>({
     enabled: !isCreateMode,
     queryKey: [`admin/clients/secrets/get?clientId=${clientId}&id=${secretId}`],
   });
@@ -92,12 +92,14 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
     control,
     reset,
     handleSubmit,
-    getValues,
     formState: { isSubmitting },
   } = useForm<ApiClientSecret>();
-  console.log(getValues());
   useEffect(() => {
-    if (secret) reset(secret);
+    if (secret)
+      reset({
+        ...secret,
+        data: JSON.stringify(secret.data),
+      });
   }, [secret]);
 
   return (

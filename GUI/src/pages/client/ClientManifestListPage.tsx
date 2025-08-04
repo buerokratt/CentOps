@@ -47,15 +47,10 @@ export const ClientManifestListPage = withAuthorization(() => {
 
   const handleDuplicate = useCallback<MouseEventHandler<HTMLButtonElement>>(
     async (e) => {
-      const { data: manifest } = await api.get<ApiClientManifest>(
-        `admin/clients/manifests/get?clientId=${clientId}&manifestId=${e.currentTarget.dataset.id}`
+      await api.post(
+        `admin/clients/manifests/duplicate?clientId=${clientId}&manifestId=${e.currentTarget.dataset.id}`,
+        null
       );
-      await api.post(`admin/clients/manifests/create?clientId=${clientId}`, {
-        clientId,
-        name: `${manifest.name} copy`,
-        helmVersion: manifest.helmVersion,
-        helmValues: manifest.helmValues,
-      });
       await refetch();
     },
     []
