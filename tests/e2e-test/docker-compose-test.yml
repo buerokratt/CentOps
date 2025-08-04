@@ -1,7 +1,7 @@
 services:
   ruuter-test:
     container_name: ruuter-test
-    image: bodax/ruuter:latest
+    image: ghcr.io/buerokratt/ruuter:v2.2.2
     depends_on:
       - vault
     environment:
@@ -22,7 +22,7 @@ services:
 
   resql-test:
     container_name: resql-test
-    image: bodax/resql
+    image: ghcr.io/buerokratt/resql:v1.3.4
     depends_on:
       - database-test
       - ruuter-test
@@ -57,7 +57,7 @@ services:
 
   data-mapper-test:
     container_name: data-mapper-test
-    image: bodax/data-mapper:latest
+    image: ghcr.io/buerokratt/datamapper:v2.2.14
     environment:
       - PORT=9054
       - CONTENT_FOLDER=/data
