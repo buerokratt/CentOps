@@ -3,8 +3,6 @@ name: Code Check, Build
 on:
   pull_request:
     branches: [ "dev", "test", "stage", "main" ]
-  push:
-    branches: [ "feat-ci-cd-tests" ]
 
 env:
   BRANCH: ${{ github.head_ref || github.ref_name }}
