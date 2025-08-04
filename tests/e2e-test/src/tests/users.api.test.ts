@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GLOBAL_CONSTANTS, HTTP_METHODS, USER_TEST_DATA, ENDPOINTS } from './config';
+import { GLOBAL_CONSTANTS, HTTP_METHODS, USER_TEST_DATA, ENDPOINTS } from '../setup/config';
 import {makeRequest} from "./helpers/request.helper";
 
 describe('User Management E2E', () => {

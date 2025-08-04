@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {DOCUMENTATION_TEST_DATA, ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS} from './config';
+import {DOCUMENTATION_TEST_DATA, ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS} from '../setup/config';
 import { makeRequest } from './helpers/request.helper';
 
 describe('Documentation Management E2E', () => {

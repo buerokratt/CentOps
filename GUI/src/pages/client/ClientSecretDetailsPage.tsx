@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -18,7 +18,7 @@ import { TransLabel } from 'i18n/trans/label';
 import FormTextarea from 'components/FormElements/FormTextarea';
 import { validate } from 'utils/json';
 import { ROUTES } from 'resources/routes-constants';
-import { Link } from 'components/Router/Link';
+import { Link, replaceLinkParams } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ApiClientSecret } from 'types/client';
@@ -37,10 +37,9 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
 
   const { data: secret } = useQuery<ApiClientSecret | object>({
     enabled: !isCreateMode,
-    queryKey: [
-      `admin/clients/secrets/get?clientId=${clientId}&secretId=${secretId}`,
-    ],
+    queryKey: [`admin/clients/secrets/get?clientId=${clientId}&id=${secretId}`],
   });
+  const navigate = useNavigate();
   const toast = useToast();
   const { t } = useTranslation();
   const mutation = useMutation<ApiClientSecret, AxiosError, ApiClientSecret>({
@@ -55,6 +54,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
       ).data,
 
     onSuccess: ({ secretId }) => {
+      navigate(replaceLinkParams(ROUTES.CLIENT_SECRETS_ROUTE, { clientId }));
       toast.open({
         type: 'success',
         title: t('toast.notification'),
