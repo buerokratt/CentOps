@@ -26,8 +26,8 @@ export const SecretAccessPage = withAuthorization(() => {
   const columnHelper = createColumnHelper<AuditSecretsAccess>();
   const columns = useMemo(
     () => [
-      columnHelper.accessor('clientId', {
-        id: 'clientId',
+      columnHelper.accessor('userIdCode', {
+        id: 'userIdCode',
         header: () => <TransTableHead i18nKey="client" />,
         cell: (message) => message.getValue(),
       }),
@@ -35,7 +35,7 @@ export const SecretAccessPage = withAuthorization(() => {
         id: 'method',
         header: () => <TransTableHead i18nKey="operation" />,
         cell: (message) => {
-          const value = message.getValue<Method>();
+          const value = message.getValue<Method>().toLowerCase() as Method;
           const type = methodMap.get(value);
 
           if (!type) return null;
@@ -61,7 +61,7 @@ export const SecretAccessPage = withAuthorization(() => {
           </div>
         ),
       }),
-      columnHelper.accessor('timestamp', {
+      columnHelper.accessor('createdAt', {
         id: 'timestamp',
         header: () => <TransTableHead i18nKey="dateTime" />,
         cell: (message) => formatDate(message.getValue()),

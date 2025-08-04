@@ -1,5 +1,5 @@
 import { Button, Card, FormInput, FormSelect, Track } from 'components';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
 import { TransTitle } from 'i18n/trans/title';
@@ -7,14 +7,47 @@ import { ROUTES } from 'resources/routes-constants';
 import { Link } from 'components/Router/Link';
 import { Trans } from 'react-i18next';
 import { withAuthorization } from 'hoc/withAuthorization';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { initialPaginationData, type Pagination } from 'types/pagination';
+import type { ApiClientManifest, ClientDeployment } from 'types/client';
+import { usePagination } from 'hooks/usePagination';
+import { useCallback } from 'react';
+import api from 'services/api';
 
 export const ClientDeploymentCreatePage = withAuthorization(() => {
-  const { register, control } = useForm({
+  const { clientId } = useParams<{ clientId: string }>();
+  const [pagination] = usePagination({
+    pageIndex: 0,
+    pageSize: 100,
+  });
+  const {
+    data: { items: manifests },
+  } = useQuery<Pagination<ApiClientManifest>>({
+    meta: { pagination },
+    queryKey: [
+      `admin/clients/manifests/all?clientId=${clientId}`,
+      ...Object.values(pagination),
+    ],
+    initialData: initialPaginationData<ApiClientManifest>(),
+  });
+  console.log(manifests);
+
+  const { register, control, handleSubmit } = useForm<ClientDeployment>({
     defaultValues: {
       nameSpace: 'ppa-buerokratt',
-      manifest: '',
     },
   });
+
+  const onSubmit: SubmitHandler<ClientDeployment> = useCallback(
+    async ({ manifestId }) => {
+      await api.post(`admin/clients/deployments/run`, {
+        clientId,
+        manifestId: parseInt(manifestId),
+      });
+    },
+    []
+  );
 
   return (
     <>
@@ -28,6 +61,8 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
       </Track>
 
       <Card
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
         footer={
           <Track justify="between">
             <Link to={ROUTES.CLIENT_DETAILS_ROUTE}>
@@ -53,14 +88,17 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
             readOnly
           />
           <Controller
-            name="manifest"
+            name="manifestId"
             control={control}
+            rules={{ required: true }}
             render={({ field }) => (
               <FormSelect
                 {...field}
                 placeholder="-"
                 label={<TransField i18nKey="manifest" />}
-                options={[{ label: 'manifest', value: '123' }]}
+                options={manifests.map(
+                  ({ manifestId: value, name: label }) => ({ value, label })
+                )}
               />
             )}
           />

@@ -34,7 +34,7 @@ export interface ApiClientCertificate {
   certificateId: string;
   clientId: string;
   createdAt: string;
-  deleted: boolean;
+  revoked: boolean;
 }
 
 export enum ClientDeploymentStatuses {
@@ -46,6 +46,8 @@ export type ClientDeploymentStatus = keyof typeof ClientDeploymentStatuses;
 export interface ClientDeployment {
   id: string;
   manifestVersion: string;
+  nameSpace: string;
+  manifestId: string;
   deployedBy: string;
   deployedAt: string;
 }

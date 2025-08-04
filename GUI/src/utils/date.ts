@@ -22,9 +22,10 @@ const parseDate = (date: DateInput): Date | null => {
 };
 
 export const formatDate = (
-  date: DateInput,
+  date?: DateInput,
   formatStyle: DateFormatPattern | string = formatPatterns.default
 ): string => {
+  if (!date) return '';
   const parsedDate = parseDate(date);
   if (!parsedDate) return '';
 
