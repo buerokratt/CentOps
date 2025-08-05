@@ -1,4 +1,4 @@
-import {beforeAll, describe, expect, it} from 'vitest';
+import {beforeAll, afterAll, describe, expect, it} from 'vitest';
 import {makeRequest} from './helpers/request.helper';
 import {ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS} from '../setup/config';
 import {getClientId} from "../setup/dbHelper";
@@ -8,6 +8,10 @@ let pgClient;
 
 beforeAll(async () => {
     pgClient = await getPgClient();
+});
+
+afterAll(async () => {
+    await pgClient.query(`DELETE FROM manifests`);
 });
 
 describe('Manifest Management E2E', () => {
