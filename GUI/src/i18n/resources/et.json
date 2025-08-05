@@ -29,7 +29,7 @@
   "common.on": "On",
   "dialog.confirmChanges.description": "Are you sure you want to save changes?",
   "dialog.confirmChanges.title": "Confirm changes",
-  "dialog.confirmDeleteTitle.title": "You about to delete this \"{{name}}\" ?",
+  "dialog.confirmDeleteTitle.title": "Do you want to delete {{name}}?",
   "dialog.confirtGenerateCertificate.title": "Are you sure you want to generate a new certificate?",
   "dialog.generateCertificate.description": "Previous certificate...",
   "dialog.generateCertificate.title": "Generate certificate",
