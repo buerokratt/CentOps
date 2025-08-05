@@ -41,5 +41,6 @@ export const TransTableHead = createTrans({
   user: <Trans i18nKey="table.head.user" defaults="User" />,
   userAgent: <Trans i18nKey="table.head.userAgent" defaults="User Agent" />,
   usersDb: <Trans i18nKey="table.head.usersDb" defaults="UsersDB" />,
+  userIdCode: <Trans i18nKey="table.head.userIdCode" defaults="User Id" />,
   usersName: <Trans i18nKey="table.head.usersName" defaults="User name" />,
 });

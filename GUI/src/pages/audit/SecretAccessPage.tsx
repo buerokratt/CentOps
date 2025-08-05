@@ -28,6 +28,20 @@ export const SecretAccessPage = withAuthorization(() => {
     () => [
       columnHelper.accessor('userIdCode', {
         id: 'userIdCode',
+        header: () => <TransTableHead i18nKey="userIdCode" />,
+        cell: (message) => message.getValue(),
+      }),
+      columnHelper.accessor('id', {
+        id: 'fullName',
+        header: () => <TransTableHead i18nKey="usersName" />,
+        cell: ({
+          row: {
+            original: { firstName, lastName },
+          },
+        }) => [firstName, lastName].filter(Boolean).join(' '),
+      }),
+      columnHelper.accessor('clientName', {
+        id: 'clientName',
         header: () => <TransTableHead i18nKey="client" />,
         cell: (message) => message.getValue(),
       }),
