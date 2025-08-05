@@ -67,9 +67,8 @@ update_manifest:
   next: return_result
 
 return_result:
-  wrapper: false
   status: 200
-  return: ${results.response.body}
+  return: "Manifest updated successfully"
   next: end
 
 return_incorrect_request:

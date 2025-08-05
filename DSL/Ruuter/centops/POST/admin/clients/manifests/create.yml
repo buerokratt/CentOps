@@ -62,7 +62,6 @@ create_manifest:
   next: return_result
 
 return_result:
-  wrapper: false
   status: 201
   return: "Manifest created successfully"
   next: end

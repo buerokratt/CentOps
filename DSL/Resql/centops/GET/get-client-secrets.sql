@@ -8,5 +8,5 @@ FROM secrets
 WHERE client_id = :client_id::uuid
 AND id IN (SELECT max(id) from secrets GROUP BY name)
 AND deleted = FALSE
-ORDER BY id
+ORDER BY name
 OFFSET ((GREATEST(:page::INTEGER, 1) - 1) * :page_size::INTEGER ) LIMIT :page_size::INTEGER;

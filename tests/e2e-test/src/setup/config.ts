@@ -66,5 +66,13 @@ export const ENDPOINTS = {
     LOGS: {
         USER: '/admin/logs/user',
         SECRETS: '/admin/logs/secrets'
-    }
+    },
+    MANIFESTS: {
+        CREATE: '/admin/clients/manifests/create',
+        UPDATE: '/admin/clients/manifests/update',
+        DUPLICATE: '/admin/clients/manifests/duplicate',
+        GET_BY_ID: '/admin/clients/manifests/get',
+        GET_ALL_BY_CLIENT_ID: '/admin/clients/manifests/all',
+        DELETE: '/admin/clients/manifests/delete',
+    },
 };
