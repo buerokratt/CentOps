@@ -35,10 +35,15 @@ export const ClientSecretListPage = withAuthorization(() => {
     ],
     initialData: initialPaginationData<ApiClientSecret>(),
   });
-  const handleDelete = useCallback(async ({ secretId }: ApiClientSecret) => {
-    await api.delete(`/admin/clients/secrets?secretId=${secretId}`);
-    refetch();
-  }, []);
+  const handleDelete = useCallback(
+    async ({ id: secretId }: ApiClientSecret) => {
+      await api.delete(
+        `/admin/clients/secrets/delete?clientId=${clientId}id=${secretId}`
+      );
+      refetch();
+    },
+    [clientId]
+  );
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
