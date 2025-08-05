@@ -32,7 +32,6 @@ get_manifest:
   next: return_result
 
 return_result:
-  wrapper: false
   status: 200
   return: ${results.response.body[0]}
   next: end

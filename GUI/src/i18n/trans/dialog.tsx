@@ -14,7 +14,7 @@ export const TransDialog = createTrans({
   confirmDeleteTitle: (
     <Trans
       i18nKey="dialog.confirmDeleteTitle.title"
-      defaults={`You about to delete this "{{name}}" ?`}
+      defaults={`Do you want to delete {{name}}?`}
     />
   ),
 });

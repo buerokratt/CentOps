@@ -8,7 +8,7 @@ SELECT manifest_id,
        CEIL(COUNT(*) OVER() / :page_size::DECIMAL) AS total_pages
 FROM manifests
 WHERE client_id = :client_id::uuid
-  AND manifest_id IN (SELECT max(manifest_id) from manifests GROUP BY helm_version)
+  AND manifest_id IN (SELECT max(manifest_id) from manifests GROUP BY name)
   AND deleted = FALSE
 ORDER BY created_at DESC
 OFFSET ((GREATEST(:page::INTEGER, 1) - 1) * :page_size::INTEGER ) LIMIT :page_size::INTEGER;
