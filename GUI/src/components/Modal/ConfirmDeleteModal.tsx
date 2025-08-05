@@ -74,7 +74,7 @@ export const ConfirmDeleteModal: FC<ConfirmDeleteModalProps> = (props) => {
   return (
     <Modal
       title={t('dialog.confirmDeleteTitle.title', {
-        defaultValue: 'You about to delete this "{{name}}" ?',
+        defaultValue: 'Do you want to delete {{name}}?',
         name: props.name,
       })}
       onClose={props.onClose}

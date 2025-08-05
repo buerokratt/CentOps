@@ -50,10 +50,10 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
             api.post(`admin/clients/secrets/create?clientId=${clientId}`, data),
           put: async () =>
             api.put(`admin/clients/secrets/update?clientId=${clientId}`, data),
-        }[data.secretId ? 'put' : 'post']()
+        }[data.id ? 'put' : 'post']()
       ).data,
 
-    onSuccess: ({ secretId }) => {
+    onSuccess: ({ id: secretId }) => {
       navigate(replaceLinkParams(ROUTES.CLIENT_SECRETS_ROUTE, { clientId }));
       toast.open({
         type: 'success',

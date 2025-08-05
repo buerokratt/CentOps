@@ -35,10 +35,15 @@ export const ClientSecretListPage = withAuthorization(() => {
     ],
     initialData: initialPaginationData<ApiClientSecret>(),
   });
-  const handleDelete = useCallback(async ({ secretId }: ApiClientSecret) => {
-    await api.delete(`/admin/clients/secrets?secretId=${secretId}`);
-    refetch();
-  }, []);
+  const handleDelete = useCallback(
+    async ({ id: secretId }: ApiClientSecret) => {
+      await api.delete(
+        `/admin/clients/secrets/delete?clientId=${clientId}id=${secretId}`
+      );
+      refetch();
+    },
+    [clientId]
+  );
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -55,7 +60,7 @@ export const ClientSecretListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="updatedAt" />,
         cell: (message) => formatDate(message.getValue()),
       }),
-      columnHelper.accessor('secretId', {
+      columnHelper.accessor('id', {
         id: 'actions',
         header: '',
         enableSorting: false,
@@ -65,7 +70,7 @@ export const ClientSecretListPage = withAuthorization(() => {
             <Button
               component={Link}
               to={ROUTES.CLIENT_SECRETS_DIFF_ROUTE}
-              params={{ secretId: props.row.original.secretId }}
+              params={{ secretId: props.row.original.id }}
               appearance="text"
             >
               <Icon name="diff" />
