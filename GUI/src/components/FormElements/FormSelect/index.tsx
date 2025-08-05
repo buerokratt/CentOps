@@ -2,6 +2,7 @@ import {
   forwardRef,
   type ReactNode,
   type SelectHTMLAttributes,
+  useEffect,
   useId,
   useState,
 } from 'react';
@@ -57,6 +58,9 @@ export const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
       label: string;
       value: string;
     } | null>(defaultSelected);
+    useEffect(() => {
+      setSelectedItem(defaultSelected);
+    }, [value]);
     const {
       isOpen,
       getToggleButtonProps,
