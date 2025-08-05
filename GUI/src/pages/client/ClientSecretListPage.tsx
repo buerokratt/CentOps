@@ -60,7 +60,7 @@ export const ClientSecretListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="updatedAt" />,
         cell: (message) => formatDate(message.getValue()),
       }),
-      columnHelper.accessor('secretId', {
+      columnHelper.accessor('id', {
         id: 'actions',
         header: '',
         enableSorting: false,
@@ -70,7 +70,7 @@ export const ClientSecretListPage = withAuthorization(() => {
             <Button
               component={Link}
               to={ROUTES.CLIENT_SECRETS_DIFF_ROUTE}
-              params={{ secretId: props.row.original.secretId }}
+              params={{ secretId: props.row.original.id }}
               appearance="text"
             >
               <Icon name="diff" />

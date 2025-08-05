@@ -24,7 +24,6 @@ export interface ClientSecret {
 export interface ApiClientSecret extends ClientSecret {
   id: string;
   clientId: string;
-  secretId: string;
   createdAt: string;
   updatedAt: string;
   deleted: boolean;
