@@ -21,10 +21,9 @@ export const ClusterDetailsPage = withAuthorization(() => {
   const { clusterId } = useParams<{ clusterId: 'create' | string }>();
   const isCreateMode = clusterId === 'create';
 
-  const { data: cluster } = useQuery<ApiCluster | object>({
+  const { data: cluster } = useQuery<ApiCluster>({
     enabled: !isCreateMode,
     queryKey: [`admin/cluster-by-id?clusterId=${clusterId}`],
-    initialData: {},
   });
 
   const {
@@ -82,6 +81,28 @@ export const ClusterDetailsPage = withAuthorization(() => {
       });
     },
   });
+  const handleTestConnection = useCallback(async () => {
+    if (cluster) {
+      await api
+        .get<string>(
+          `/admin/clusters/test-connection?clusterName=${cluster.name}`
+        )
+        .then(({ data }) => {
+          toast.open({
+            type: 'success',
+            title: t('toast.notification'),
+            message: data,
+          });
+        })
+        .catch((e: AxiosError) => {
+          toast.open({
+            type: 'error',
+            title: t('toast.notificationError'),
+            message: (e.response?.data as { response: string }).response,
+          });
+        });
+    }
+  }, [cluster]);
   const onSubmit: SubmitHandler<ApiCluster> = useCallback(async (data) => {
     await clusterMutation.mutateAsync({
       method: data.clusterId ? 'put' : 'post',
@@ -116,7 +137,13 @@ export const ClusterDetailsPage = withAuthorization(() => {
             </Link>
 
             <Track gap={16}>
-              <Button appearance="primary" type="button" outlined>
+              <Button
+                appearance="primary"
+                type="button"
+                outlined
+                onClick={handleTestConnection}
+                disabled={isCreateMode}
+              >
                 <TransButton i18nKey="testConnection" />
               </Button>
               <Button
