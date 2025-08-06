@@ -15,6 +15,7 @@ import type { AxiosError } from 'axios';
 import api from 'services/api';
 import { useToast } from 'hooks';
 import { useTranslation } from 'react-i18next';
+import { yamlParser } from 'components/YamlEditor';
 
 export const ClientManifestDetailsPage = withAuthorization(() => {
   const { clientId, manifestId } = useParams<{
@@ -150,6 +151,13 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
                 maxHeight="640px"
               />
             )}
+            rules={{
+              validate: (value) => {
+                const errors = yamlParser(value);
+                if (errors.length)
+                  return errors.map(({ message }) => message).join(' ');
+              },
+            }}
           />
 
           {!isCreateMode && (

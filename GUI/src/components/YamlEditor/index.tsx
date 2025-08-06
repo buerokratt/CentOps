@@ -10,17 +10,17 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror/src';
 
 const yaml = StreamLanguage.define(yamlMode.yaml);
 
-const yamlLinter = linter((view) => {
+export const yamlParser = (value: string) => {
   const diagnostics = [];
 
   try {
-    parser.load(view.state.doc.toString());
+    parser.load(value);
   } catch (e) {
+    const severity: Diagnostic['severity'] = 'error';
     if (e instanceof parser.YAMLException) {
       const loc = e.mark;
       const from = loc ? loc.position : 0;
       const to = from;
-      const severity: Diagnostic['severity'] = 'error';
 
       diagnostics.push({
         from,
@@ -28,10 +28,20 @@ const yamlLinter = linter((view) => {
         message: e.message,
         severity,
       });
+    } else if (e instanceof Error) {
+      diagnostics.push({
+        from: 0,
+        to: 0,
+        message: e.message,
+        severity,
+      });
     }
   }
 
   return diagnostics;
+};
+export const yamlLinter = linter((view) => {
+  return yamlParser(view.state.doc.toString());
 });
 
 export interface YamlEditorProps extends ReactCodeMirrorProps {

@@ -52,19 +52,14 @@ export interface ClientDeployment {
 }
 
 export interface ApiClientDeployment extends ClientDeployment {
-  deploymentId: string;
-  manifestId: string;
-  status: ClientDeploymentStatus;
-  argoDeploymentId: string;
-  argoDeployAppName: string;
-  argoDeployErrMessage: string;
-  deployedByIdCode: string;
-  deployedByUsername: string;
-  deployedByLastname: string;
+  id: string;
   clientId: string;
+  manifestVersion: string;
+  deployedByIdCode: string;
+  argoDeployAppName: string;
+  deployedBy: string; // firstName lastName
+  status: ClientDeploymentStatus;
   createdAt: string;
-  updatedAt: string;
-  deleted: boolean;
 }
 
 export interface ClientManifest {

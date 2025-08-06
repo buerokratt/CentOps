@@ -16,7 +16,7 @@ import {
 import type { ApiDocumentation } from 'types/documentation';
 import api from 'services/api';
 import type { AxiosError } from 'axios';
-import Markdown from 'markdown-to-jsx';
+import Markdown, { RuleType } from 'markdown-to-jsx';
 import { useToast } from 'hooks';
 import { useTranslation } from 'react-i18next';
 import { Code } from 'pages/documentation/Code';
@@ -149,11 +149,20 @@ export const DocumentationPage = withAuthorization(() => {
               <Markdown
                 children={field.value}
                 options={{
-                  overrides: {
-                    code: {
-                      component: Code,
-                    },
+                  renderRule(next, node, _renderChildren, state) {
+                    if (node.type === RuleType.codeInline) {
+                      console.log(node, state);
+                      return (
+                        <Code
+                          key={state.key}
+                          PreTag="span"
+                        >{String.raw`${node.text}`}</Code>
+                      );
+                    }
+
+                    return next();
                   },
+                  overrides: { code: { component: Code } },
                 }}
               />
             )}

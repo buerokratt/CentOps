@@ -59,7 +59,7 @@ export const ClientDeploymentList = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="deployedBy" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('deployedAt', {
+      columnHelper.accessor('createdAt', {
         id: 'deployedAt',
         header: () => <TransTableHead i18nKey="deployedAt" />,
         cell: (message) => formatDate(message.getValue()),
