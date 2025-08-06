@@ -55,7 +55,7 @@ export const ClientSecretListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="name" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('name', {
+      columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
         cell: (message) => formatDate(message.getValue()),

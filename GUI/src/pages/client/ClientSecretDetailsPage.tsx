@@ -98,7 +98,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
     if (secret)
       reset({
         ...secret,
-        data: JSON.stringify(secret.data),
+        data: JSON.stringify(secret.data, null, 2),
       });
   }, [secret]);
 
