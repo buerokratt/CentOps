@@ -19,6 +19,7 @@ import type { AxiosError } from 'axios';
 import Markdown from 'markdown-to-jsx';
 import { useToast } from 'hooks';
 import { useTranslation } from 'react-i18next';
+import { Code } from 'pages/documentation/Code';
 
 export const DocumentationPage = withAuthorization(() => {
   const [editMode, setEditMode] = useState(false);
@@ -144,7 +145,18 @@ export const DocumentationPage = withAuthorization(() => {
           <Controller
             name="content"
             control={control}
-            render={({ field }) => <Markdown children={field.value} />}
+            render={({ field }) => (
+              <Markdown
+                children={field.value}
+                options={{
+                  overrides: {
+                    code: {
+                      component: Code,
+                    },
+                  },
+                }}
+              />
+            )}
           />
         )}
       </Card>

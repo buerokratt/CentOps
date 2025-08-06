@@ -17,6 +17,8 @@ instance.interceptors.response.use(
   },
   (error: AxiosError) => {
     process.env.DEBUG_ENABLED && console.log(error);
+    if (import.meta.env.REACT_APP_LOGIN_URL && error?.status === 401)
+      window.location.href = import.meta.env.REACT_APP_LOGIN_URL;
     return Promise.reject(error);
   }
 );
