@@ -60,6 +60,9 @@ export default defineConfig({
     'import.meta.env.REACT_APP_PROJECT_LAYER': JSON.stringify(
       process.env.REACT_APP_PROJECT_LAYER
     ),
+    'import.meta.env.REACT_APP_LOGIN_URL': JSON.stringify(
+      process.env.REACT_APP_LOGIN_URL
+    ),
   },
   css: {
     preprocessorOptions: {

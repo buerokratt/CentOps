@@ -16,7 +16,7 @@ import axios from 'axios';
 
 if (import.meta.env.DEV) {
   try {
-    await (await import('./dev')).auth();
+    // await (await import('./dev')).auth();
   } catch (e) {
     console.error('[DEV] Failed to load dev module:', e);
   }
