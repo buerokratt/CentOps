@@ -21,7 +21,7 @@ import { ROUTES } from 'resources/routes-constants';
 import { Link, replaceLinkParams } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { ApiClientSecret } from 'types/client';
+import type { ApiClient, ApiClientSecret } from 'types/client';
 import { useToast } from 'hooks';
 import { useTranslation } from 'react-i18next';
 import type { AxiosError } from 'axios';
@@ -35,6 +35,9 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
   }>();
   const isCreateMode = secretId === 'create';
 
+  const { data: client } = useQuery<ApiClient>({
+    queryKey: [`admin/client-by-id?clientId=${clientId}`],
+  });
   const { data: secret } = useQuery<ApiClientSecret>({
     enabled: !isCreateMode,
     queryKey: [`admin/clients/secrets/get?clientId=${clientId}&id=${secretId}`],
@@ -106,7 +109,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
     <>
       <Track direction="vertical" align="left">
         <h6>
-          <TransTitle i18nKey="client" values={{ client: 'A' }} />
+          <TransTitle i18nKey="client" values={{ client: client?.name }} />
         </h6>
         <h1>
           {isCreateMode ? (

@@ -16,7 +16,6 @@ import { ClusterDetailsPage } from 'pages/cluster/ClusterDetailsPage';
 import { DocumentationPage } from 'pages/documentation/DocumentationPage';
 import { ClientManifestDetailsPage } from 'pages/client/ClientManifestDetailsPage';
 import { ClientCertificateList } from 'pages/client/ClientCertificateList';
-import { ClientCertificateCreatePage } from 'pages/client/ClientCertificateCreatePage';
 import { ClientDeploymentList } from 'pages/client/ClientDeploymentList';
 import { ClientDeploymentCreatePage } from 'pages/client/ClientDeploymentCreatePage';
 import { UserActivityPage } from 'pages/audit/UserActivityPage';
@@ -49,10 +48,6 @@ export const RootComponent: FC = () => {
         <Route
           path={ROUTES.CLIENT_CERTIFICATES_ROUTE}
           Component={ClientCertificateList}
-        />
-        <Route
-          path={ROUTES.CLIENT_CERTIFICATES_CREATE_ROUTE}
-          Component={ClientCertificateCreatePage}
         />
         <Route
           path={ROUTES.CLIENT_DEPLOYMENTS_ROUTE}

@@ -8,7 +8,7 @@ import { formatDate } from 'utils/date';
 import { ROUTES } from 'resources/routes-constants';
 import { Link, replaceLinkParams } from 'components/Router/Link';
 import { withAuthorization } from 'hoc/withAuthorization';
-import type { ApiClientManifest } from 'types/client';
+import type { ApiClient, ApiClientManifest } from 'types/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
 import type { AxiosError } from 'axios';
@@ -24,6 +24,9 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
   }>();
   const isCreateMode = manifestId === 'create';
 
+  const { data: client } = useQuery<ApiClient>({
+    queryKey: [`admin/client-by-id?clientId=${clientId}`],
+  });
   const { data: manifest } = useQuery<ApiClientManifest | object>({
     enabled: !isCreateMode,
     queryKey: [
@@ -98,7 +101,7 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
     <>
       <Track direction="vertical" align="left">
         <h6>
-          <TransTitle i18nKey="client" values={{ client: 'A' }} />
+          <TransTitle i18nKey="client" values={{ client: client?.name }} />
         </h6>
         <h1>
           {isCreateMode ? (

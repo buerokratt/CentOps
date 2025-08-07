@@ -1,25 +1,35 @@
-import { Button, Card, FormInput, FormSelect, Track } from 'components';
+import { Button, Card, FormSelect, Track } from 'components';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
 import { TransTitle } from 'i18n/trans/title';
 import { ROUTES } from 'resources/routes-constants';
-import { Link } from 'components/Router/Link';
-import { Trans } from 'react-i18next';
+import { Link, replaceLinkParams } from 'components/Router/Link';
+import { Trans, useTranslation } from 'react-i18next';
 import { withAuthorization } from 'hoc/withAuthorization';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { initialPaginationData, type Pagination } from 'types/pagination';
-import type { ApiClientManifest, ClientDeployment } from 'types/client';
+import type {
+  ApiClient,
+  ApiClientManifest,
+  ClientDeployment,
+} from 'types/client';
 import { usePagination } from 'hooks/usePagination';
 import { useCallback } from 'react';
 import api from 'services/api';
+import { useToast } from 'hooks';
+import type { AxiosError } from 'axios';
+import { FormElement } from 'components/FormElements';
 
 export const ClientDeploymentCreatePage = withAuthorization(() => {
   const { clientId } = useParams<{ clientId: string }>();
   const [pagination] = usePagination({
     pageIndex: 0,
     pageSize: 100,
+  });
+  const { data: client } = useQuery<ApiClient>({
+    queryKey: [`admin/client-by-id?clientId=${clientId}`],
   });
   const {
     data: { items: manifests },
@@ -31,20 +41,34 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
     ],
     initialData: initialPaginationData<ApiClientManifest>(),
   });
-  console.log(manifests);
 
-  const { register, control, handleSubmit } = useForm<ClientDeployment>({
-    defaultValues: {
-      nameSpace: 'ppa-buerokratt',
-    },
-  });
+  const { control, handleSubmit } = useForm<ClientDeployment>();
 
+  const navigate = useNavigate();
+  const toast = useToast();
+  const { t } = useTranslation();
   const onSubmit: SubmitHandler<ClientDeployment> = useCallback(
     async ({ manifestId }) => {
-      await api.post(`admin/clients/deployments/run`, {
-        clientId,
-        manifestId: parseInt(manifestId),
-      });
+      try {
+        await api.post(`admin/clients/deployments/run`, {
+          clientId,
+          manifestId: parseInt(manifestId),
+        });
+        navigate(replaceLinkParams(ROUTES.CLIENT_DETAILS_ROUTE, { clientId }));
+        toast.open({
+          type: 'success',
+          title: t('toast.notification'),
+          message: t('toast.deploymentCreated', {
+            defaultValue: 'Deployed Successfully',
+          }),
+        });
+      } catch (e) {
+        toast.open({
+          type: 'error',
+          title: t('toast.notificationError'),
+          message: (e as AxiosError).message,
+        });
+      }
     },
     []
   );
@@ -53,7 +77,7 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
     <>
       <Track direction="vertical" align="left">
         <h6>
-          <TransTitle i18nKey="client" values={{ client: 'A' }} />
+          <TransTitle i18nKey="client" values={{ client: client?.name }} />
         </h6>
         <h1>
           <Trans i18nKey="title.clientDeploymentAdd" defaults="Deployment" />
@@ -82,11 +106,9 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
           isAlignItems={false}
           style={{ width: '90%', marginLeft: 'auto' }}
         >
-          <FormInput
-            {...register('nameSpace')}
-            label={<TransField i18nKey="nameSpace" />}
-            readOnly
-          />
+          <FormElement label={<TransField i18nKey="nameSpace" />}>
+            {client?.kubernetesClusterNamespace}
+          </FormElement>
           <Controller
             name="manifestId"
             control={control}
