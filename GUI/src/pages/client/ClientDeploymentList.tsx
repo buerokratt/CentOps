@@ -1,6 +1,7 @@
 import { Button, Card, DataTable, Icon, Label, Track } from 'components';
 import { useMemo, useState } from 'react';
 import {
+  type ApiClient,
   type ApiClientDeployment,
   type ClientDeploymentStatus,
   ClientDeploymentStatuses,
@@ -35,6 +36,9 @@ export const ClientDeploymentList = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
 
   const { clientId } = useParams<{ clientId: string }>();
+  const { data: client } = useQuery<ApiClient>({
+    queryKey: [`admin/client-by-id?clientId=${clientId}`],
+  });
   const { data: deployments } = useQuery<Pagination<ApiClientDeployment>>({
     meta: { pagination },
     queryKey: [
@@ -43,6 +47,7 @@ export const ClientDeploymentList = withAuthorization(() => {
     ],
     initialData: initialPaginationData<ApiClientDeployment>(),
   });
+  console.log(deployments);
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -91,7 +96,7 @@ export const ClientDeploymentList = withAuthorization(() => {
       <Track justify="between">
         <Track direction="vertical" align="left">
           <h6>
-            <TransTitle i18nKey="client" values={{ client: 'A' }} />
+            <TransTitle i18nKey="client" values={{ client: client?.name }} />
           </h6>
           <h1>
             <Trans i18nKey="title.clientDeployments" defaults="Deployments" />
@@ -115,10 +120,11 @@ export const ClientDeploymentList = withAuthorization(() => {
       >
         <Card disablePadding>
           <DataTable
-            data={deployments}
+            data={deployments.items}
             columns={columns}
             sortable
             pagination={pagination}
+            pagesCount={deployments.totalPages}
             setPagination={setPagination}
             sorting={sorting}
             setSorting={setSorting}

@@ -7,7 +7,7 @@ import {
   Track,
 } from 'components';
 import { useCallback, useMemo, useState } from 'react';
-import type { ApiClientSecret } from 'types/client';
+import type { ApiClient, ApiClientSecret } from 'types/client';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { Trans } from 'react-i18next';
@@ -27,6 +27,9 @@ export const ClientSecretListPage = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
 
   const { clientId } = useParams<{ clientId: string }>();
+  const { data: client } = useQuery<ApiClient>({
+    queryKey: [`admin/client-by-id?clientId=${clientId}`],
+  });
   const { data: secrets, refetch } = useQuery<Pagination<ApiClientSecret>>({
     meta: { pagination },
     queryKey: [
@@ -106,7 +109,7 @@ export const ClientSecretListPage = withAuthorization(() => {
       <Track justify="between">
         <Track direction="vertical" align="left">
           <h6>
-            <TransTitle i18nKey="client" values={{ client: 'A' }} />
+            <TransTitle i18nKey="client" values={{ client: client?.name }} />
           </h6>
           <h1>
             <Trans i18nKey="title.clientSecrets" defaults="Secrets" />
