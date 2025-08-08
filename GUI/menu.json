@@ -5,11 +5,6 @@
     "path": "/clients"
   },
   {
-    "id": "users",
-    "label": { "et": "Users", "en": "Users" },
-    "path": "/users"
-  },
-  {
     "id": "clusters",
     "label": { "et": "Clusters", "en": "Clusters" },
     "path": "/clusters"
@@ -32,5 +27,15 @@
     "id": "documentation",
     "label": { "et": "Documentation", "en": "Documentation" },
     "path": "/documentation"
+  },
+  {
+    "id": "monitoring",
+    "label": { "et": "Monitoring", "en": "Monitoring" },
+    "path": "/monitoring"
+  },
+  {
+    "id": "users",
+    "label": { "et": "Users", "en": "Users" },
+    "path": "/users"
   }
 ]

@@ -9,10 +9,11 @@ import { accountStore } from 'store/account';
 const rolePermissions = {
   [ROLES.ROLE_ADMINISTRATOR]: [
     'clients',
-    'users',
     'clusters',
     'audit',
+    'monitoring',
     'documentation',
+    'users',
   ],
   [ROLES.ROLE_UNAUTHENTICATED]: [],
 };
@@ -54,6 +55,9 @@ const useFilteredMenuItems = (countConf?: CountConf) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filteredItems = items.filter((item: any) => {
+      if (item.id === 'monitoring') {
+        item.path = import.meta.env.REACT_APP_MONITORING_URL;
+      }
       return permissions.has(item.id);
     });
 
