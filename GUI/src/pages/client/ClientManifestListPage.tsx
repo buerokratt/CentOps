@@ -7,7 +7,7 @@ import {
   Track,
 } from 'components';
 import { type MouseEventHandler, useCallback, useMemo, useState } from 'react';
-import type { ApiClientManifest } from 'types/client';
+import type { ApiClient, ApiClientManifest } from 'types/client';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { Trans } from 'react-i18next';
@@ -27,6 +27,9 @@ export const ClientManifestListPage = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
 
   const { clientId } = useParams<{ clientId: string }>();
+  const { data: client } = useQuery<ApiClient>({
+    queryKey: [`admin/client-by-id?clientId=${clientId}`],
+  });
   const { data: manifests, refetch } = useQuery<Pagination<ApiClientManifest>>({
     meta: { pagination },
     queryKey: [
@@ -123,7 +126,7 @@ export const ClientManifestListPage = withAuthorization(() => {
       <Track justify="between">
         <Track direction="vertical" align="left">
           <h6>
-            <TransTitle i18nKey="client" values={{ client: 'A' }} />
+            <TransTitle i18nKey="client" values={{ client: client?.name }} />
           </h6>
           <h1>
             <Trans i18nKey="title.clientManifests" defaults="Manifests" />

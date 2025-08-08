@@ -8,7 +8,7 @@ import {
   Track,
 } from 'components';
 import { useCallback, useMemo, useState } from 'react';
-import type { ApiClientCertificate } from 'types/client';
+import type { ApiClient, ApiClientCertificate } from 'types/client';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { Trans, useTranslation } from 'react-i18next';
@@ -31,6 +31,9 @@ import { useToast } from 'hooks';
 export const ClientCertificateList = withAuthorization(() => {
   const [pagination, setPagination] = usePagination();
   const { clientId } = useParams<{ clientId: string }>();
+  const { data: client } = useQuery<ApiClient>({
+    queryKey: [`admin/client-by-id?clientId=${clientId}`],
+  });
   const { data: certificates, refetch } = useQuery<
     Pagination<ApiClientCertificate>
   >({
@@ -149,7 +152,7 @@ export const ClientCertificateList = withAuthorization(() => {
       <Track justify="between">
         <Track direction="vertical" align="left">
           <h6>
-            <TransTitle i18nKey="client" values={{ client: 'A' }} />
+            <TransTitle i18nKey="client" values={{ client: client?.name }} />
           </h6>
           <h1>
             <Trans i18nKey="title.clientCertificates" defaults="Certificates" />

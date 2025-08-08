@@ -9,7 +9,6 @@ export const ROUTES = {
   CLIENT_SECRETS_DETAILS_ROUTE: '/clients/:clientId/secrets/:secretId?',
   CLIENT_SECRETS_DIFF_ROUTE: '/clients/:clientId/secrets/:secretId/diff',
   CLIENT_CERTIFICATES_ROUTE: '/clients/:clientId/certificates',
-  CLIENT_CERTIFICATES_CREATE_ROUTE: '/clients/:clientId/certificates/create',
   CLIENT_DEPLOYMENTS_ROUTE: '/clients/:clientId/deployments',
   CLIENT_DEPLOYMENTS_CREATE_ROUTE: '/clients/:clientId/deployments/create',
   CLIENT_MANIFESTS_ROUTE: '/clients/:clientId/manifests',

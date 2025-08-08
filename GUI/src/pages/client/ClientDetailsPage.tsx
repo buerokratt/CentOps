@@ -21,10 +21,9 @@ export const ClientDetailsPage = withAuthorization(() => {
   const { clientId } = useParams<{ clientId: 'create' | string }>();
   const isCreateMode = clientId === 'create';
 
-  const { data: client } = useQuery<ApiClient | object>({
+  const { data: client } = useQuery<ApiClient>({
     enabled: !isCreateMode,
     queryKey: [`admin/client-by-id?clientId=${clientId}`],
-    initialData: {},
   });
   const {
     register,
@@ -94,7 +93,7 @@ export const ClientDetailsPage = withAuthorization(() => {
           {isCreateMode ? (
             <TransTitle i18nKey="clientAdd" />
           ) : (
-            <TransTitle i18nKey="client" values={{ client: 'A' }} />
+            <TransTitle i18nKey="client" values={{ client: client?.name }} />
           )}
         </h2>
       </Track>
