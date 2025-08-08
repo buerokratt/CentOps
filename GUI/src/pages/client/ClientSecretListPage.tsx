@@ -41,7 +41,7 @@ export const ClientSecretListPage = withAuthorization(() => {
   const handleDelete = useCallback(
     async ({ id: secretId }: ApiClientSecret) => {
       await api.delete(
-        `/admin/clients/secrets/delete?clientId=${clientId}id=${secretId}`
+        `/admin/clients/secrets/delete?clientId=${clientId}&id=${secretId}`
       );
       refetch();
     },
