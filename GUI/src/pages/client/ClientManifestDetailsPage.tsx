@@ -84,7 +84,7 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
     async (data) => {
       await mutation.mutateAsync({ ...data, clientId: clientId as string });
     },
-    []
+    [clientId]
   );
   const {
     register,

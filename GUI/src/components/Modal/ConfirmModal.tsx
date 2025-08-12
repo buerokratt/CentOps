@@ -25,7 +25,7 @@ export const ConfirmButton = ({
   const handleConfirm = useCallback(async () => {
     await onConfirm();
     closeConfirmDeleteModal();
-  }, []);
+  }, [onConfirm]);
 
   return (
     <>

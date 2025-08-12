@@ -70,7 +70,7 @@ export const ClientCertificateList = withAuthorization(() => {
         }),
       });
     }
-  }, []);
+  }, [clientId]);
 
   const [sorting, setSorting] = useState<SortingState>([]);
 

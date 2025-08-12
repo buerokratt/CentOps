@@ -70,7 +70,7 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
         });
       }
     },
-    []
+    [clientId]
   );
 
   return (

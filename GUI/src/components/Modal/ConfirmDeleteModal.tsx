@@ -53,7 +53,7 @@ export const ConfirmDeleteButton = <T,>({
         message: t('toast.deletionFailed'),
       });
     }
-  }, []);
+  }, [entity]);
 
   return (
     <>
