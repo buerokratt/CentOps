@@ -5,6 +5,7 @@ import {
   createElement,
   type ElementType,
   type PropsWithChildren,
+  type ReactNode,
 } from 'react';
 import clsx from 'clsx';
 
@@ -12,6 +13,7 @@ type ButtonBaseProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   appearance?: 'primary' | 'secondary' | 'text' | 'icon' | 'error' | 'success';
   outlined?: boolean;
   size?: 'm' | 's';
+  title?: ReactNode;
 };
 
 type OverrideProps<T extends ElementType, P extends object = object> = {

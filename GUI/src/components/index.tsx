@@ -40,3 +40,4 @@ export { MainNavigation } from 'components/MainNavigation';
 export { MenuTree } from 'components/MenuTree';
 export { ReplyMessage } from 'components/ReplyMessage';
 export { SendMessage } from 'components/SendMessage';
+export { Title } from 'components/Title';

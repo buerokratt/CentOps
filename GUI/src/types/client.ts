@@ -62,6 +62,19 @@ export interface ApiClientDeployment extends ClientDeployment {
   createdAt: string;
 }
 
+export interface ApiClientDeploymentStatus {
+  health: {
+    lastTransitionTime: string;
+    status: 'Healthy' | 'Unhealthy' | 'Unknown';
+  };
+  status: 'Synced' | 'Unsynced' | 'Unknown';
+  errors?: {
+    type: string;
+    message: string;
+    lastTransitionTime: string;
+  }[];
+}
+
 export interface ClientManifest {
   name: string;
   helmVersion: string;

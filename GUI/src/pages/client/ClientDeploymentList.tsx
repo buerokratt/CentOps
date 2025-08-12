@@ -1,8 +1,9 @@
-import { Button, Card, DataTable, Icon, Label, Track } from 'components';
-import { useMemo, useState } from 'react';
+import { Button, Card, DataTable, Icon, Label, Title, Track } from 'components';
+import { useEffect, useMemo, useState } from 'react';
 import {
   type ApiClient,
   type ApiClientDeployment,
+  type ApiClientDeploymentStatus,
   type ClientDeploymentStatus,
   ClientDeploymentStatuses,
 } from 'types/client';
@@ -22,6 +23,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { usePagination } from 'hooks/usePagination';
 import { initialPaginationData, type Pagination } from 'types/pagination';
+import api from 'services/api';
+import clsx from 'clsx';
+import type { TitleType } from 'components/Title';
+import { ConfirmButton } from 'components/Modal/ConfirmModal';
+import JsonView from '@uiw/react-json-view';
 
 const statusMap = new Map<
   ClientDeploymentStatus,
@@ -39,6 +45,23 @@ export const ClientDeploymentList = withAuthorization(() => {
   const { data: client } = useQuery<ApiClient>({
     queryKey: [`admin/client-by-id?clientId=${clientId}`],
   });
+  const [status, setStatus] = useState<ApiClientDeploymentStatus>({
+    health: {
+      status: 'Unknown',
+      lastTransitionTime: new Date().toISOString(),
+    },
+    status: 'Unknown',
+    errors: [],
+  });
+  useEffect(() => {
+    if (client)
+      api
+        .get<ApiClientDeploymentStatus>(
+          `admin/clients/deployments/status?appName=${client.argoAppDeploymentName}`
+        )
+        .then(({ data }) => setStatus(data));
+  }, [client]);
+
   const { data: deployments } = useQuery<Pagination<ApiClientDeployment>>({
     meta: { pagination },
     queryKey: [
@@ -47,7 +70,6 @@ export const ClientDeploymentList = withAuthorization(() => {
     ],
     initialData: initialPaginationData<ApiClientDeployment>(),
   });
-  console.log(deployments);
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -118,6 +140,122 @@ export const ClientDeploymentList = withAuthorization(() => {
           </Link>
         }
       >
+        <Card
+          style={{
+            margin: -16,
+            marginBottom: 16,
+            background: '#f6f6f6',
+            borderBottom: '1px solid #d2d3d8',
+          }}
+          bordered={false}
+        >
+          <Track justify="between" style={{ gap: 4 }}>
+            <Card style={{ flexGrow: 1, flexBasis: 0 }} shadow>
+              <strong className="h5">
+                <Trans
+                  i18nKey="client.deployments.status.appHealth"
+                  defaults="App health"
+                />
+              </strong>
+              <Title
+                className="h1"
+                type={
+                  clsx('error', {
+                    success: status?.health.status === 'Healthy',
+                    warning: status?.health.status === 'Unknown',
+                  })
+                    .split(' ')
+                    .pop() as TitleType
+                }
+              >
+                <Icon name="heart" size="medium" />
+                {status?.health.status}
+              </Title>
+            </Card>
+            <Card style={{ flexGrow: 1, flexBasis: 0 }} shadow>
+              <strong className="h5">
+                <Trans
+                  i18nKey="client.deployments.status.syncStatus"
+                  defaults="Sync status"
+                />
+                <Title
+                  className="h1"
+                  type={
+                    clsx('error', {
+                      success: status?.status === 'Synced',
+                      warning: status?.status === 'Unknown',
+                    })
+                      .split(' ')
+                      .pop() as TitleType
+                  }
+                >
+                  <Icon name="heart" size="medium" />
+                  {status?.status}
+                </Title>
+              </strong>
+            </Card>
+            <Card style={{ flexGrow: 1, flexBasis: 0 }} shadow>
+              <strong className="h5">
+                <Trans
+                  i18nKey="client.deployments.status.lastSync"
+                  defaults="Last sync"
+                />
+                <Title className="h1" type="success">
+                  <Icon name="check-circle" size="medium" />
+                  OK
+                </Title>
+              </strong>
+            </Card>
+            <Card style={{ flexGrow: 1, flexBasis: 0 }} shadow>
+              <strong className="h5">
+                <Trans
+                  i18nKey="client.deployments.status.appConditions.title"
+                  defaults="App conditions"
+                />
+                {!status?.errors?.length ? (
+                  <Title className="h1" type="warning">
+                    <Icon name="warning" size="medium" />
+                    <Trans
+                      i18nKey="client.deployments.status.appConditions.status.unknown"
+                      defaults="Unknown"
+                    />
+                  </Title>
+                ) : (
+                  <ConfirmButton
+                    component={Title}
+                    className="h1"
+                    type="error"
+                    title={
+                      <Trans
+                        i18nKey="client.deployments.status.appConditions.dialog.title"
+                        defaults="Error details"
+                      />
+                    }
+                    confirm={false}
+                    cancel={
+                      <Button>
+                        <TransButton i18nKey="close" />
+                      </Button>
+                    }
+                    button={
+                      <>
+                        <Icon name="error" size="medium" />
+                        <Trans
+                          i18nKey="client.deployments.status.appConditions.status.errors"
+                          defaults="(1)[{{count}} error];(2-inf)[{{count}} errors];"
+                          values={{ count: status?.errors.length }}
+                          tOptions={{ postProcess: 'interval' }}
+                        />
+                      </>
+                    }
+                  >
+                    <JsonView value={status?.errors} displayDataTypes={false} />
+                  </ConfirmButton>
+                )}
+              </strong>
+            </Card>
+          </Track>
+        </Card>
         <Card disablePadding>
           <DataTable
             data={deployments.items}

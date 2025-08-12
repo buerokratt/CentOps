@@ -84,14 +84,17 @@ export const ClusterDetailsPage = withAuthorization(() => {
   const handleTestConnection = useCallback(async () => {
     if (cluster) {
       await api
-        .get<string>(
-          `/admin/clusters/test-connection?clusterName=${cluster.name}`
-        )
+        .get<{
+          status: string;
+          message: string;
+          attemptedAt: string;
+        }>(`/admin/clusters/test-connection?clusterName=${cluster.name}`)
         .then(({ data }) => {
+          console.log(data);
           toast.open({
             type: 'success',
             title: t('toast.notification'),
-            message: data,
+            message: data.message || 'Connection Successful',
           });
         })
         .catch((e: AxiosError) => {

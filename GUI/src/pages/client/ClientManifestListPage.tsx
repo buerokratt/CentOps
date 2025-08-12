@@ -40,10 +40,12 @@ export const ClientManifestListPage = withAuthorization(() => {
   });
   const handleDelete = useCallback(
     async ({ manifestId }: ApiClientManifest) => {
-      await api.delete(`/admin/clients/manifests?manifestId=${manifestId}`);
+      await api.delete(
+        `/admin/clients/manifests?clientId=${clientId}&manifestId=${manifestId}`
+      );
       refetch();
     },
-    []
+    [clientId]
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
