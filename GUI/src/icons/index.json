@@ -1,5 +1,6 @@
 {
   "certificate-add": "certificate-add.svg",
+  "check-circle": "check-circle.svg",
   "check": "check.svg",
   "close": "close.svg",
   "copy": "copy.svg",
@@ -7,7 +8,10 @@
   "delete": "delete.svg",
   "diff": "diff.svg",
   "edit": "edit.svg",
+  "error": "error.svg",
   "flag": "flag.svg",
+  "heart-broken": "heart-broken.svg",
+  "heart": "heart.svg",
   "key": "key.svg",
   "manifest": "manifest.svg",
   "pods": "pods.svg",

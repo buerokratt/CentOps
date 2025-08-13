@@ -44,16 +44,8 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
     mutationFn: async (data) =>
       (
         await {
-          post: async () =>
-            api.post(
-              `admin/clients/manifests/create?clientId=${clientId}`,
-              data
-            ),
-          put: async () =>
-            api.put(
-              `admin/clients/manifests/update?clientId=${clientId}`,
-              data
-            ),
+          post: async () => api.post(`admin/clients/manifests/create`, data),
+          put: async () => api.put(`admin/clients/manifests/update`, data),
         }[data.manifestId ? 'put' : 'post']()
       ).data,
 
@@ -84,7 +76,7 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
     async (data) => {
       await mutation.mutateAsync({ ...data, clientId: clientId as string });
     },
-    []
+    [clientId]
   );
   const {
     register,
