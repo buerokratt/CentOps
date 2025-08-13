@@ -54,7 +54,9 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
           clientId,
           manifestId: parseInt(manifestId),
         });
-        navigate(replaceLinkParams(ROUTES.CLIENT_DETAILS_ROUTE, { clientId }));
+        navigate(
+          replaceLinkParams(ROUTES.CLIENT_DEPLOYMENTS_ROUTE, { clientId })
+        );
         toast.open({
           type: 'success',
           title: t('toast.notification'),
@@ -70,7 +72,7 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
         });
       }
     },
-    []
+    [clientId]
   );
 
   return (
@@ -89,7 +91,7 @@ export const ClientDeploymentCreatePage = withAuthorization(() => {
         onSubmit={handleSubmit(onSubmit)}
         footer={
           <Track justify="between">
-            <Link to={ROUTES.CLIENT_DETAILS_ROUTE}>
+            <Link to={ROUTES.CLIENT_DEPLOYMENTS_ROUTE}>
               <Button appearance="primary" outlined>
                 <TransButton i18nKey="cancel" />
               </Button>

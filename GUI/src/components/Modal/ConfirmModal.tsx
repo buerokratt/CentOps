@@ -54,7 +54,7 @@ export const ConfirmButton = <T extends ElementType>({
   const handleConfirm = useCallback(async () => {
     await onConfirm?.();
     closeConfirmDeleteModal();
-  }, []);
+  }, [onConfirm]);
 
   return (
     <>
