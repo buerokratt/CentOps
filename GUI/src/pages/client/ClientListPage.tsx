@@ -49,7 +49,7 @@ export const ClientListPage = withAuthorization(() => {
       }),
       columnHelper.accessor('kubernetesClusterAddress', {
         id: 'clusterAddress',
-        header: () => <TransTableHead i18nKey="clusterAddress" />,
+        header: () => <TransTableHead i18nKey="cluster" />,
         cell: (message) => message.getValue(),
       }),
       columnHelper.accessor('updatedAt', {

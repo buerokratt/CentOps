@@ -1,5 +1,14 @@
-import { Button, Card, DataTable, Icon, Label, Title, Track } from 'components';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  Button,
+  Card,
+  ConfirmDeleteButton,
+  DataTable,
+  Icon,
+  Label,
+  Title,
+  Track,
+} from 'components';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   type ApiClient,
   type ApiClientDeployment,
@@ -62,7 +71,9 @@ export const ClientDeploymentList = withAuthorization(() => {
         .then(({ data }) => setStatus(data));
   }, [client]);
 
-  const { data: deployments } = useQuery<Pagination<ApiClientDeployment>>({
+  const { data: deployments, refetch } = useQuery<
+    Pagination<ApiClientDeployment>
+  >({
     meta: { pagination },
     queryKey: [
       `admin/clients/deployments/all?clientId=${clientId}`,
@@ -73,9 +84,31 @@ export const ClientDeploymentList = withAuthorization(() => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  const handleDelete = useCallback(
+    async (_: ApiClientDeployment) => {
+      if (client)
+        await api.delete(
+          `/admin/clients/deployments/delete?appName=${client.argoAppDeploymentName}`
+        );
+      await refetch();
+    },
+    [client]
+  );
   const columnHelper = createColumnHelper<ApiClientDeployment>();
   const columns = useMemo(
     () => [
+      columnHelper.accessor('manifestName', {
+        id: 'manifestName',
+        header: () => <TransTableHead i18nKey="manifestName" />,
+        cell: (message) => (
+          <Link
+            to={ROUTES.CLIENT_MANIFESTS_DETAILS_ROUTE}
+            params={{ manifestId: message.row.original.manifestId }}
+          >
+            {message.getValue()}
+          </Link>
+        ),
+      }),
       columnHelper.accessor('manifestVersion', {
         id: 'manifestVersion',
         header: () => <TransTableHead i18nKey="manifestVersion" />,
@@ -109,8 +142,27 @@ export const ClientDeploymentList = withAuthorization(() => {
           );
         },
       }),
+      columnHelper.accessor('id', {
+        id: 'actions',
+        header: '',
+        enableSorting: false,
+        meta: { size: 1 },
+        cell: ({ row: { original } }) => (
+          <Track gap={8}>
+            <ConfirmDeleteButton
+              appearance="text"
+              entity={original}
+              onConfirm={handleDelete}
+              disabled={!client}
+            >
+              <Icon name="delete" />
+              <TransButton i18nKey="delete" />
+            </ConfirmDeleteButton>
+          </Track>
+        ),
+      }),
     ],
-    []
+    [client]
   );
 
   return (

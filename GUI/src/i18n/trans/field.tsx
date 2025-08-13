@@ -15,9 +15,7 @@ export const TransField = createTrans({
   fingerprint: <Trans i18nKey="field.fingerprint" defaults="Fingerprint" />,
   certificate: <Trans i18nKey="field.certificate" defaults="Certificate" />,
   clientName: <Trans i18nKey="field.clientName" defaults="Client name" />,
-  clusterAddress: (
-    <Trans i18nKey="field.clusterAddress" defaults="Cluster address" />
-  ),
+  cluster: <Trans i18nKey="field.cluster" defaults="Cluster" />,
   clusterIp: <Trans i18nKey="field.clusterIp" defaults="Cluster IP" />,
   clusterName: <Trans i18nKey="field.clusterName" defaults="Cluster name" />,
   content: <Trans i18nKey="field.content" defaults="Content" />,
@@ -27,6 +25,10 @@ export const TransField = createTrans({
   environment: <Trans i18nKey="field.environment" defaults="Environment" />,
   firstName: <Trans i18nKey="field.firstName" defaults="First name" />,
   helm: <Trans i18nKey="field.helm" defaults="Helm" />,
+  helmRepository: (
+    <Trans i18nKey="field.helmRepository" defaults="Helm repository" />
+  ),
+  helmPath: <Trans i18nKey="field.helmPath" defaults="Helm path" />,
   lastName: <Trans i18nKey="field.lastName" defaults="Last name" />,
   locality: <Trans i18nKey="field.locality" defaults="Locality" />,
   id: <Trans i18nKey="field.id" defaults="ID" />,
