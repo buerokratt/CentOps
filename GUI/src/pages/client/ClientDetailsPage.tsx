@@ -38,7 +38,7 @@ export const ClientDetailsPage = withAuthorization(() => {
   });
   const [pagination] = usePagination({
     pageIndex: 0,
-    pageSize: 100,
+    pageSize: 1000,
   });
   const {
     data: { items: clusters },
