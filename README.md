@@ -50,3 +50,15 @@ curl -X POST -H "Content-Type: application/json" -d '{
 ### Vault Setup 
 
 see the [README](./vault/README.md) file.
+
+### API Clients
+
+- To insert a new API client, you need to hash the `API_KEY` and `API_SECRET` using `pgcrypto`.
+
+- Run the following SQL script:
+
+```sql
+INSERT INTO API_CLIENTS(API_KEY, API_SECRET)
+VALUES ('testApiKey',
+        crypt('testApiSecret', gen_salt('bf', 8)));
+```
