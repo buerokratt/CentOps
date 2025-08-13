@@ -1,5 +1,6 @@
 SELECT id,
        client_id,
+       manifest_name,
        manifest_version,
        deployed_by_id_code,
        argo_deploy_app_name,

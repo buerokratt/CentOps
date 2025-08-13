@@ -97,6 +97,7 @@ check_manifest_data:
 
 extract_manifest_data:
   assign:
+    manifestName: ${manifest_result.response.body[0].name}
     helm_version: ${manifest_result.response.body[0].helmVersion}
     helm_values: ${manifest_result.response.body[0].helmValues}
   next: call_create_user_log_template
@@ -169,6 +170,7 @@ save_positive_deployment_data:
     body:
       client_id: ${clientId}
       manifest_id: ${manifestId}
+      manifest_name: ${manifestName}
       manifest_version: ${helm_version}
       status: "DEPLOYED"
       deployed_by_id_code: ${userIdCode}
@@ -196,6 +198,7 @@ save_negative_deployment_data:
     body:
       client_id: ${clientId}
       manifest_id: ${manifestId}
+      manifest_name: ${manifestName}
       manifest_version: ${helm_version}
       status: "FAILED"
       deployed_by_id_code: ${userIdCode}
