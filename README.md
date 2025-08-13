@@ -58,24 +58,7 @@ see the [README](./vault/README.md) file.
 - Run the following SQL script:
 
 ```sql
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 INSERT INTO API_CLIENTS(API_KEY, API_SECRET)
-VALUES (
-    crypt('testApiKey', gen_salt('bf', 8)),
-    crypt('testApiSecret', gen_salt('bf', 8))
-);
+VALUES ('testApiKey',
+        crypt('testApiSecret', gen_salt('bf', 8)));
 ```
-
-### Accessing API via Integration Endpoint
-
-If you want to fetch clients from the integration endpoint, you need to encode testApiKey:testApiSecret into Base64.
-
-You can use the following site: https://www.base64encode.org/
-
-Send the Base64 value in the Authorization header.
-
-Example:
-
-```text
-Authorization: dGVzdEFwaUtleTp0ZXN0QXBpU2VjcmV0

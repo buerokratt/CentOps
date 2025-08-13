@@ -28,7 +28,7 @@ SELECT COALESCE(
                             credentials c
                        WHERE c.api_key IS NOT NULL
                          AND c.api_secret IS NOT NULL
-                         AND crypt(c.api_key, a.api_key) = a.api_key
+                         AND c.api_key = a.api_key
                          AND crypt(c.api_secret, a.api_secret) = a.api_secret
                          AND a.is_enabled = true),
                false
