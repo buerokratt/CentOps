@@ -2,12 +2,12 @@ WITH decoded_data AS (SELECT CASE
                                  WHEN :authorization IS NULL OR :authorization = '' THEN NULL
                                  WHEN length(:authorization) % 4 != 0 THEN NULL
                                  WHEN :authorization !~ '^[A-Za-z0-9+/]*={0,2}$' THEN NULL
-                                 ELSE convert_from(decode(:authorization, 'base64'), 'latin1')
+                                 ELSE convert_from(decode(:authorization, 'base64'), 'ascii')
                                  END AS raw_data),
      valid_utf8_check AS (SELECT raw_data,
                                  CASE
                                      WHEN raw_data IS NULL THEN NULL
-                                     WHEN convert(raw_data::bytea, 'UTF8', 'LATIN1') IS NOT NULL THEN raw_data
+                                     WHEN convert(raw_data::bytea, 'UTF8', 'ASCII') IS NOT NULL THEN raw_data
                                      ELSE NULL
                                      END AS safe_utf8_data
                           FROM decoded_data),
