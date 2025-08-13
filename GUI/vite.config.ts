@@ -19,6 +19,12 @@ export default defineConfig({
     port: 8057,
     host: '0.0.0.0',
     allowedHosts: true,
+    proxy: {
+      '/centops': {
+        target: 'https://ruuter.centops.test.buerokratt.ee',
+        changeOrigin: true,
+      },
+    },
   },
   plugins: [
     react(),

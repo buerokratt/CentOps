@@ -167,9 +167,8 @@ export const ClientCertificateList = withAuthorization(() => {
             />
           }
           onConfirm={handleGenerateCertificate}
-        >
-          <TransButton i18nKey="generateCertificate" />
-        </ConfirmButton>
+          button={<TransButton i18nKey="generateCertificate" />}
+        />
       </Track>
 
       <Card
