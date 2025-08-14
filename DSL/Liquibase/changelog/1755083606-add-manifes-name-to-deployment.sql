@@ -2,6 +2,7 @@
 -- changeset bohdanintro:1755083606
 
 ALTER TABLE deployments ADD COLUMN manifest_name VARCHAR(256);
+ALTER TABLE deployments RENAME COLUMN manifest_version TO manifest_git_helm_branch;
 
 ALTER TABLE deployments
     ADD COLUMN tmp_manifest_id UUID DEFAULT uuid_generate_v4();

@@ -27,10 +27,8 @@ ALTER TABLE manifests
 
 CREATE INDEX idx_manifest_id ON manifests (manifest_id);
 
-
-
 DROP INDEX IF EXISTS uniq_name_client_helm_version_active;
 
-CREATE UNIQUE INDEX uniq_name_client_git_branch_manifest_active
-    ON manifests(client_id, manifest_id, git_helm_branch, name)
+CREATE UNIQUE INDEX uniq_name_client_git_branch_active
+    ON manifests(client_id, git_helm_branch, name)
     WHERE deleted = false;
