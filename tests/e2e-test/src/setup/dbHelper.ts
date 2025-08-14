@@ -21,12 +21,12 @@ export async function getClientId() {
         const insertResult = await pgClient.query(
             `
                 INSERT INTO clients (name,
-                                     kubernetes_cluster_address,
+                                     kubernetes_cluster_id,
                                      kubernetes_cluster_namespace,
                                      argo_app_deployment_name,
                                      part_of_network)
                 VALUES ('testClient_global',
-                        'https://k8s.example.com:6443',
+                        uuid_generate_v4(),
                         'default',
                         'testDeployment',
                         true)

@@ -15,7 +15,7 @@ export const HTTP_METHODS = {
 
 export const CLIENT_TEST_DATA = {
     CERTIFICATE: "-----BEGIN CERTIFICATE-----\nMOCK\n-----END CERTIFICATE-----",
-    CLUSTER_ADDRESS: "https://k8s.example.com:6443",
+    CLUSTER_ID: "75c24660-3df8-4ca5-a9a8-2145cf19ba1d",
     CLUSTER_NAMESPACE: "default",
     ARGO_DEPLOYMENT_NAME: "testDeployment",
     PART_OF_NETWORK: true

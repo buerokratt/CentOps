@@ -30,8 +30,10 @@ describe('Manifest Management E2E', () => {
             {
                 clientId: testClientId,
                 name: "3111",
-                helmVersion: "master",
-                helmValues: "image:\n  repository: spring-boot-argo\n  tag: master\nenvs:\n  - name: VAULT_SECRET_USER\n"
+                gitHelmBranch: "master",
+                helmValues: "image:\n  repository: spring-boot-argo\n  tag: master\nenvs:\n  - name: VAULT_SECRET_USER\n",
+                gitHelmRepository: "https://github.com/test",
+                gitHelmPath: "infra/helm"
             }
         );
 
@@ -60,11 +62,19 @@ describe('Manifest Management E2E', () => {
 
         expect(data).toEqual(
             expect.objectContaining({
-                clientId: testClientId,
-                name: "3111",
-                manifestId: expect.any(Number),
-                helmVersion: "master",
-                helmValues: expect.stringContaining("image:")
+                manifestId: expect.any(String),
+                name: '3111',
+                clientId: 'cc04de2d-69c8-485b-9ef6-5273d577ca64',
+                gitHelmBranch: 'master',
+                helmValues: 'image:\n' +
+                    '  repository: spring-boot-argo\n' +
+                    '  tag: master\n' +
+                    'envs:\n' +
+                    '  - name: VAULT_SECRET_USER\n',
+                createdAt: expect.any(String),
+                updatedAt: null,
+                gitHelmRepository: 'https://github.com/test',
+                gitHelmPath: 'infra/helm'
             })
         );
     });
@@ -90,8 +100,10 @@ describe('Manifest Management E2E', () => {
                 clientId: testClientId,
                 name: 'new name',
                 manifestId: testManifestId,
-                helmVersion: '2.0.0',
-                helmValues: 'mock updated values'
+                gitHelmBranch: "master",
+                helmValues: "image:\n  repository: spring-boot-argo\n  tag: master\nenvs:\n  - name: VAULT_SECRET_USER\n",
+                gitHelmRepository: "https://github.com/test",
+                gitHelmPath: "infra/helm"
             }
         );
 

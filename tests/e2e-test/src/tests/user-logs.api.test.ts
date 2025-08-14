@@ -55,6 +55,9 @@ describe('Log Management E2E', () => {
             expect(data.items[0]).toEqual({
                 id: expect.stringMatching(GLOBAL_CONSTANTS.UUID_REGEX),
                 createdAt: expect.any(String),
+                firstName: expect.any(String),
+                lastName: expect.any(String),
+                clientName: expect.any(String),
                 userIdCode: expect.any(String),
                 ipAddress: expect.any(String),
                 action: expect.any(String),

@@ -13,7 +13,7 @@ describe('Certificate Management E2E', () => {
             HTTP_METHODS.POST,
             {
                 name: clientName,
-                kubernetesClusterAddress: CLIENT_TEST_DATA.CLUSTER_ADDRESS,
+                kubernetesClusterId: CLIENT_TEST_DATA.CLUSTER_ID,
                 kubernetesClusterNamespace: CLIENT_TEST_DATA.CLUSTER_NAMESPACE,
                 argoAppDeploymentName: CLIENT_TEST_DATA.ARGO_DEPLOYMENT_NAME,
                 partOfNetwork: CLIENT_TEST_DATA.PART_OF_NETWORK
