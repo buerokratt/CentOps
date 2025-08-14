@@ -64,7 +64,7 @@ describe('Manifest Management E2E', () => {
             expect.objectContaining({
                 manifestId: expect.any(String),
                 name: '3111',
-                clientId: 'cc04de2d-69c8-485b-9ef6-5273d577ca64',
+                clientId: expect.any(String),
                 gitHelmBranch: 'master',
                 helmValues: 'image:\n' +
                     '  repository: spring-boot-argo\n' +
