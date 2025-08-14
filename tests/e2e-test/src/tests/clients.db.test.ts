@@ -21,7 +21,7 @@ describe('POST /centops/admin/clients', () => {
 
         const payload = {
             name: `${clientName}`,
-            kubernetesClusterAddress: 'middle',
+            kubernetesClusterId: '75c24660-3df8-4ca5-a9a8-2145cf19ba1d',
             kubernetesClusterNamespace: 'demo',
             argoAppDeploymentName: 'spring-boot-app',
             partOfNetwork: true
@@ -42,7 +42,7 @@ describe('POST /centops/admin/clients', () => {
 
             let row = result.rows[0];
             expect(row.name).toBe(payload.name);
-            expect(row.kubernetes_cluster_address).toBe(payload.kubernetesClusterAddress);
+            expect(row.kubernetes_cluster_id).toBe(payload.kubernetesClusterId);
             expect(row.kubernetes_cluster_namespace).toBe(payload.kubernetesClusterNamespace);
             expect(row.argo_app_deployment_name).toBe(payload.argoAppDeploymentName);
             expect(row.deleted).toBe(false);
