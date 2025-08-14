@@ -132,6 +132,16 @@ export const ClientManifestDetailsPage = withAuthorization(() => {
             type="text"
           />
           <FormInput
+            {...register('helmRepository')}
+            label={<TransField i18nKey="helmRepository" />}
+            type="text"
+          />
+          <FormInput
+            {...register('helmPath')}
+            label={<TransField i18nKey="helmPath" />}
+            type="text"
+          />
+          <FormInput
             {...register('helmVersion')}
             label={<TransField i18nKey="helm" />}
           />

@@ -1,5 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, FormCheckbox, FormInput, Icon, Track } from 'components';
+import {
+  Button,
+  Card,
+  FormCheckbox,
+  FormInput,
+  FormSelect,
+  Icon,
+  Track,
+} from 'components';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { TransButton } from 'i18n/trans/button';
 import { TransField } from 'i18n/trans/field';
@@ -16,6 +24,9 @@ import { useToast } from 'hooks';
 import { useTranslation } from 'react-i18next';
 import type { AxiosError } from 'axios';
 import api from 'services/api';
+import { usePagination } from 'hooks/usePagination';
+import { initialPaginationData, type Pagination } from 'types/pagination';
+import type { ApiCluster } from 'types/cluster';
 
 export const ClientDetailsPage = withAuthorization(() => {
   const { clientId } = useParams<{ clientId: 'create' | string }>();
@@ -24,6 +35,17 @@ export const ClientDetailsPage = withAuthorization(() => {
   const { data: client } = useQuery<ApiClient>({
     enabled: !isCreateMode,
     queryKey: [`admin/client-by-id?clientId=${clientId}`],
+  });
+  const [pagination] = usePagination({
+    pageIndex: 0,
+    pageSize: 1000,
+  });
+  const {
+    data: { items: clusters },
+  } = useQuery<Pagination<ApiCluster>>({
+    meta: { pagination },
+    queryKey: ['admin/clusters', ...Object.values(pagination)],
+    initialData: initialPaginationData<ApiCluster>(),
   });
   const {
     register,
@@ -169,9 +191,23 @@ export const ClientDetailsPage = withAuthorization(() => {
             label={<TransField i18nKey="clientName" />}
             type="text"
           />
-          <FormInput
-            {...register('kubernetesClusterAddress', { required: true })}
-            label={<TransField i18nKey="clusterAddress" />}
+          <Controller
+            name="kubernetesClusterAddress"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <FormSelect
+                {...field}
+                placeholder="-"
+                label={<TransField i18nKey="cluster" />}
+                options={clusters.map(
+                  ({ clusterId: value, name, ipAddress }) => ({
+                    value,
+                    label: `${name} (${ipAddress})`,
+                  })
+                )}
+              />
+            )}
           />
           <FormInput
             {...register('kubernetesClusterNamespace', { required: true })}

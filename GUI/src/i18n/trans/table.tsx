@@ -6,9 +6,7 @@ export const TransTableHead = createTrans({
     <Trans i18nKey="table.head.certificate" defaults="Certificate" />
   ),
   client: <Trans i18nKey="table.head.client" defaults="Client" />,
-  clusterAddress: (
-    <Trans i18nKey="table.head.clusterAddress" defaults="Cluster address" />
-  ),
+  cluster: <Trans i18nKey="table.head.cluster" defaults="Cluster" />,
   clusterIp: <Trans i18nKey="table.head.clusterIp" defaults="Cluster IP" />,
   clusterName: (
     <Trans i18nKey="table.head.clusterName" defaults="Cluster name" />
@@ -30,6 +28,9 @@ export const TransTableHead = createTrans({
   ),
   manifestVersion: (
     <Trans i18nKey="table.head.manifestVersion" defaults="Manifest ver." />
+  ),
+  manifestName: (
+    <Trans i18nKey="table.head.manifestName" defaults="Manifest name" />
   ),
   metaData: <Trans i18nKey="table.head.metaData" defaults="Meta data" />,
   method: <Trans i18nKey="table.head.method" defaults="Method" />,

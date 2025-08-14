@@ -55,6 +55,8 @@ export interface ApiClientDeployment extends ClientDeployment {
   id: string;
   clientId: string;
   manifestVersion: string;
+  manifestId: string;
+  manifestName: string;
   deployedByIdCode: string;
   argoDeployAppName: string;
   deployedBy: string; // firstName lastName
@@ -77,12 +79,15 @@ export interface ApiClientDeploymentStatus {
 
 export interface ClientManifest {
   name: string;
+  helmRepository: string;
+  helmPath: string;
   helmVersion: string;
   helmValues: string;
 }
 export interface ApiClientManifest extends ClientManifest {
   clientId: string;
   manifestId: string;
+  manifestName: string;
   createdAt: string;
   updatedAt: string;
   deployedAt: string;

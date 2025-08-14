@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { ButtonProps } from 'components/Button';
 import { useToast } from 'hooks';
 import { TransButton } from 'i18n/trans/button';
+import { get } from 'react-hook-form';
 
 export interface ConfirmDeleteModalProps extends Omit<ModalProps, 'title'> {
   title?: string;
@@ -14,7 +15,7 @@ export interface ConfirmDeleteModalProps extends Omit<ModalProps, 'title'> {
 
 export interface ConfirmDeleteButtonProps<T> extends ButtonProps {
   entity: T;
-  entityName: keyof T;
+  entityName?: keyof T & string;
   onConfirm: (entity: T) => Promise<void>;
 }
 
@@ -60,7 +61,7 @@ export const ConfirmDeleteButton = <T,>({
       <Button onClick={showConfirmDeleteModal} {...props} />
       {Boolean(entityToDelete) && (
         <ConfirmDeleteModal
-          name={entity[entityName] as string}
+          name={get(entity, entityName ?? '', '')}
           onConfirm={handleConfirm}
           onClose={closeConfirmDeleteModal}
         />

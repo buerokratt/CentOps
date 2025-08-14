@@ -23,6 +23,7 @@ export default defineConfig({
       '/centops': {
         target: 'https://ruuter.centops.test.buerokratt.ee',
         changeOrigin: true,
+        secure: false,
       },
     },
   },
