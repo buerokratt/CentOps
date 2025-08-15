@@ -14,10 +14,13 @@ declaration:
       - field: cookie
         type: string
         description: "Cookie field"
+      - field: x-forwarded-for
+        type: string
 
 extract_request_data:
   assign:
     clientId: ${incoming.params.clientId}
+    ip_address: ${incoming.headers[Object.keys(incoming.headers).find(h => h.toLowerCase() === 'x-forwarded-for')] || 'unknown'}
   next: validate_input
 
 validate_input:
@@ -52,6 +55,7 @@ call_create_user_log_template:
   body:
     method: "POST"
     path: "admin/clients/certificates/generate"
+    ip_address: ${ip_address}
   headers:
     cookie: ${incoming.headers.cookie}
   result: create_log_result
