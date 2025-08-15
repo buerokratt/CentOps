@@ -21,6 +21,11 @@ declaration:
     params:
       - field: clientId
         type: string
+    headers:
+      - field: cookie
+      - type: string
+      - field: x-forwarded-for
+        type: string
 
 validate_request_param:
   switch:
@@ -36,6 +41,7 @@ assign_parameters:
     kubernetes_cluster_namespace: ${incoming.body.kubernetesClusterNamespace}
     argo_app_deployment_name: ${incoming.body.argoAppDeploymentName}
     part_of_network: ${incoming.body.partOfNetwork}
+    ip_address: ${incoming.headers[Object.keys(incoming.headers).find(h => h.toLowerCase() === 'x-forwarded-for')] || 'unknown'}
   next: call_create_user_log_template
 
 call_create_user_log_template:
@@ -44,6 +50,7 @@ call_create_user_log_template:
   body:
     method: "PUT"
     path: "admin/clients"
+    ip_address: ${ip_address}
   headers:
     cookie: ${incoming.headers.cookie}
   result: log_result
