@@ -18,6 +18,8 @@ declaration:
       - field: cookie
         type: string
         description: "Cookie field"
+      - field: x-forwarded-for
+        type: string
 
 check_for_required_parameters:
   switch:
@@ -31,6 +33,7 @@ call_create_user_log_template:
   body:
     method: "DELETE"
     path: "admin/clients/manifests/delete"
+    ip_address: ${incoming.headers[Object.keys(incoming.headers).find(h => h.toLowerCase() === 'x-forwarded-for')] || 'unknown'}
   headers:
     cookie: ${incoming.headers.cookie}
   result: delete_manifest
