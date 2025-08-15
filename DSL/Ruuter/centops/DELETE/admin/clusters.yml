@@ -13,6 +13,8 @@ declaration:
     headers:
       - field: cookie
         type: string
+      - field: x-forwarded-for
+        type: string
 
 validate_request_param:
   switch:
@@ -23,6 +25,7 @@ validate_request_param:
 assign_parameters:
   assign:
     cluster_id: ${incoming.params.clusterId}
+    ip_address: ${incoming.headers[Object.keys(incoming.headers).find(h => h.toLowerCase() === 'x-forwarded-for')] || 'unknown'}
   next: call_create_user_log_template
 
 call_create_user_log_template:
@@ -31,6 +34,7 @@ call_create_user_log_template:
   body:
     method: "DELETE"
     path: "admin/clusters"
+    ip_address: ${ip_address}
   headers:
     cookie: ${incoming.headers.cookie}
   result: log_cluster
