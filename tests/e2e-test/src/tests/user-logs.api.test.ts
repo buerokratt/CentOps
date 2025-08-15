@@ -29,6 +29,7 @@ describe('Log Management E2E', () => {
                 path: expect.any(String),
                 createdAt: expect.any(String),
                 firstName: expect.any(String),
+                ipAddress: expect.any(String),
                 lastName: expect.any(String),
                 userIdCode: expect.any(String)
             });

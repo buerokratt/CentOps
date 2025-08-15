@@ -20,6 +20,8 @@ declaration:
     headers:
       - field: cookie
         type: string
+      - field: x-forwarded-for
+        type: string
 
 validate_request_param:
   switch:
@@ -33,6 +35,7 @@ assign_parameters:
     first_name: ${incoming.body.firstName}
     last_name: ${incoming.body.lastName}
     id_code: ${incoming.body.idCode}
+    ip_address: ${incoming.headers[Object.keys(incoming.headers).find(h => h.toLowerCase() === 'x-forwarded-for')] || 'unknown'}
   next: call_create_user_log_template
 
 call_create_user_log_template:
@@ -41,6 +44,7 @@ call_create_user_log_template:
   body:
     method: "PUT"
     path: "admin/users"
+    ip_address: ${ip_address}
   headers:
     cookie: ${incoming.headers.cookie}
   result: log_result

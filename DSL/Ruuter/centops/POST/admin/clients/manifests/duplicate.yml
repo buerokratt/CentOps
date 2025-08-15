@@ -18,6 +18,8 @@ declaration:
       - field: cookie
         type: string
         description: "Cookie field"
+      - field: x-forwarded-for
+        type: string
 
 check_for_required_parameters:
   switch:
@@ -29,6 +31,7 @@ extract_request_params:
   assign:
     client_id: ${incoming.params.clientId}
     manifest_id: ${incoming.params.manifestId}
+    ip_address: ${incoming.headers[Object.keys(incoming.headers).find(h => h.toLowerCase() === 'x-forwarded-for')] || 'unknown'}
   next: call_create_user_log_template
 
 call_create_user_log_template:
@@ -37,6 +40,7 @@ call_create_user_log_template:
   body:
     method: "POST"
     path: "admin/clients/manifests/duplicate"
+    ip_address: ${ip_address}
   headers:
     cookie: ${incoming.headers.cookie}
   result: duplicate_manifest

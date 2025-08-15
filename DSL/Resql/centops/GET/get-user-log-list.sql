@@ -2,6 +2,7 @@ SELECT
     log_id,
     method,
     path,
+    ip_address,
     created_at,
     user_id_code,
     first_name,

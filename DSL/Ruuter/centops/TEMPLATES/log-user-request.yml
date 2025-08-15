@@ -14,6 +14,9 @@ declaration:
       - field: path
         type: string
         description: "DSL request path"
+      - field: ip_address
+        type: string
+        description: "IP address of the client"
     headers:
       - field: cookie
         type: string
@@ -43,6 +46,7 @@ extract_user_info_data:
     last_name: ${user_info_response.response.body.lastName}
     path: ${incoming.body.path}
     method: ${incoming.body.method}
+    ip_address: ${incoming.body.ip_address}
   next: create_log
 
 create_log:
@@ -55,6 +59,7 @@ create_log:
       user_id_code: ${user_id_code}
       first_name: ${first_name}
       last_name: ${last_name}
+      ip_address: ${ip_address}
   result: create_log_result
   next: return_result
 

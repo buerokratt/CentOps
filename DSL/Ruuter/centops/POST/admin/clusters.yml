@@ -15,6 +15,8 @@ declaration:
     headers:
       - field: cookie
         type: string
+      - field: x-forwarded-for
+        type: string
 
 validate_request_param:
   switch:
@@ -26,6 +28,7 @@ assign_parameters:
   assign:
     name: ${incoming.body.name}
     ip_address: ${incoming.body.ipAddress}
+    ip_address_user: ${incoming.headers[Object.keys(incoming.headers).find(h => h.toLowerCase() === 'x-forwarded-for')] || 'unknown'}
   next: call_create_user_log_template
 
 call_create_user_log_template:
@@ -34,6 +37,7 @@ call_create_user_log_template:
   body:
     method: "POST"
     path: "admin/clusters"
+    ip_address: ${ip_address_user}
   headers:
     cookie: ${incoming.headers.cookie}
   result: log_result
