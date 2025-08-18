@@ -19,6 +19,9 @@ export const TransButton = createTrans({
     <Trans i18nKey="button.backToSecrets" defaults="Back to secrets" />
   ),
   delete: <Trans i18nKey="button.delete" defaults="Delete" />,
+  deleteDeployment: (
+    <Trans i18nKey="button.deleteDeployment" defaults="Delete deployment" />
+  ),
   deploy: <Trans i18nKey="button.deploy" defaults="Deploy" />,
   deployment: <Trans i18nKey="button.deployment" defaults="Deployment" />,
   difference: <Trans i18nKey="button.difference" defaults="Difference" />,

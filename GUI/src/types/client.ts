@@ -1,8 +1,8 @@
 export interface Client {
   name: string;
   clientId: string;
-  // https://k8s.example.com:6443
-  kubernetesClusterAddress: string;
+  // uuid
+  kubernetesClusterId: string;
   kubernetesClusterNamespace: string;
   argoAppDeploymentName: string;
   // "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----"
@@ -44,7 +44,7 @@ export enum ClientDeploymentStatuses {
 export type ClientDeploymentStatus = keyof typeof ClientDeploymentStatuses;
 export interface ClientDeployment {
   id: string;
-  manifestVersion: string;
+  manifestGitHelmBranch: string;
   nameSpace: string;
   manifestId: string;
   deployedBy: string;
@@ -54,7 +54,6 @@ export interface ClientDeployment {
 export interface ApiClientDeployment extends ClientDeployment {
   id: string;
   clientId: string;
-  manifestVersion: string;
   manifestId: string;
   manifestName: string;
   deployedByIdCode: string;
@@ -79,9 +78,9 @@ export interface ApiClientDeploymentStatus {
 
 export interface ClientManifest {
   name: string;
-  helmRepository: string;
-  helmPath: string;
-  helmVersion: string;
+  gitHelmRepository: string;
+  gitHelmPath: string;
+  gitHelmBranch: string;
   helmValues: string;
 }
 export interface ApiClientManifest extends ClientManifest {

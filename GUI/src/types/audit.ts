@@ -29,6 +29,7 @@ export type AuditSecretsAccessOperation =
 export interface AuditSecretsAccess {
   /** @format uuid */
   id: string;
+  secretName: string;
   clientName: string;
   firstName: string;
   lastName: string;

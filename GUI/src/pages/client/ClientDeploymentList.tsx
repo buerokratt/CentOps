@@ -37,6 +37,7 @@ import clsx from 'clsx';
 import type { TitleType } from 'components/Title';
 import { ConfirmButton } from 'components/Modal/ConfirmModal';
 import JsonView from '@uiw/react-json-view';
+import { TransDialog } from 'i18n/trans/dialog';
 
 const statusMap = new Map<
   ClientDeploymentStatus,
@@ -84,16 +85,13 @@ export const ClientDeploymentList = withAuthorization(() => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const handleDelete = useCallback(
-    async (_: ApiClientDeployment) => {
-      if (client)
-        await api.delete(
-          `/admin/clients/deployments/delete?appName=${client.argoAppDeploymentName}`
-        );
-      await refetch();
-    },
-    [client]
-  );
+  const handleDelete = useCallback(async () => {
+    if (client)
+      await api.delete(
+        `/admin/clients/deployments/delete?appName=${client.argoAppDeploymentName}`
+      );
+    await refetch();
+  }, [client]);
   const columnHelper = createColumnHelper<ApiClientDeployment>();
   const columns = useMemo(
     () => [
@@ -109,8 +107,8 @@ export const ClientDeploymentList = withAuthorization(() => {
           </Link>
         ),
       }),
-      columnHelper.accessor('manifestVersion', {
-        id: 'manifestVersion',
+      columnHelper.accessor('manifestGitHelmBranch', {
+        id: 'manifestGitHelmBranch',
         header: () => <TransTableHead i18nKey="manifestVersion" />,
         cell: (message) => message.getValue(),
       }),
@@ -142,7 +140,7 @@ export const ClientDeploymentList = withAuthorization(() => {
           );
         },
       }),
-      columnHelper.accessor('id', {
+      /*columnHelper.accessor('id', {
         id: 'actions',
         header: '',
         enableSorting: false,
@@ -160,7 +158,7 @@ export const ClientDeploymentList = withAuthorization(() => {
             </ConfirmDeleteButton>
           </Track>
         ),
-      }),
+      }),*/
     ],
     [client]
   );
@@ -176,11 +174,26 @@ export const ClientDeploymentList = withAuthorization(() => {
             <Trans i18nKey="title.clientDeployments" defaults="Deployments" />
           </h1>
         </Track>
-        <Link to={ROUTES.CLIENT_DEPLOYMENTS_CREATE_ROUTE} params={{ clientId }}>
-          <Button appearance="primary">
-            <TransButton i18nKey="newDeployment" />
-          </Button>
-        </Link>
+        <Track>
+          <ConfirmDeleteButton
+            appearance="secondary"
+            entity={{}}
+            onConfirm={handleDelete}
+            disabled={!client}
+            title={<TransDialog i18nKey="confirmDeleteDeploymentTitle" />}
+          >
+            <Icon name="delete" />
+            <TransButton i18nKey="deleteDeployment" />
+          </ConfirmDeleteButton>
+          <Link
+            to={ROUTES.CLIENT_DEPLOYMENTS_CREATE_ROUTE}
+            params={{ clientId }}
+          >
+            <Button appearance="primary">
+              <TransButton i18nKey="newDeployment" />
+            </Button>
+          </Link>
+        </Track>
       </Track>
 
       <Card

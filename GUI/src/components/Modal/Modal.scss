@@ -38,6 +38,9 @@
     align-items: center;
     gap: get-spacing(viljandi);
     border-bottom: 1px solid get-color(black-coral-2);
+    & + .modal__footer {
+      border: none;
+    }
   }
 
   &__title {

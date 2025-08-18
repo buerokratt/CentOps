@@ -72,7 +72,7 @@ export const ClientListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="nameSpace" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('kubernetesClusterAddress', {
+      columnHelper.accessor('kubernetesClusterId', {
         id: 'clusterAddress',
         header: () => <TransTableHead i18nKey="cluster" />,
         cell: (message) => {

@@ -58,6 +58,11 @@ export const ClientSecretListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="name" />,
         cell: (message) => message.getValue(),
       }),
+      columnHelper.accessor('environment', {
+        id: 'environment',
+        header: () => <TransTableHead i18nKey="environment" />,
+        cell: (message) => message.getValue(),
+      }),
       columnHelper.accessor('updatedAt', {
         id: 'updatedAt',
         header: () => <TransTableHead i18nKey="updatedAt" />,
@@ -70,15 +75,6 @@ export const ClientSecretListPage = withAuthorization(() => {
         meta: { size: 1 },
         cell: (props) => (
           <Track gap={8}>
-            <Button
-              component={Link}
-              to={ROUTES.CLIENT_SECRETS_DIFF_ROUTE}
-              params={{ secretId: props.row.original.id }}
-              appearance="text"
-            >
-              <Icon name="diff" />
-              <TransButton i18nKey="difference" />
-            </Button>
             <Button
               component={Link}
               to={ROUTES.CLIENT_SECRETS_DETAILS_ROUTE}

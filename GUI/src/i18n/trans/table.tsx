@@ -15,6 +15,9 @@ export const TransTableHead = createTrans({
   dateTime: <Trans i18nKey="table.head.dateTime" defaults="Date and time" />,
   deployedAt: <Trans i18nKey="table.head.deployedAt" defaults="Deployed at" />,
   deployedBy: <Trans i18nKey="table.head.deployedBy" defaults="Deployed by" />,
+  environment: (
+    <Trans i18nKey="table.head.environment" defaults="Environment" />
+  ),
   identificationNo: (
     <Trans
       i18nKey="table.head.identificationNo"
@@ -38,6 +41,7 @@ export const TransTableHead = createTrans({
   nameSpace: <Trans i18nKey="table.head.nameSpace" defaults="Name space" />,
   operation: <Trans i18nKey="table.head.operation" defaults="Operation" />,
   path: <Trans i18nKey="table.head.path" defaults="Path" />,
+  secret: <Trans i18nKey="table.head.secret" defaults="Secret" />,
   updatedAt: <Trans i18nKey="table.head.updatedAt" defaults="Updated at" />,
   user: <Trans i18nKey="table.head.user" defaults="User" />,
   userAgent: <Trans i18nKey="table.head.userAgent" defaults="User Agent" />,

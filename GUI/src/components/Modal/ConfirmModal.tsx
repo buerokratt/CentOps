@@ -1,4 +1,4 @@
-import { Button, Modal, Track } from 'components';
+import { Button, Modal } from 'components';
 import type { ModalProps } from 'components/Modal/index';
 import {
   cloneElement,
@@ -84,30 +84,35 @@ export const ConfirmModal: FC<PropsWithChildren<ConfirmModalProps>> = ({
   ...props
 }) => {
   return (
-    <Modal title={props.title} onClose={props.onClose}>
+    <Modal
+      title={props.title}
+      onClose={props.onClose}
+      footer={
+        <>
+          {cancel &&
+            (isValidElement(cancel) ? (
+              cloneElement(cancel, {
+                onClick: props.onClose,
+              })
+            ) : (
+              <Button appearance="secondary" onClick={props.onClose}>
+                {<TransButton i18nKey="cancel" />}
+              </Button>
+            ))}
+          {confirm &&
+            (isValidElement(confirm) ? (
+              cloneElement(confirm, {
+                onClick: props.onConfirm,
+              })
+            ) : (
+              <Button appearance="success" onClick={props.onConfirm}>
+                <TransButton i18nKey="confirm" />
+              </Button>
+            ))}
+        </>
+      }
+    >
       {children}
-      <Track justify="end" gap={12}>
-        {cancel &&
-          (isValidElement(cancel) ? (
-            cloneElement(cancel, {
-              onClick: props.onClose,
-            })
-          ) : (
-            <Button appearance="secondary" onClick={props.onClose}>
-              {<TransButton i18nKey="cancel" />}
-            </Button>
-          ))}
-        {confirm &&
-          (isValidElement(confirm) ? (
-            cloneElement(confirm, {
-              onClick: props.onConfirm,
-            })
-          ) : (
-            <Button appearance="success" onClick={props.onConfirm}>
-              <TransButton i18nKey="confirm" />
-            </Button>
-          ))}
-      </Track>
     </Modal>
   );
 };
