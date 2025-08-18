@@ -174,7 +174,7 @@ export const ClientDeploymentList = withAuthorization(() => {
             <Trans i18nKey="title.clientDeployments" defaults="Deployments" />
           </h1>
         </Track>
-        <Track>
+        <Track gap={8}>
           <ConfirmDeleteButton
             appearance="secondary"
             entity={{}}

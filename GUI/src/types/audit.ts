@@ -16,6 +16,7 @@ export interface AuditUserActivity {
   firstName: string;
   lastName: string;
   path: string;
+  ipAddress: string;
   createdAt: string;
 }
 
