@@ -114,7 +114,6 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
     []
   );
   const nextSecretJson = watch('data');
-  console.log(prevSecretJson, nextSecretJson);
 
   return (
     <>
@@ -141,23 +140,33 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
                 <TransButton i18nKey="cancel" />
               </Button>
             </Link>
-            <ConfirmButton
-              appearance="primary"
-              title={<TransTitle i18nKey="secretDiff" />}
-              onConfirm={handleSubmit(onSubmit)}
-              component={Button}
-              disabled={isSubmitting}
-              type="button"
-              button={<TransButton i18nKey="save" />}
-            >
-              <ReactDiffViewer
-                oldValue={prevSecretJson}
-                newValue={nextSecretJson}
-                splitView={true}
-                hideLineNumbers={true}
-                extraLinesSurroundingDiff={30000}
-              />
-            </ConfirmButton>
+            {isCreateMode || prevSecretJson === nextSecretJson ? (
+              <Button
+                appearance="primary"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                <TransButton i18nKey="save" />
+              </Button>
+            ) : (
+              <ConfirmButton
+                appearance="primary"
+                title={<TransTitle i18nKey="secretDiff" />}
+                onConfirm={handleSubmit(onSubmit)}
+                component={Button}
+                disabled={isSubmitting}
+                type="button"
+                button={<TransButton i18nKey="save" />}
+              >
+                <ReactDiffViewer
+                  oldValue={prevSecretJson}
+                  newValue={nextSecretJson}
+                  splitView={true}
+                  hideLineNumbers={true}
+                  extraLinesSurroundingDiff={30000}
+                />
+              </ConfirmButton>
+            )}
           </Track>
         }
       >
@@ -193,7 +202,12 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
             name="data"
             control={control}
             render={({ field }) => (
-              <FormTextarea {...field} label={<TransField i18nKey="json" />} />
+              <FormTextarea
+                {...field}
+                label={<TransField i18nKey="json" />}
+                minRows={16}
+                maxRows={Infinity}
+              />
             )}
             rules={{ required: true }}
           />
