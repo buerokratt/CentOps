@@ -1,6 +1,6 @@
 import { Button, Modal, Track } from 'components';
 import type { ModalProps } from 'components/Modal/index';
-import { type FC, useCallback, useState } from 'react';
+import { type FC, type ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ButtonProps } from 'components/Button';
 import { useToast } from 'hooks';
@@ -8,21 +8,24 @@ import { TransButton } from 'i18n/trans/button';
 import { get } from 'react-hook-form';
 
 export interface ConfirmDeleteModalProps extends Omit<ModalProps, 'title'> {
-  title?: string;
+  title?: ReactNode;
   name: string;
   onConfirm: () => void;
 }
 
-export interface ConfirmDeleteButtonProps<T> extends ButtonProps {
+export interface ConfirmDeleteButtonProps<T>
+  extends Omit<ButtonProps, 'title'> {
   entity: T;
   entityName?: keyof T & string;
   onConfirm: (entity: T) => Promise<void>;
+  title?: ReactNode;
 }
 
 export const ConfirmDeleteButton = <T,>({
   entity,
   entityName,
   onConfirm,
+  title,
   ...props
 }: ConfirmDeleteButtonProps<T>) => {
   const [entityToDelete, setEntityIdToDelete] = useState<T | null>(null);
@@ -64,6 +67,13 @@ export const ConfirmDeleteButton = <T,>({
           name={get(entity, entityName ?? '', '')}
           onConfirm={handleConfirm}
           onClose={closeConfirmDeleteModal}
+          title={
+            title ??
+            t('dialog.confirmDeleteTitle.title', {
+              defaultValue: 'Do you want to delete {{name}}?',
+              name: get(entity, entityName ?? '', ''),
+            })
+          }
         />
       )}
     </>
@@ -71,15 +81,8 @@ export const ConfirmDeleteButton = <T,>({
 };
 
 export const ConfirmDeleteModal: FC<ConfirmDeleteModalProps> = (props) => {
-  const { t } = useTranslation();
   return (
-    <Modal
-      title={t('dialog.confirmDeleteTitle.title', {
-        defaultValue: 'Do you want to delete {{name}}?',
-        name: props.name,
-      })}
-      onClose={props.onClose}
-    >
+    <Modal title={props.title} onClose={props.onClose}>
       <Track justify="end" gap={12}>
         <Button appearance="secondary" onClick={props.onClose}>
           <TransButton i18nKey="cancel" />

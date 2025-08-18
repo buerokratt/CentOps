@@ -68,6 +68,11 @@ export const UserActivityPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="path" />,
         cell: (message) => message.getValue(),
       }),
+      columnHelper.accessor('ipAddress', {
+        id: 'ipAddress',
+        header: () => <TransTableHead i18nKey="ipAddress" />,
+        cell: (message) => message.getValue(),
+      }),
       columnHelper.accessor('createdAt', {
         id: 'createdAt',
         header: () => <TransTableHead i18nKey="dateTime" />,

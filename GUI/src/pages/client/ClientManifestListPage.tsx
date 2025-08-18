@@ -68,8 +68,8 @@ export const ClientManifestListPage = withAuthorization(() => {
         header: () => <TransTableHead i18nKey="name" />,
         cell: (message) => message.getValue(),
       }),
-      columnHelper.accessor('helmVersion', {
-        id: 'helmVersion',
+      columnHelper.accessor('gitHelmBranch', {
+        id: 'gitHelmBranch',
         header: () => <TransTableHead i18nKey="helmVersion" />,
         cell: (message) => message.getValue(),
       }),

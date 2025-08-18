@@ -25,7 +25,7 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
               {title}
             </RadixDialog.Title>
           </div>
-          <div className="modal__body">{children}</div>
+          {children && <div className="modal__body">{children}</div>}
           {footer && (
             <Track className="modal__footer" gap={16} justify="end">
               {footer}

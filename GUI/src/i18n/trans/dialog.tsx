@@ -14,7 +14,13 @@ export const TransDialog = createTrans({
   confirmDeleteTitle: (
     <Trans
       i18nKey="dialog.confirmDeleteTitle.title"
-      defaults={`Do you want to delete {{name}}?`}
+      defaults="Do you want to delete {{name}}?"
+    />
+  ),
+  confirmDeleteDeploymentTitle: (
+    <Trans
+      i18nKey="dialog.confirmDeleteDeployment.title"
+      defaults="Are you sure you want to delete the deployment?"
     />
   ),
 });

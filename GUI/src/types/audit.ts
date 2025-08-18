@@ -16,6 +16,7 @@ export interface AuditUserActivity {
   firstName: string;
   lastName: string;
   path: string;
+  ipAddress: string;
   createdAt: string;
 }
 
@@ -29,6 +30,7 @@ export type AuditSecretsAccessOperation =
 export interface AuditSecretsAccess {
   /** @format uuid */
   id: string;
+  secretName: string;
   clientName: string;
   firstName: string;
   lastName: string;

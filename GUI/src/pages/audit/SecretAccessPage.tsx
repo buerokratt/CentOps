@@ -26,23 +26,14 @@ export const SecretAccessPage = withAuthorization(() => {
   const columnHelper = createColumnHelper<AuditSecretsAccess>();
   const columns = useMemo(
     () => [
-      columnHelper.accessor('userIdCode', {
-        id: 'userIdCode',
-        header: () => <TransTableHead i18nKey="userIdCode" />,
-        cell: (message) => message.getValue(),
-      }),
-      columnHelper.accessor('id', {
-        id: 'fullName',
-        header: () => <TransTableHead i18nKey="usersName" />,
-        cell: ({
-          row: {
-            original: { firstName, lastName },
-          },
-        }) => [firstName, lastName].filter(Boolean).join(' '),
-      }),
       columnHelper.accessor('clientName', {
         id: 'clientName',
         header: () => <TransTableHead i18nKey="client" />,
+        cell: (message) => message.getValue(),
+      }),
+      columnHelper.accessor('secretName', {
+        id: 'secretName',
+        header: () => <TransTableHead i18nKey="secret" />,
         cell: (message) => message.getValue(),
       }),
       columnHelper.accessor('action', {
@@ -61,19 +52,19 @@ export const SecretAccessPage = withAuthorization(() => {
           );
         },
       }),
+      columnHelper.accessor('id', {
+        id: 'fullName',
+        header: () => <TransTableHead i18nKey="usersName" />,
+        cell: ({
+          row: {
+            original: { firstName, lastName },
+          },
+        }) => [firstName, lastName].filter(Boolean).join(' '),
+      }),
       columnHelper.accessor('ipAddress', {
-        id: 'meta',
+        id: 'ipAddress',
         header: () => <TransTableHead i18nKey="ipAddress" />,
         cell: (message) => message.getValue(),
-      }),
-      columnHelper.accessor('userAgent', {
-        id: 'userAgent',
-        header: () => <TransTableHead i18nKey="userAgent" />,
-        cell: (message) => (
-          <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-            {message.getValue()}
-          </div>
-        ),
       }),
       columnHelper.accessor('createdAt', {
         id: 'timestamp',

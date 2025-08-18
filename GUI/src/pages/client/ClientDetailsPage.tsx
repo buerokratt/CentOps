@@ -192,7 +192,7 @@ export const ClientDetailsPage = withAuthorization(() => {
             type="text"
           />
           <Controller
-            name="kubernetesClusterAddress"
+            name="kubernetesClusterId"
             control={control}
             rules={{ required: true }}
             render={({ field }) => (

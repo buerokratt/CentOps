@@ -26,7 +26,9 @@ import { useToast } from 'hooks';
 import { useTranslation } from 'react-i18next';
 import type { AxiosError } from 'axios';
 import api from 'services/api';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import { ConfirmButton } from 'components/Modal/ConfirmModal';
+import ReactDiffViewer from 'react-diff-viewer';
 
 export const ClientSecretDetailsPage = withAuthorization(() => {
   const { clientId, secretId } = useParams<{
@@ -42,6 +44,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
     enabled: !isCreateMode,
     queryKey: [`admin/clients/secrets/get?clientId=${clientId}&id=${secretId}`],
   });
+
   const navigate = useNavigate();
   const toast = useToast();
   const { t } = useTranslation();
@@ -96,6 +99,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
     reset,
     handleSubmit,
     formState: { isSubmitting },
+    watch,
   } = useForm<ApiClientSecret>();
   useEffect(() => {
     if (secret)
@@ -104,6 +108,12 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
         data: JSON.stringify(secret.data, null, 2),
       });
   }, [secret]);
+
+  const prevSecretJson = useMemo(
+    () => JSON.stringify(secret?.data ?? {}, null, 2),
+    []
+  );
+  const nextSecretJson = watch('data');
 
   return (
     <>
@@ -130,9 +140,33 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
                 <TransButton i18nKey="cancel" />
               </Button>
             </Link>
-            <Button appearance="primary" type="submit" disabled={isSubmitting}>
-              <TransButton i18nKey="save" />
-            </Button>
+            {isCreateMode || prevSecretJson === nextSecretJson ? (
+              <Button
+                appearance="primary"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                <TransButton i18nKey="save" />
+              </Button>
+            ) : (
+              <ConfirmButton
+                appearance="primary"
+                title={<TransTitle i18nKey="secretDiff" />}
+                onConfirm={handleSubmit(onSubmit)}
+                component={Button}
+                disabled={isSubmitting}
+                type="button"
+                button={<TransButton i18nKey="save" />}
+              >
+                <ReactDiffViewer
+                  oldValue={prevSecretJson}
+                  newValue={nextSecretJson}
+                  splitView={true}
+                  hideLineNumbers={true}
+                  extraLinesSurroundingDiff={30000}
+                />
+              </ConfirmButton>
+            )}
           </Track>
         }
       >
@@ -168,7 +202,12 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
             name="data"
             control={control}
             render={({ field }) => (
-              <FormTextarea {...field} label={<TransField i18nKey="json" />} />
+              <FormTextarea
+                {...field}
+                label={<TransField i18nKey="json" />}
+                minRows={16}
+                maxRows={Infinity}
+              />
             )}
             rules={{ required: true }}
           />
