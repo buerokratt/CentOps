@@ -144,7 +144,7 @@
   "title.manifestAdd": "Add manifest",
   "title.manifestEdit": "Edit manifest",
   "title.secretAdd": "Add secret",
-  "title.secretDiff": "Diff vaade",
+  "title.secretDiff": "Secret diff",
   "title.secretEdit": "Edit secret",
   "title.user": "User {{user}}",
   "title.userAdd": "Add user",

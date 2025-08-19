@@ -38,7 +38,7 @@ export const SecretAccessPage = withAuthorization(() => {
       }),
       columnHelper.accessor('action', {
         id: 'method',
-        header: () => <TransTableHead i18nKey="operation" />,
+        header: () => <TransTableHead i18nKey="method" />,
         cell: (message) => {
           const value = message.getValue<Method>().toLowerCase() as Method;
           const type = methodMap.get(value);

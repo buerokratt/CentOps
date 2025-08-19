@@ -12,7 +12,7 @@ export const TransTitle = createTrans({
   manifestEdit: <Trans i18nKey="title.manifestEdit" defaults="Edit manifest" />,
   secretAdd: <Trans i18nKey="title.secretAdd" defaults="Add secret" />,
   secretEdit: <Trans i18nKey="title.secretEdit" defaults="Edit secret" />,
-  secretDiff: <Trans i18nKey="title.secretDiff" defaults="Diff vaade" />,
+  secretDiff: <Trans i18nKey="title.secretDiff" defaults="Secret diff" />,
   user: <Trans i18nKey="title.user" defaults="User {{user}}" />,
   userAdd: <Trans i18nKey="title.userAdd" defaults="Add user" />,
 });
