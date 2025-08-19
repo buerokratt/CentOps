@@ -111,7 +111,7 @@ export const ClientSecretDetailsPage = withAuthorization(() => {
 
   const prevSecretJson = useMemo(
     () => JSON.stringify(secret?.data ?? {}, null, 2),
-    []
+    [secret]
   );
   const nextSecretJson = watch('data');
 

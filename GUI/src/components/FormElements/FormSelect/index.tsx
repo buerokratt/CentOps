@@ -4,6 +4,7 @@ import {
   type SelectHTMLAttributes,
   useEffect,
   useId,
+  useMemo,
   useState,
 } from 'react';
 import { useSelect } from 'downshift';
@@ -51,16 +52,19 @@ export const FormSelect = forwardRef<HTMLDivElement, FormSelectProps>(
   ) => {
     const id = useId();
     const { t } = useTranslation();
-    const defaultSelected =
-      options.find((o) => o.value === defaultValue || o.value === value) ||
-      null;
+    const defaultSelected = useMemo(
+      () =>
+        options.find((o) => o.value === defaultValue || o.value === value) ||
+        null,
+      [options, defaultValue, value]
+    );
     const [selectedItem, setSelectedItem] = useState<{
       label: string;
       value: string;
     } | null>(defaultSelected);
     useEffect(() => {
       setSelectedItem(defaultSelected);
-    }, [value]);
+    }, [defaultSelected]);
     const {
       isOpen,
       getToggleButtonProps,

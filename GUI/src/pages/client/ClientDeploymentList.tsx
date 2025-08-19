@@ -92,6 +92,16 @@ export const ClientDeploymentList = withAuthorization(() => {
       );
     await refetch();
   }, [client]);
+  const handleDeleteById = useCallback(
+    async ({ deploymentId }: ApiClientDeployment) => {
+      await api.delete(
+        `/admin/clients/deployments/delete-by-id?deploymentId=${deploymentId}`
+      );
+      await refetch();
+    },
+    []
+  );
+
   const columnHelper = createColumnHelper<ApiClientDeployment>();
   const columns = useMemo(
     () => [
@@ -140,7 +150,7 @@ export const ClientDeploymentList = withAuthorization(() => {
           );
         },
       }),
-      /*columnHelper.accessor('id', {
+      columnHelper.accessor('id', {
         id: 'actions',
         header: '',
         enableSorting: false,
@@ -150,15 +160,14 @@ export const ClientDeploymentList = withAuthorization(() => {
             <ConfirmDeleteButton
               appearance="text"
               entity={original}
-              onConfirm={handleDelete}
-              disabled={!client}
+              onConfirm={handleDeleteById}
             >
               <Icon name="delete" />
               <TransButton i18nKey="delete" />
             </ConfirmDeleteButton>
           </Track>
         ),
-      }),*/
+      }),
     ],
     [client]
   );

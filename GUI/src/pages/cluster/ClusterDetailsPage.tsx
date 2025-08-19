@@ -90,7 +90,6 @@ export const ClusterDetailsPage = withAuthorization(() => {
           attemptedAt: string;
         }>(`/admin/clusters/test-connection?clusterName=${cluster.name}`)
         .then(({ data }) => {
-          console.log(data);
           toast.open({
             type: 'success',
             title: t('toast.notification'),

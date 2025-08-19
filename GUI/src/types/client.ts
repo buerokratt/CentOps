@@ -53,6 +53,7 @@ export interface ClientDeployment {
 
 export interface ApiClientDeployment extends ClientDeployment {
   id: string;
+  deploymentId: string;
   clientId: string;
   manifestId: string;
   manifestName: string;
