@@ -20,7 +20,7 @@ import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { TransButton } from 'i18n/trans/button';
 import { Trans } from 'react-i18next';
 import { TransTableHead } from 'i18n/trans/table';
-import { Link } from 'components/Router/Link';
+import { Link, replaceLinkParams } from 'components/Router/Link';
 import { ROUTES } from 'resources/routes-constants';
 import { TransTitle } from 'i18n/trans/title';
 import { TransLabel } from 'i18n/trans/label';
@@ -112,6 +112,11 @@ export const ClientDeploymentList = withAuthorization(() => {
           <Link
             to={ROUTES.CLIENT_MANIFESTS_DETAILS_ROUTE}
             params={{ manifestId: message.row.original.manifestId }}
+            state={{
+              backUrl: replaceLinkParams(ROUTES.CLIENT_DEPLOYMENTS_ROUTE, {
+                clientId,
+              }),
+            }}
           >
             {message.getValue()}
           </Link>
