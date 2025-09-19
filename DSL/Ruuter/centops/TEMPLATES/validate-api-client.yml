@@ -21,9 +21,9 @@ check_for_required_parameters:
 extract_request_data:
   assign:
     authorization: ${incoming.headers.authorization}
-  next: base64_decryption
+  next: base64_decoding
 
-base64_decryption:
+base64_decoding:
   call: http.post
   args:
     url: "[#CENTOPS_DMAPPER]/decryption/base64"
@@ -32,11 +32,11 @@ base64_decryption:
       isObject: false
   result: parse_base64_result
   error: return_unauthorized
-  next: check_base64_decryption_response
+  next: check_base64_decoding_response
 
-check_base64_decryption_response:
+check_base64_decoding_response:
   switch:
-    - condition: ${200 <= parse_base64_result.response.statusCodeValue && parse_base64_result.response.statusCodeValue < 300 && parse_base64_result.response.body.error !== false}
+    - condition: ${200 <= parse_base64_result.response.statusCodeValue && parse_base64_result.response.statusCodeValue < 300 && parse_base64_result.response.body.error === false}
       next: assign_parsed_auth_data
   next: return_unauthorized
 
@@ -44,9 +44,9 @@ assign_parsed_auth_data:
   assign:
     api_key_decoded: ${parse_base64_result.response.body.content.split(':').map(part => part.trim())[0]}
     api_secret_decoded: ${parse_base64_result.response.body.content.split(':').map(part => part.trim())[1]}
-  next: apiKey_secret_base64_encryption
+  next: apiKey_secret_base64_encoding
 
-apiKey_secret_base64_encryption:
+apiKey_secret_base64_encoding:
   call: http.post
   args:
     url: "[#CENTOPS_DMAPPER]/encryption/object/base64"
@@ -55,9 +55,9 @@ apiKey_secret_base64_encryption:
       api_secret: ${api_secret_decoded}
   result: encoded_auth_data_result
   error: return_unauthorized
-  next: check_base64_encryption_response
+  next: check_base64_encoding_response
 
-check_base64_encryption_response:
+check_base64_encoding_response:
   switch:
     - condition: ${200 <= encoded_auth_data_result.response.statusCodeValue && encoded_auth_data_result.response.statusCodeValue < 300}
       next: assign_encoded_auth_data

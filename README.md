@@ -62,3 +62,13 @@ INSERT INTO API_CLIENTS(API_KEY, API_SECRET)
 VALUES ('testApiKey',
         crypt('testApiSecret', gen_salt('bf', 8)));
 ```
+
+#### Get client list via curl command:
+
+```
+curl -X GET http://localhost:8050/centops/integration/clients -H "authorization: api_key:api_secret"
+```
+
+api key + api secret must be converted to the base64 via https automatically or manually in some reason,
+example of an auth header: `authorization: bXlBcGlLZXkxMjM6bXlTdXBlclNlY3JldDQ1Ng==`
+
