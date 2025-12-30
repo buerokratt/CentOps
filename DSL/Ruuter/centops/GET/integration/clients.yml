@@ -12,11 +12,19 @@ declaration:
         type: number
       - field: pageSize
         type: number
+      - field: sortOrder
+        type: string
+        description: "Sort order for name: 'asc' or 'desc'"
+      - field: filterByName
+        type: string
+        description: "Filter clients by name (partial match)"
 
 assign_parameters:
   assign:
     page: ${incoming.params.page ?? 1}
     page_size: ${incoming.params.pageSize ?? 10}
+    sort_order: ${incoming.params.sortOrder ?? 'asc'}
+    filter_by_name: ${incoming.params.filterByName ?? ''}
 
 send_request:
   call: http.get
@@ -25,6 +33,8 @@ send_request:
     query:
       page: ${page}
       page_size: ${page_size}
+      sort_order: ${sort_order}
+      filter_by_name: ${filter_by_name}
   result: clients_result
 
 transform:
@@ -37,6 +47,8 @@ transform:
       entries: ${clients_result.response.body}
       page: ${page}
       pageSize: ${page_size}
+      sortOrder: ${sort_order}
+      filterByName: ${filter_by_name}
   result: clients
 
 return_clients:
