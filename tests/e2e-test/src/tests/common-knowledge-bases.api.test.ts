@@ -3,7 +3,8 @@ import { randomUUID } from 'crypto';
 import { getPgClient } from '../setup/pgPool';
 import { ENDPOINTS, GLOBAL_CONSTANTS, HTTP_METHODS } from '../setup/config';
 
-const BASE_URL = `${GLOBAL_CONSTANTS.BASE_URL}${GLOBAL_CONSTANTS.API_PREFIX}${ENDPOINTS.COMMON_KNOWLEDGE_BASES}`;
+const API_URL = `${GLOBAL_CONSTANTS.BASE_URL}${GLOBAL_CONSTANTS.API_PREFIX}`;
+const { BASE, BY_CLIENT_ID, GLOBAL_CLASSIFIER } = ENDPOINTS.COMMON_KNOWLEDGE_BASES;
 const clientId = randomUUID();
 const otherClientId = randomUUID();
 // 'zz-' keeps this client last in the name-ordered client list that other tests read concurrently
@@ -14,7 +15,7 @@ const GC = { key: `gc-${Date.now()}`, secret: 'gc-secret' };
 const auth = ({ key, secret }: typeof CKB) => Buffer.from(`${key}:${secret}`).toString('base64');
 
 const request = (path: string, method: string, creds?: typeof CKB, body?: object) =>
-    fetch(`${BASE_URL}${path}`, {
+    fetch(`${API_URL}${path}`, {
         method,
         headers: { 'Content-Type': 'application/json', ...(creds && { authorization: auth(creds) }) },
         body: body && JSON.stringify(body)
@@ -43,19 +44,19 @@ afterAll(async () => {
 
 describe('Common Knowledge Bases E2E', () => {
     it.each([
-        ['PUT without auth', HTTP_METHODS.PUT, `?client_id=${clientId}`, undefined, v1, 401],
-        ['PUT with missing etag', HTTP_METHODS.PUT, `?client_id=${clientId}`, CKB, { presigned_url: v1.presigned_url }, 400],
-        ['PUT with GLOBAL_CLASSIFIER role', HTTP_METHODS.PUT, `?client_id=${clientId}`, GC, v1, 403],
-        ['PUT for another client', HTTP_METHODS.PUT, `?client_id=${otherClientId}`, CKB, v1, 403],
-        ['GET single for another client', HTTP_METHODS.GET, `?client_id=${otherClientId}`, CKB, undefined, 403],
-        ['GET list with COMMON_KNOWLEDGE_BASE role', HTTP_METHODS.GET, '', CKB, undefined, 403]
+        ['PUT without auth', HTTP_METHODS.PUT, `${BASE}?client_id=${clientId}`, undefined, v1, 401],
+        ['PUT with missing etag', HTTP_METHODS.PUT, `${BASE}?client_id=${clientId}`, CKB, { presigned_url: v1.presigned_url }, 400],
+        ['PUT with GLOBAL_CLASSIFIER role', HTTP_METHODS.PUT, `${BASE}?client_id=${clientId}`, GC, v1, 403],
+        ['PUT for another client', HTTP_METHODS.PUT, `${BASE}?client_id=${otherClientId}`, CKB, v1, 403],
+        ['GET single for another client', HTTP_METHODS.GET, `${BY_CLIENT_ID}?client_id=${otherClientId}`, CKB, undefined, 403],
+        ['GET list with COMMON_KNOWLEDGE_BASE role', HTTP_METHODS.GET, GLOBAL_CLASSIFIER, CKB, undefined, 403]
     ])('should reject %s', async (_, method, path, creds, body, status) => {
         const response = await request(path, method, creds, body);
         expect(response.status).toBe(status);
     });
 
     it('should insert CKB information for own client', async () => {
-        const response = await request(`?client_id=${clientId}`, HTTP_METHODS.PUT, CKB, v1);
+        const response = await request(`${BASE}?client_id=${clientId}`, HTTP_METHODS.PUT, CKB, v1);
         expect(response.status).toBe(200);
 
         const { response: data } = await response.json();
@@ -64,7 +65,7 @@ describe('Common Knowledge Bases E2E', () => {
     });
 
     it('should append a new version on update and keep createdAt', async () => {
-        const response = await request(`?client_id=${clientId}`, HTTP_METHODS.PUT, CKB, v2);
+        const response = await request(`${BASE}?client_id=${clientId}`, HTTP_METHODS.PUT, CKB, v2);
         expect(response.status).toBe(200);
         expect((await response.json()).response).toMatchObject({ presignedUrl: v2.presigned_url, createdAt });
 
@@ -73,13 +74,13 @@ describe('Common Knowledge Bases E2E', () => {
     });
 
     it('should return latest CKB information for own client', async () => {
-        const response = await request(`?client_id=${clientId}`, HTTP_METHODS.GET, CKB);
+        const response = await request(`${BY_CLIENT_ID}?client_id=${clientId}`, HTTP_METHODS.GET, CKB);
         expect(response.status).toBe(200);
         expect((await response.json()).response).toMatchObject({ clientId, presignedUrl: v2.presigned_url, createdAt });
     });
 
     it('should list latest CKB information per client for GLOBAL_CLASSIFIER', async () => {
-        const response = await request('', HTTP_METHODS.GET, GC);
+        const response = await request(GLOBAL_CLASSIFIER, HTTP_METHODS.GET, GC);
         expect(response.status).toBe(200);
 
         const { response: data } = await response.json();

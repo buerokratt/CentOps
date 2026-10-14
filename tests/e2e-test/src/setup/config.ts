@@ -47,7 +47,11 @@ export const ENDPOINTS = {
         BY_ID: '/admin/client-by-id',
         MINIMAL: '/integration/clients'
     },
-    COMMON_KNOWLEDGE_BASES: '/integration/common-knowledge-bases',
+    COMMON_KNOWLEDGE_BASES: {
+        BASE: '/integration/common-knowledge-bases',
+        BY_CLIENT_ID: '/integration/common-knowledge-base',
+        GLOBAL_CLASSIFIER: '/integration/global-classifier/common-knowledge-bases'
+    },
     USERS: {
         BASE: '/admin/users',
         BY_ID: '/admin/user-by-id'

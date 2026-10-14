@@ -1,0 +1,51 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "List Common Knowledge Base information for all clients"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    headers:
+      - field: authorization
+        type: string
+        description: "Base64 encoded API key:secret"
+
+get_api_client:
+  template: "[#CENTOPS_PROJECT_LAYER]/validate-api-client"
+  requestType: templates
+  headers:
+    authorization: ${incoming.headers.authorization}
+  result: api_client
+  next: check_api_client
+
+check_api_client:
+  switch:
+    - condition: ${api_client == null || api_client === false || api_client === "false"}
+      next: return_unauthorized
+    - condition: ${api_client.apiRoles != null && api_client.apiRoles.includes("GLOBAL_CLASSIFIER")}
+      next: get_ckb_information_list
+  next: return_forbidden
+
+get_ckb_information_list:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-ckb-information-list"
+  result: ckb_list_result
+  next: return_ckb_information_list
+
+return_ckb_information_list:
+  status: 200
+  return: ${ckb_list_result.response.body}
+  next: end
+
+return_unauthorized:
+  status: 401
+  return: "unauthorized"
+  next: end
+
+return_forbidden:
+  status: 403
+  return: "forbidden"
+  next: end
