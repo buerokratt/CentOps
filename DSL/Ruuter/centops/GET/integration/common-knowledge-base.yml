@@ -1,0 +1,84 @@
+declaration:
+  call: declare
+  version: 0.1
+  description: "Get Common Knowledge Base information for a single client by client_id query parameter"
+  method: get
+  accepts: json
+  returns: json
+  namespace: centops
+  allowlist:
+    params:
+      - field: client_id
+        type: string
+        description: "Client id query parameter"
+    headers:
+      - field: authorization
+        type: string
+        description: "Base64 encoded API key:secret"
+
+assign_parameters:
+  assign:
+    client_id: ${incoming.params.client_id}
+  next: validate_request
+
+validate_request:
+  switch:
+    - condition: ${client_id == null || client_id.trim() === ""}
+      next: return_bad_request
+  next: get_api_client
+
+get_api_client:
+  template: "[#CENTOPS_PROJECT_LAYER]/validate-api-client"
+  requestType: templates
+  headers:
+    authorization: ${incoming.headers.authorization}
+  result: api_client
+  next: check_api_client
+
+check_api_client:
+  switch:
+    - condition: ${api_client == null || api_client === false || api_client === "false"}
+      next: return_unauthorized
+    - condition: ${api_client.apiRoles != null && api_client.apiRoles.includes("COMMON_KNOWLEDGE_BASE") && api_client.clientId != null && api_client.clientId.toLowerCase() === client_id.toLowerCase()}
+      next: get_ckb_information
+  next: return_forbidden
+
+get_ckb_information:
+  call: http.get
+  args:
+    url: "[#CENTOPS_RESQL]/get-ckb-information"
+    query:
+      client_id: ${client_id}
+  result: ckb_result
+  next: check_ckb_information
+
+check_ckb_information:
+  switch:
+    - condition: ${ckb_result.response.body[0] == null}
+      next: return_not_found
+  next: return_ckb_information
+
+return_ckb_information:
+  status: 200
+  return: ${ckb_result.response.body[0]}
+  next: end
+
+return_bad_request:
+  status: 400
+  return: "client_id must not be empty"
+  next: end
+
+return_unauthorized:
+  status: 401
+  return: "unauthorized"
+  next: end
+
+return_forbidden:
+  status: 403
+  return: "forbidden"
+  next: end
+
+return_not_found:
+  status: 404
+  return: "Common Knowledge Base information not found"
+  next: end

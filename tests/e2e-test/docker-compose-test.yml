@@ -52,12 +52,17 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data
       - ../../init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U byk -d centops_db"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
     networks:
       - bykstack-test
 
   data-mapper-test:
     container_name: data-mapper-test
-    image: ghcr.io/buerokratt/datamapper:v2.2.14
+    image: ghcr.io/buerokratt/datamapper:v3.3.2
     environment:
       - PORT=9054
       - CONTENT_FOLDER=/data
@@ -101,11 +106,12 @@ services:
 
   liquibase-test:
     container_name: liquibase-test
-    image: liquibase/liquibase
+    image: liquibase/liquibase:4.28
     networks:
       - bykstack-test
     depends_on:
-      - database-test
+      database-test:
+        condition: service_healthy
     volumes:
       - ../../DSL/Liquibase/:/liquibase/changelog/
       - ./liquibase.properties/:/liquibase/changelog/liquibase.properties
