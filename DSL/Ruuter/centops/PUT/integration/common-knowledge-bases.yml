@@ -10,7 +10,7 @@ declaration:
     body:
       - field: presigned_url
         type: string
-      - field: presigned_url_etag
+      - field: presigned_url_data_hash
         type: string
     params:
       - field: client_id
@@ -25,14 +25,14 @@ assign_parameters:
   assign:
     client_id: ${incoming.params.client_id}
     presigned_url: "${incoming.body == null ? null : incoming.body.presigned_url}"
-    presigned_url_etag: "${incoming.body == null ? null : incoming.body.presigned_url_etag}"
+    presigned_url_data_hash: "${incoming.body == null ? null : incoming.body.presigned_url_data_hash}"
   next: validate_request
 
 validate_request:
   switch:
-    - condition: ${client_id == null || typeof presigned_url !== "string" || typeof presigned_url_etag !== "string"}
+    - condition: ${client_id == null || typeof presigned_url !== "string" || typeof presigned_url_data_hash !== "string"}
       next: return_bad_request
-    - condition: ${client_id.trim() === "" || presigned_url.trim() === "" || presigned_url_etag.trim() === ""}
+    - condition: ${client_id.trim() === "" || presigned_url.trim() === "" || presigned_url_data_hash.trim() === ""}
       next: return_bad_request
   next: get_api_client
 
@@ -63,7 +63,7 @@ insert_ckb_information:
     body:
       client_id: ${client_id}
       presigned_url: ${presigned_url}
-      presigned_url_etag: ${presigned_url_etag}
+      presigned_url_data_hash: ${presigned_url_data_hash}
   result: insert_result
   next: return_updated
 
@@ -74,7 +74,7 @@ return_updated:
 
 return_bad_request:
   status: 400
-  return: "client_id query parameter, presigned_url and presigned_url_etag are required"
+  return: "client_id query parameter, presigned_url and presigned_url_data_hash are required"
   next: end
 
 return_unauthorized:

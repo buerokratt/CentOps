@@ -2,7 +2,7 @@ SELECT ckb.client_id,
        c.name AS client_name,
        COALESCE(c.part_of_network, FALSE) AS part_of_network,
        ckb.presigned_url,
-       ckb.presigned_url_etag,
+       ckb.presigned_url_data_hash,
        ckb.created_at,
        ckb.updated_at
 FROM ckb_information ckb
