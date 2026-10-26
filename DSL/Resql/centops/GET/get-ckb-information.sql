@@ -1,6 +1,6 @@
 SELECT client_id,
        presigned_url,
-       presigned_url_etag,
+       presigned_url_data_hash,
        created_at,
        updated_at
 FROM ckb_information

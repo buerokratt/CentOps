@@ -21,8 +21,8 @@ const request = (path: string, method: string, creds?: typeof CKB, body?: object
         body: body && JSON.stringify(body)
     });
 
-const v1 = { presigned_url: 'https://s3.example.com/ckb/v1', presigned_url_etag: 'etag-v1' };
-const v2 = { presigned_url: 'https://s3.example.com/ckb/v2', presigned_url_etag: 'etag-v2' };
+const v1 = { presigned_url: 'https://s3.example.com/ckb/v1', presigned_url_data_hash: 'data-hash-v1' };
+const v2 = { presigned_url: 'https://s3.example.com/ckb/v2', presigned_url_data_hash: 'data-hash-v2' };
 
 let pgClient;
 let createdAt: string;
@@ -45,7 +45,7 @@ afterAll(async () => {
 describe('Common Knowledge Bases E2E', () => {
     it.each([
         ['PUT without auth', HTTP_METHODS.PUT, `${BASE}?client_id=${clientId}`, undefined, v1, 401],
-        ['PUT with missing etag', HTTP_METHODS.PUT, `${BASE}?client_id=${clientId}`, CKB, { presigned_url: v1.presigned_url }, 400],
+        ['PUT with missing data hash', HTTP_METHODS.PUT, `${BASE}?client_id=${clientId}`, CKB, { presigned_url: v1.presigned_url }, 400],
         ['PUT with GLOBAL_CLASSIFIER role', HTTP_METHODS.PUT, `${BASE}?client_id=${clientId}`, GC, v1, 403],
         ['PUT for another client', HTTP_METHODS.PUT, `${BASE}?client_id=${otherClientId}`, CKB, v1, 403],
         ['GET single for another client', HTTP_METHODS.GET, `${BY_CLIENT_ID}?client_id=${otherClientId}`, CKB, undefined, 403],
@@ -60,7 +60,7 @@ describe('Common Knowledge Bases E2E', () => {
         expect(response.status).toBe(200);
 
         const { response: data } = await response.json();
-        expect(data).toMatchObject({ clientId, presignedUrl: v1.presigned_url, presignedUrlEtag: v1.presigned_url_etag });
+        expect(data).toMatchObject({ clientId, presignedUrl: v1.presigned_url, presignedUrlDataHash: v1.presigned_url_data_hash });
         createdAt = data.createdAt;
     });
 
